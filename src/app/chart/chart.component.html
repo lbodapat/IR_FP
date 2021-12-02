@@ -1,0 +1,81 @@
+
+
+<script src="https://code.highcharts.com/maps/highmaps.js"></script>
+<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/mapdata/custom/world-robinson-highres.js"></script><div style="border: 20px;margin: 50px;">
+
+
+        <!-- <div [MapChart] ="xyz"></div>    -->
+        <div [chart] ="xyz"></div>   
+<h2>Time series for POI </h2>
+<div [chart]="chart_poiTweets"></div>
+
+<h2>Time series for POI replies </h2>
+<div [chart]="chart"></div>
+
+<div>
+    <div class="row">
+        <div class="col-6">
+            <h1>Language wise distribution of tweets</h1>
+            <div [chart]="doughnut_lang"></div>
+        </div>
+        <div class="col-6">
+            <h1>Country wise distribution of tweets</h1>
+            <div [chart]="doughnut_country"></div>
+        </div>
+    </div>
+</div>
+
+<h1>Overall Top 10 Hashtags</h1>
+<div [chart]="doughnut"></div>
+<h1>Country wise Top Hashtags</h1>
+<div class="row">
+        <div class="col-4">
+            <a [chart]="pie_India_hashtags"></a>
+        </div>
+
+        <div class="col-4">
+            <a [chart]="pie_usa_hashtags"></a>
+        </div>
+
+        <div class="col-4">
+            <a [chart]="pie_brazil_hashtags"></a>
+        </div>
+</div>
+<h1>POI sentiment distribution</h1>
+<div [chart] ="stackedBarChart"></div>
+
+<!-- <h1>word cloud</h1>
+<div AgWordCloud #word_cloud_chart=ag-word-cloudwordData [wordData]="wordData" [options]="wordoptions">
+</div> -->
+<!-- <div AgWordCloud 
+    #word_cloud_chart=ag-word-cloud 
+    [wordData]="wordData1"
+     [options]="wordoptions">
+</div> --> 
+<!-- <div AgWordCloud [wordData]="wordData1" [options]="options"></div> -->
+<!-- </div> -->
+
+
+
+<h1>Country wise Sentiment Analysis</h1>
+<div class="row">
+        <div class="col-4">
+            <a [chart]="pie_India"></a>
+        </div>
+
+        <div class="col-4">
+            <a [chart]="pie_usa"></a>
+        </div>
+
+        <div class="col-4">
+            <a [chart]="pie_brazil"></a>
+        </div>
+</div>
+
+
+
+
+   
+
+

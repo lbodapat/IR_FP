@@ -1,0 +1,140 @@
+<nav class="navbar navbar-expand navbar-dark sticky-top bg-primary mb-4 ">
+  <div class="container">
+      <!-- <a routerLink='/' class="navbar-brand">Angular App</a> -->
+      <div>
+        <ul class='navbar-nav ml-auto'>
+          <li class="nav-item">
+              <a class="nav-link" (click)="filterOpen = !filterOpen; openNav(filterOpen)" style="cursor:pointer;position:fixed;left:40px"><i class="fa fa-filter fa-lg"></i></a>
+          </li>
+          <!-- <li><img src="https://logopond.com/logos/0bad08ba579d7ade49a92940f172fb4d.png" alt=""></li> -->
+          <li class="nav-item" [routerLinkActive] = "['active']" [routerLinkActiveOptions] = "{exact: true}" style="position:relative;left:300px">
+              <a routerLink='/' class="nav-link" (click)="openHome()" style="font-size:20px"><b>Home</b></a>
+            </li>
+          <li class="nav-item" [routerLinkActive] = "['active']" [routerLinkActiveOptions] = "{exact: true}" style="position:relative;left:350px">
+            <a routerLink='/visual' class="nav-link" (click)="openChart()" style="font-size:20px"><b>Analytics</b></a>
+          </li>
+          
+        </ul>
+      </div>
+  </div>
+</nav>
+<div class="search mb-3" style="margin-left:50px;">
+  <form action="/action_page.php">
+    <i class="fa fa-search fa-lg" (click)="onSearch()"></i>
+    <input type="text" placeholder="Search.." name="search" [(ngModel)]="searchText" (keydown.enter)="onSearch()">    
+  </form>
+</div>
+
+
+<div id="mySidenav" class="sidenav" style="width:300px;margin-top:77px;margin-bottom:50px;border-right: 1px solid; border-color: #9e9e9e;" *ngIf = "filterOpen">
+    <a href="javascript:void(0)" class="closebtn" (click)="filterOpen=false;closeNav(filterOpen)">&times;</a>
+    <br/><br/>
+    <button type="button" class="btn btn-outline-primary" style="margin-left:40px;margin-bottom: 20px;" (click)="onSubmit();" >Apply</button>
+    <button type="button" class="btn btn-outline-primary" style="margin-left:50px;margin-bottom: 20px;" (click)="Initialize();" >Reset</button>
+    <div>
+      <a><button (click)="showLanguages = !showLanguages" style="font-size: 0.75rem;margin-right:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showLanguages ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>Language</a>
+        <ul class="list-unstyled" *ngIf = "showLanguages">
+          <li style="font-size:15px;margin-left:10px" *ngFor="let language of languages">
+            <label class="container">{{language.key}}
+              <input type="checkbox" (change)="onLanguageSelect($event)" name ={{language.value}} [checked]="language.status"> 
+              <span class="checkmark"></span>
+            </label>          
+          </li>                
+        </ul>
+    </div>
+    <br/>
+    <div>
+        <a><button (click)="showCountries = !showCountries" style="font-size: 0.75rem;margin-right:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showCountries ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>Country</a>
+          <ul class="list-unstyled" *ngIf = "showCountries">
+            <li style="font-size:15px;margin-left:10px" *ngFor="let country of countries">
+              <label class="container">{{country.key}}
+                <input type="checkbox" (change)="onCountrySelect($event)" name ={{country.key}} [checked]="country.status"> 
+                <span class="checkmark"></span>
+              </label>          
+            </li>                
+          </ul>
+      </div>
+    <br/>
+    <div>
+      <a><button (click)="showTopics = !showTopics" style="font-size: 0.75rem;margin-right:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showTopics ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>Countrywise Topics</a>
+        <ul class="list-unstyled" *ngIf = "showTopics">
+          <li style="font-size:17px;margin-left:10px">
+            <label class="container">United States
+              <input type="checkbox" [(ngModel)]="selectedUS" (change)="onCheckOfAllUSTopics($event)" name="onCheckOfAllUSTopics"> 
+              <span class="checkmark"></span>
+              <button (click)="showTopicsUS = !showTopicsUS" style="font-size: 0.5rem;margin-left:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showTopicsUS ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>  
+            </label>
+          </li>
+            <ul class="list-unstyled" *ngIf = "showTopicsUS">
+              <li *ngFor="let topic of topics.US" style="font-size:15px;margin-left:20px">
+                <label class="container">{{topic}}
+                <input type="checkbox"  [checked]="selectedUS" (change)="onCheckUS($event)" name={{topic}}>
+                <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
+          <li style="font-size:17px;margin-left:10px">
+            <label class="container">India
+              <input type="checkbox" [(ngModel)]="selectedIndia" (change)="onCheckOfAllIndiaTopics($event)" name="onCheckOfAllIndiaTopics"> 
+              <span class="checkmark"></span>
+              <button (click)="showTopicsIndia = !showTopicsIndia" style="font-size: 0.5rem;margin-left:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showTopicsIndia ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>
+            </label>
+          </li>
+          <ul class="list-unstyled" *ngIf = "showTopicsIndia">
+            <li *ngFor="let topic of topics.India" style="font-size:15px;margin-left:20px">
+              <label class="container">{{topic}}
+                <input type="checkbox" [checked]="selectedIndia" (change)="onCheckIndia($event)" name={{topic}}>
+                <span class="checkmark"></span>
+              </label>
+            </li>
+          </ul>
+          <li style="font-size:17px;margin-left:10px">
+            <label class="container">Brazil
+              <input type="checkbox" [(ngModel)] = "selectedBrazil" (change)="onCheckOfAllBrazilTopics($event)" name="onCheckOfAllBrazilTopics">
+              <span class="checkmark"></span>
+              <button (click)="showTopicsBrazil = !showTopicsBrazil" style="font-size: 0.5rem;margin-left:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showTopicsBrazil ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>
+            </label>
+          </li>
+            <ul class="list-unstyled" *ngIf = "showTopicsBrazil">
+            <li *ngFor="let topic of topics.Brazil" style="font-size:15px;margin-left:20px">
+              <label class="container">{{topic}}
+                <input type="checkbox" [checked]="selectedBrazil" (change)="onCheckBrazil($event)" name={{topic}}>
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            </ul>
+        </ul>
+    </div><br/>
+    <a><button (click)="showPois= !showPois" style="font-size: 0.75rem;margin-right:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showPois ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>POI Name</a>
+    <ul class="list-unstyled" *ngIf = "showPois">
+      <li *ngFor="let poi of poiNames" style="font-size:15px;margin-left:20px">
+        <label class="container">{{poi.key}}
+          <input type="checkbox" (change)="onPoiName($event)" name ={{poi.value}} [checked]="poi.status">
+          <span class="checkmark"></span>
+        </label>
+      </li>
+    </ul>
+      <br/>
+    <div>
+      <a><button (click)="showSentiments = !showSentiments" style="font-size: 0.75rem;margin-right:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showSentiments ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>Sentiment</a>
+        <ul class="list-unstyled" *ngIf = "showSentiments">
+            <li style="font-size:15px;margin-left:10px" *ngFor="let Sentiment of sentiments">
+              <label class="container">{{Sentiment.key}}
+                <input type="checkbox" (change)="onSentimentSelect($event)" name ={{Sentiment.value}} [checked]="Sentiment.status"> 
+                <span class="checkmark"></span>
+              </label>
+            </li>       
+        </ul>
+    </div><br/>
+      <a><button (click)="showHashtags = !showHashtags" style="font-size: 0.75rem;margin-right:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showHashtags ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>Hashtags</a>
+        <ul class="list-unstyled" *ngIf = "showHashtags">
+            <li style="font-size:15px;margin-left:10px" *ngFor="let hashtag of hashtags">
+              <label class="container"> {{hashtag.key}}
+                <input type="checkbox" (change)="onHashtagSelect($event)" name ={{hashtag.key}} [checked]="hashtag.status">
+                <span class="checkmark"></span>
+              </label>
+            </li>       
+        </ul>       
+  </div>
+
+

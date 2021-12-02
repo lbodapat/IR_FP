@@ -1,0 +1,147 @@
+<nav class="navbar navbar-expand navbar-dark bg-primary mb-4 navbar-fixed-top">
+  <div class="container">
+      <!-- <a routerLink='/' class="navbar-brand">Angular App</a> -->
+      <div>
+        <ul class='navbar-nav ml-auto'>
+          <li class="nav-item">
+              <a class="nav-link" (click)="openNav()" style="cursor:pointer;position:absolute;left:40px"><i class="fa fa-filter fa-lg"></i></a>
+          </li>
+          <li class="nav-item" [routerLinkActive] = "['active']" [routerLinkActiveOptions] = "{exact: true}" style="position:relative;left:200px">
+              <a routerLink='/' class="nav-link"><b>Home</b></a>
+            </li>
+          <li class="nav-item" [routerLinkActive] = "['active']" [routerLinkActiveOptions] = "{exact: true}" style="position:relative;left:300px">
+            <a routerLink='/visual' class="nav-link"><b>Visual</b></a>
+          </li>
+          
+        </ul>
+      </div>
+  </div>
+</nav>
+<div class="search-container mb-3">
+  <form action="/action_page.php">
+    <input type="text" placeholder="Search.." name="search" [(ngModel)]="searchText">
+    <button type="submit" style="height: 40px;width: 40px;" (click)="onSearch()"><i class="fa fa-search"></i></button>
+  </form>
+</div>
+
+
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
+  <br/><br/>
+  <button type="button" class="btn btn-primary" (click)="onSubmit();" style="margin-left: 20px; width: 90px;">Apply</button>
+  <button type="button" class="btn btn-primary" (click)="Initialize();" style="margin-right: 00px; width: 90px;
+  background-color: #C0C0C0;" >Reset</button>
+  <div>
+    <a><button (click)="showLanguages = !showLanguages" style="font-size: 0.75rem;margin-right:5px"><i [ngClass]="showLanguages ? 'fa fa-minus fa-xs':'fa fa-plus'"></i></button>Language</a>
+      <ul class="list-unstyled" *ngIf = "showLanguages">
+        <li style="font-size:15px;margin-left:10px" *ngFor="let language of languages"><input type="checkbox"  (change)="onLanguageSelect($event)" name ={{language.value}}> {{language.key}}</li>
+        
+        
+      </ul>
+  </div>
+  <br/>
+  <div>
+    <a><button (click)="showCountries = !showCountries" style="font-size: 0.75rem;margin-right:5px"><i [ngClass]="showCountries ? 'fa fa-minus fa-xs':'fa fa-plus'"></i></button>Country</a>
+      <ul class="list-unstyled" *ngIf = "showCountries">
+        <li style="font-size:17px;margin-left:10px"><input type="checkbox" [(ngModel)]="selectedUS" (change)="onCheckOfAllUSTopics($event)" name="onCheckOfAllUSTopics"> United States<button (click)="showTopicsUS = !showTopicsUS" style="font-size: 0.5rem;margin-left:5px"><i [ngClass]="showTopicsUS ? 'fa fa-minus fa-xs':'fa fa-plus'"></i></button></li>
+          <ul class="list-unstyled" *ngIf = "showTopicsUS">
+            <li *ngFor="let topic of topics.US" style="font-size:15px;margin-left:20px"><input type="checkbox"  [checked]="selectedUS" (change)="onCheckUS($event)" name={{topic}}>{{topic}}</li>
+          </ul>
+        <li style="font-size:17px;margin-left:10px"><input type="checkbox" [(ngModel)]="selectedIndia" (change)="onCheckOfAllIndiaTopics($event)" name="onCheckOfAllIndiaTopics"> India<button (click)="showTopicsIndia = !showTopicsIndia" style="font-size: 0.5rem;margin-left:5px"><i [ngClass]="showTopicsIndia ? 'fa fa-minus fa-xs':'fa fa-plus'"></i></button></li>
+        <ul class="list-unstyled" *ngIf = "showTopicsIndia">
+          <li *ngFor="let topic of topics.India" style="font-size:15px;margin-left:20px"><input type="checkbox" [checked]="selectedIndia" (change)="onCheckIndia($event)" name={{topic}}>{{topic}}</li>
+        </ul>
+        <li style="font-size:17px;margin-left:10px"><input type="checkbox" [(ngModel)] = "selectedBrazil" (change)="onCheckOfAllBrazilTopics($event)" name="onCheckOfAllBrazilTopics"> Brazil<button (click)="showTopicsBrazil = !showTopicsBrazil" style="font-size: 0.5rem;margin-left:5px"><i [ngClass]="showTopicsBrazil ? 'fa fa-minus fa-xs':'fa fa-plus'"></i></button></li>
+        <ul class="list-unstyled" *ngIf = "showTopicsBrazil">
+          <li *ngFor="let topic of topics.Brazil" style="font-size:15px;margin-left:20px"><input type="checkbox" [checked]="selectedBrazil" (change)="onCheckBrazil($event)" name={{topic}}>{{topic}}</li>
+        </ul>
+      </ul>
+  </div><br/>
+  <a><button (click)="showPois= !showPois" style="font-size: 0.75rem;margin-right:5px"><i [ngClass]="showPois ? 'fa fa-minus fa-xs':'fa fa-plus'"></i></button>POI Name</a>
+  <ul class="list-unstyled" *ngIf = "showPois">
+    <li *ngFor="let poi of poiNames" style="font-size:15px;margin-left:20px"><input type="checkbox" (change)="onPoiName($event)" name ={{poi.value}} >{{poi.key}}</li>
+  </ul>
+    <br/>
+  <div>
+    <a><button (click)="showSentiments = !showSentiments" style="font-size: 0.75rem;margin-right:5px"><i [ngClass]="showSentiments ? 'fa fa-minus fa-xs':'fa fa-plus'"></i></button>Sentiment</a>
+      <ul class="list-unstyled" *ngIf = "showSentiments">
+          <li style="font-size:15px;margin-left:10px" *ngFor="let Sentiment of sentiments"><input type="checkbox" (change)="onSentimentSelect($event)" name ={{Sentiment.value}}> {{Sentiment.key}}</li>
+       
+      </ul>
+    </div><br/>
+    <a><button (click)="showHashtags = !showHashtags" style="font-size: 0.75rem;margin-right:5px"><i [ngClass]="showHashtags ? 'fa fa-minus fa-xs':'fa fa-plus'"></i></button>Hashtags</a>
+
+  <a style="font-size:15px">From Date</a>
+  <form class="form-inline">
+      <div class="form-group">
+        <div class="input-group" style="padding-left:25px">
+          <input class="form-control" placeholder="yyyy-mm-dd"
+                 name="fdp" [(ngModel)]="model.from_model" ngbDatepicker #d1="ngbDatepicker" style="width:150px">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="d1.toggle()" type="button"><i class="fa fa-calendar"></i></button>              
+          </div>
+        </div>
+      </div>
+    </form> 
+  <a style="font-size:15px">To Date</a>
+  <form class="form-inline">
+    <div class="form-group">
+      <div class="input-group" style="padding-left:25px">
+        <input class="form-control" placeholder="yyyy-mm-dd"
+                name="tdp" [(ngModel)]="model.to_model" ngbDatepicker #d="ngbDatepicker" style="width:150px">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"><i class="fa fa-calendar"></i></button>              
+        </div>
+      </div>
+    </div>
+  </form>
+ 
+</div>
+
+
+
+<!-- 
+<form (ngSubmit)="onSubmit(ngModel)" >
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
+    <a>Language</a>
+    <a  style="font-size:15px"><input type="checkbox" [(ngModel)]="model.isEnglish" name ="isEnglish"> English<br></a>
+    <a  style="font-size:15px"><input type="checkbox" [(ngModel)]="model.isHindi" name="isHindi" > Hindi<br></a>
+    <a  style="font-size:15px"><input type="checkbox" [(ngModel)]="model.isPortuguese" name ="isPortuguese"> Portuguese<br></a>
+    
+    <a>Country</a>
+    <a  style="font-size:15px"><input type="checkbox" [(ngModel)]="model.isUSA" name="isUSA"> United States<br></a>
+    <a  style="font-size:15px"><input type="checkbox" [(ngModel)]="model.isIndia" name="isIndia"> India<br></a>
+    <a  style="font-size:15px"><input type="checkbox" [(ngModel)]="model.isBrazil" name="isBrazil"> Brazil<br></a>
+    <a>Verified</a>
+    <a  style="font-size:15px"><input type="checkbox"  [(ngModel)]="model.isVerified" name="isVerified"> Yes<br></a>
+    <a  style="font-size:15px"><input type="checkbox"  [(ngModel)]="model.isNotVerified" name="isNotVerified"> No<br></a>
+    <a>Topics</a>
+    <a style="font-size:15px">From Date</a>
+    <form class="form-inline">
+        <div class="form-group">
+          <div class="input-group" style="padding-left:25px">
+            <input class="form-control" placeholder="yyyy-mm-dd"
+                   name="fdp" [(ngModel)]="model.from_model" ngbDatepicker #d1="ngbDatepicker" style="width:150px">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="d1.toggle()" type="button"><i class="fa fa-calendar"></i></button>              
+            </div>
+          </div>
+        </div>
+      </form> 
+    <a style="font-size:15px">To Date</a>
+    <form class="form-inline">
+        <div class="form-group">
+          <div class="input-group" style="padding-left:25px">
+            <input class="form-control" placeholder="yyyy-mm-dd"
+                   name="tdp" [(ngModel)]="model.to_model" ngbDatepicker #d="ngbDatepicker" style="width:150px">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"><i class="fa fa-calendar"></i></button>              
+            </div>
+          </div>
+        </div>
+      </form>
+      
+<button type="button" class="btn btn-primary" (click)="onSubmit();" >Apply</button>
+</div>
+</form> -->

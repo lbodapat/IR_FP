@@ -1,0 +1,10 @@
+[
+    {
+    "country": ["india", 22, "brazil", 0, "usa", 0],
+    "hashtags": ["indiawithnamo", 1, "kashmirparfinalfight", 1, "100days", 0, "100daysnovikas", 0, "100daysofgovernment", 0, "1010means", 0,
+         "10_\u0939\u092b\u094d\u0924\u0947_10_\u092c\u091c\u0947_10_\u092e\u093f\u0928\u091f", 0, "10baje", 0, "10hafte10baje10minute", 0, "10minutes", 0],
+	"status": 0,
+	"tweet_lang": ["en", 22, "ar", 0, "bn", 0],
+	"verified": ["true", 22, "false", 0]
+    }
+]
