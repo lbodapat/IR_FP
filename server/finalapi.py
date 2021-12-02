@@ -10,9 +10,11 @@ import urllib.request
 from flask import Flask,request,jsonify
 from flask_cors import CORS	
 from datetime import datetime, timedelta
-
+from io import StringIO
+from pandas import DataFrame
 import pickle
 import pandas as pd
+from indexer import Indexer
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
@@ -346,25 +348,43 @@ def getNewsArticles():
         # response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-def run_poi():
-    i=1
-    for j in range(27):
+def read_config(i):
+    data = []
+    with open("../data/JSON/POI/poi"+str(i)+".json") as f:
+        for line in f:
+            data.append(JSON.loads(line))
+    return data
+
+def run_poi(i):
+    for j in range(1):
+        print("::::::--------->>>>>>>>>",(i))
         with open("/Users/surajbodapati/Desktop/University_at_Buffalo/SEM1/Information_Retreival/Assignments/p4/CSE-535-Project-4--master/data/POI/poi_"+str(i)+".pkl","rb") as input_file:
             new_dict = pickle.load(input_file)
-            new_dict.to_json('../data/JSON/POI/poi'+str(i)+'.json', orient='records', lines=True)
             i=i+1
-            print("File: ",i," content: ",new_dict)
-            print(type(new_dict))
+            data=JSON.dumps(JSON.loads(new_dict.to_json(orient="records")))
 
 def run_keywords():
     i=1
     for j in range(80):
         with open("/Users/surajbodapati/Desktop/University_at_Buffalo/SEM1/Information_Retreival/Assignments/p4/CSE-535-Project-4--master/data/keywords/keywords_"+str(i)+".pkl","rb") as input_file:
             new_dict = pickle.load(input_file)
+            new_dict=new_dict.replace("False", '"False"')
             new_dict.to_json('../data/JSON/keywords/keywords_'+str(i)+'.json', orient='records', lines=True)
             i=i+1
 
+def index_poi(indexer):
+    i=1
+    for j in range(1):
+        datas=read_config(i)
+        for data in datas:
+            data['tweet_id']=data['id']
+            indexer.create_documents(data)
+        i+=1
+
+def index(indexer):
+    index_poi(indexer)
+
 if __name__ == "__main__":
-    # run_poi()
-    # run_keywords()
+    indexer = Indexer()
+    index(indexer)
     app.run(host = "0.0.0.0",port = 9999)
