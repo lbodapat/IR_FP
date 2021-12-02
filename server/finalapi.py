@@ -365,6 +365,6 @@ def run_keywords():
             i=i+1
 
 if __name__ == "__main__":
-    run_poi()
-    run_keywords()
+    # run_poi()
+    # run_keywords()
     app.run(host = "0.0.0.0",port = 80)

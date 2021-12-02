@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="assets1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ProjectIR/node_modules/adm-zip/test/assets/maximum.zip!/" />
+      <root url="jar://$PROJECT_DIR$/ProjectIR/node_modules/adm-zip/test/assets/fast.zip!/" />
+      <root url="jar://$PROJECT_DIR$/ProjectIR/node_modules/adm-zip/test/assets/normal.zip!/" />
+      <root url="jar://$PROJECT_DIR$/ProjectIR/node_modules/adm-zip/test/assets/linux_arc.zip!/" />
+      <root url="jar://$PROJECT_DIR$/ProjectIR/node_modules/adm-zip/test/assets/ultra.zip!/" />
+      <root url="jar://$PROJECT_DIR$/ProjectIR/node_modules/adm-zip/test/assets/store.zip!/" />
+      <root url="jar://$PROJECT_DIR$/ProjectIR/node_modules/adm-zip/test/assets/fastest.zip!/" />
+      <root url="jar://$PROJECT_DIR$/ProjectIR/node_modules/adm-zip/test/assets/attributes_test.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
