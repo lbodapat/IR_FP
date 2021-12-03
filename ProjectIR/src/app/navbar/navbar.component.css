@@ -73,7 +73,7 @@ p-calendar{
   border-radius: 10px;
   font-size: 25px;
   background-color: white;
-  background-position: 10px 10px; 
+  background-position: 10px 10px;
   background-repeat: no-repeat;
   padding: 12px 20px 12px 40px;
   -webkit-transition: width 0.4s ease-in-out;
@@ -88,7 +88,7 @@ p-calendar{
   font-size: 25px;
 }
 
-.search .fa-search { 
+.search .fa-search {
   position: absolute;
   top: 30px;
   left: 1500px;
@@ -109,7 +109,7 @@ p-calendar{
     padding: 14px;
   }
   input[type=text] {
-    border: 1px solid #ccc;  
+    border: 1px solid #ccc;
   }
 }
 
@@ -177,4 +177,51 @@ p-calendar{
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+}
+
+
+body {
+    background: #d1d5db
+}
+
+.height {
+    height: 100vh
+}
+
+.form {
+    position: relative
+}
+
+.form .fa-search {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #9ca3af
+}
+
+.form span {
+    position: absolute;
+    right: 17px;
+    top: 13px;
+    padding: 2px;
+    border-left: 1px solid #d1d5db
+}
+
+.left-pan {
+    padding-left: 7px
+}
+
+.left-pan i {
+    padding-left: 10px
+}
+
+.form-input {
+    height: 55px;
+    text-indent: 33px;
+    border-radius: 10px
+}
+
+.form-input:focus {
+    box-shadow: none;
+    border: none
 }

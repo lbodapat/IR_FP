@@ -130,15 +130,19 @@ def getDetails():
 def getFilterDetails():
     try:
         data=request.json
-        filterquery=getFilters(data,"user.screen_name")
+        print("FILTER IN ADATA ",data)
+        filterquery=getFilters(data,"poi_name")
+        print("------_>>>>>> ",filterquery)
         modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&+wt=json&facet.field=tweet_lang&facet.field=sentiment&facet.field=country&facet.field=hashtags&f.hashtags.facet.limit=10&facet.field=verified&f.tweet_lang.facet.limit=3&facet.field=topic_str&facet=on&rows=0' +filterquery
-        print(inurl)
+        inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20&q='+ modelquery +'&+wt=json&facet.field=tweet_lang&facet.field=country&facet.field=hashtags&f.hashtags.facet.limit=10&facet.field=verified&f.tweet_lang.facet.limit=3&facet.field=topic_str&facet=on&rows=0' +filterquery
+        print("INURL:::::::   ",inurl)
         data = urllib.request.urlopen(inurl).read()
         docs = JSON.loads(data.decode('utf-8'))['facet_counts']['facet_fields']
         docs["status"]= JSON.loads(data.decode('utf-8'))['responseHeader']['status']
         response = jsonify(docs)
         # response.headers.add('Access-Control-Allow-Origin', '*')
+        print("RESPONSE:::::::::::::::::")
+        print(response)
         return response
     except:
         data=  {"status":500, "data":[]}
@@ -275,6 +279,7 @@ def getPOIDetails():
     try:
         data=request.json
         filterquery=getFilters(data,"poi_name")
+        print("-----_>>>>>>>> ",filterquery)
         modelquery = urllib.parse.quote(data["query"])
         inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&json.facet=%20{%20poi_sentimentss:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&facet=on&rows=0' +filterquery
         print(inurl)
@@ -303,39 +308,6 @@ def getPOIDetails():
         return response
     except Exception as e:
         print(e)                                                                                                    
-        data=  {"status":500, "data":[]}
-        response = jsonify(data)
-        # response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
-
-
-@app.route("/getNewsArticles/",methods=['POST'])
-def getNewsArticles():
-    try:
-        import requests 
-        data=request.json
-        API_ENDPOINT = "https://gnews.io/api/v3/search"
-        API_KEY = "23655ea8767da5bbb36663a9f85ad9ce"
-        maxdate = datetime.strptime(data['mindate'],"%Y-%m-%d") + timedelta(days=25)
-        mindate = datetime.strptime(data['mindate'],"%Y-%m-%d") 
-        mindate=mindate.strftime("%Y-%m-%d")
-        maxdate=maxdate.strftime("%Y-%m-%d")
-        data1 = {'token':API_KEY, 
-                'q':data['q'],
-                'mindate': data['mindate'],
-                'maxdate':maxdate}
-        # r = requests.get(url = API_ENDPOINT, params = data)
-        q = urllib.parse.quote(data['q'])
-        # q = q + "%20" +query
-        # -- commented for limiting api counts starts here ---
-        url = 'https://gnews.io/api/v3/search?token={}&q={}&maxdate={}&mindate={}'.format(API_KEY,q,maxdate,mindate)
-        r = requests.get(url)
-        # print(r.json())
-        response = jsonify(r.json())
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
-    except Exception as e:
-        print (e)
         data=  {"status":500, "data":[]}
         response = jsonify(data)
         # response.headers.add('Access-Control-Allow-Origin', '*')

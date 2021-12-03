@@ -81,23 +81,21 @@ export class ChartComponent implements OnInit {
   pie_India= new Chart({});
   pie_usa= new Chart({});
   pie_brazil= new Chart({});
-  
+
   pie_India_hashtags= new Chart({});
   pie_usa_hashtags= new Chart({});
   pie_brazil_hashtags= new Chart({});
 
-  
+
   options: any = {};
   count =0;
   wordData1: any = [];
   postFilterData_country =[];
   postFilterData_hashtags=[];
-  postFilterData_sentiment=[];
   postFilterData_tweet_lang=[];
   postFilterData_verified=[];
-  postFilterData_topic=[];
   wordData=new Array<AgWordCloudData>();
-  
+
   getSentimentDetails_countrydata=[];
   getSentimentDetails_monthdata=[];
   filterOpen :boolean=false;
@@ -118,7 +116,7 @@ export class ChartComponent implements OnInit {
   getSentimentDetails_poidata :any;
   getpoiTweetsUrl_data :any;
 
-  
+
   constructor(private tweetService: TweetService, private http: HttpClient){
 
     this.tweetService.filterOpen$.subscribe(status=>{
@@ -135,13 +133,13 @@ export class ChartComponent implements OnInit {
           setTimeout(this.lineChartSentimentalAnalysis_poiReplies(),3000)  //getSentimentDetails
           setTimeout(this.getTweetReplies(),3000)
       });
-          
-          
+
+
       });
-      
+
     if(this.searchText){
       this.obj.query= this.searchText;
-    
+
   }
 
 }
@@ -155,7 +153,7 @@ setTimeout(this.donutForHastags(), 5000);  //postfilter
           setTimeout(this.getTweetReplies(),3000)
 
 
-} 
+}
 
 
 pie_CountriesWiseSentiments(){
@@ -169,17 +167,17 @@ pie_CountriesWiseSentiments(){
   this.pie_brazil_hashtags =new Chart({title: {text: 'Brazil'}});
   this.pie_usa_hashtags =new Chart({title: {text: 'USA'}});
   this.topicWiseChart = new Chart({});
-    
-    this.filterdata_country = this.getSentimentDetails_countrydata;    
-    this.data =this.filterdata_country;      
+
+    this.filterdata_country = this.getSentimentDetails_countrydata;
+    this.data =this.filterdata_country;
     let data =[];
-    let res=[];    
+    let res=[];
     let data_pie=[];
     let india=[]
     let usa=[];
     let brazil=[];
     let index_india=-1;
-    data_pie= this.filterdata_country;  
+    data_pie= this.filterdata_country;
     let countries_array  = this.filterdata_country ?Object.keys(this.filterdata_country):[];
 
         index_india = countries_array.indexOf("india");
@@ -248,7 +246,7 @@ pie_CountriesWiseSentiments(){
           usa_hashtag.push({name:'#'+usaHashtaglist[i],y:values[i],dataLabels: {  enabled: true  }});
         }
       }
-     
+
       if(countries_array.indexOf("india") !== -1){
       this.pie_India = new Chart( {
         chart: {
@@ -257,7 +255,7 @@ pie_CountriesWiseSentiments(){
           plotBorderWidth: null,
           plotShadow: false
         },
-        credits: {  enabled: false  },  
+        credits: {  enabled: false  },
         title: {    text: "India" },
         subtitle: { text: "" },
         plotOptions: {
@@ -266,7 +264,7 @@ pie_CountriesWiseSentiments(){
             size: 160,
             cursor: "pointer",
             dataLabels: {
-              enabled: true, color: "#000000", connectorColor: "#000000",          
+              enabled: true, color: "#000000", connectorColor: "#000000",
             }
           }
         },
@@ -278,7 +276,7 @@ pie_CountriesWiseSentiments(){
           }
         ]
       });}
-    
+
       if(countries_array.indexOf("usa") !== -1){
       this.pie_usa = new Chart( {
         chart: {
@@ -296,7 +294,7 @@ pie_CountriesWiseSentiments(){
             cursor: "pointer",
             size: 160,
             dataLabels: {
-              enabled: true, color: "#000000", connectorColor: "#000000",          
+              enabled: true, color: "#000000", connectorColor: "#000000",
             }
           }
         },
@@ -326,7 +324,7 @@ pie_CountriesWiseSentiments(){
             size: 160,
             cursor: "pointer",
             dataLabels: {
-              enabled: true, color: "#000000", connectorColor: "#000000",          
+              enabled: true, color: "#000000", connectorColor: "#000000",
             }
           }
         },
@@ -338,9 +336,9 @@ pie_CountriesWiseSentiments(){
           }
         ]
       });}
-    
 
-//Country wise hashtags    
+
+//Country wise hashtags
 
 
 
@@ -366,7 +364,7 @@ this.pie_usa_hashtags = new Chart(
           innerSize: '50%',
           data:  usa_hashtag
       }]
-        
+
   }
 );}
 if(this.getSentimentDetails_countryhashtags.brazil && this.getSentimentDetails_countryhashtags.brazil.length> 0 && JSON.stringify(this.getSentimentDetails_countryhashtags.brazil[0]) !='{}'){
@@ -389,7 +387,7 @@ this.pie_brazil_hashtags = new Chart(
           innerSize: '50%',
           data:  brazil_hashtag
       }]
-        
+
   }
 );}
 if(this.getSentimentDetails_countryhashtags.india && this.getSentimentDetails_countryhashtags.india.length> 0 && JSON.stringify(this.getSentimentDetails_countryhashtags.india[0]) !='{}'){
@@ -412,33 +410,33 @@ this.pie_India_hashtags = new Chart(
           innerSize: '50%',
           data:  india_hashtag
       }]
-        
+
   }
 );
 }}
 
 columnChartForCountries(){
   this.data = this.tweetService.getData();
-      let temp =JSON.stringify(this.data);       
+      let temp =JSON.stringify(this.data);
        this.filterdata_country = this.postFilterData_country;
-        this.data =this.filterdata_country;      
+        this.data =this.filterdata_country;
         let data =[];
         let res=[];
         let  chartData=[];
         let prop : Prop;
-        let result=[]; 
-        let data_country=[]  
+        let result=[];
+        let data_country=[]
         data_country=   this.filterdata_country;
         if(data_country && data_country.length>0){
             this.data.forEach(function(d) {
-              data.push(d);   
+              data.push(d);
             });
-          
+
            for (let i = 0; i < this.data.length; i+=2) {
             res.push({name:this.data[i],y:[this.data[i+1]]})
-          }  
+          }
         }
-    
+
           this.columnChartOptions = new Chart( {
             chart: {
               type: "column",
@@ -466,7 +464,7 @@ columnChartForCountries(){
             },
             series: res
           });
-        
+
         }
 
         lineChartSentimentalAnalysis_poitweets(){
@@ -485,7 +483,7 @@ columnChartForCountries(){
         for(let i=0;i<this.months.length;i++){
               if((month_array.indexOf(this.months[i]))!== -1){
               let monthData = this.sentimentData[this.months[i]];
-              
+
               data_neutral.push(monthData[0].neutral)
               data_negative.push(monthData[0].negative)
               data_positive.push(monthData[0].positive)
@@ -506,7 +504,7 @@ columnChartForCountries(){
         res.push({name:'POSITIVE',data:data_positive,type:"line"})
 
       this.sentimentsInfo = res;
-  
+
       this.chart_poiTweets = new Chart({
         chart: { type: 'line' },
         title: { text: 'TIME SERIES OF TWEETS' },
@@ -514,7 +512,7 @@ columnChartForCountries(){
         xAxis : {categories: months_str},
         series: this.sentimentsInfo
       });
-        
+
     });
     setTimeout (() => {    }, 3000);
         }
@@ -523,7 +521,7 @@ lineChartSentimentalAnalysis_poiReplies(){
   this.data = this.tweetService.getData();
       let temp =JSON.stringify(this.data);
       this.tweetService.getSentimentDetails(temp).subscribe(tweets=>{
-      
+
       //this.tweetService.getpoiDetailsUrl(temp).subscribe(tweets=>{
         this.getSentimentDetails_countrydata = tweets.countrydata;
         this.getSentimentDetails_monthdata= tweets.monthdata;
@@ -541,7 +539,7 @@ lineChartSentimentalAnalysis_poiReplies(){
         for(let i=0;i<this.months.length;i++){
           if((month_array.indexOf(this.months[i]))!== -1){
           let monthData = this.sentimentData[this.months[i]];
-          
+
           data_neutral.push(monthData[0].neutral)
           data_negative.push(monthData[0].negative)
           data_positive.push(monthData[0].positive)
@@ -562,7 +560,7 @@ lineChartSentimentalAnalysis_poiReplies(){
         res.push({name:'POSITIVE',data:data_positive,type:"line"})
 
       this.sentimentsInfo = res;
-  
+
       // this.chart = new Chart({
       //   chart: { type: 'line' },
       //   title: { text: 'TIME SERIES OF REPLIES TO POI TWEETS' },
@@ -570,10 +568,10 @@ lineChartSentimentalAnalysis_poiReplies(){
       //   xAxis : {categories: months_str},
       //   series: this.sentimentsInfo
       // });
-        this.pie_CountriesWiseSentiments();
-        this.poiSentiments();
-        this.generateWorlMap();
-        this.topicWiseCharts();
+//         this.pie_CountriesWiseSentiments();
+//         this.poiSentiments();
+//         this.generateWorlMap();
+//         this.topicWiseCharts();
     });
     setTimeout (() => {    }, 3000);
 }
@@ -581,10 +579,10 @@ lineChartSentimentalAnalysis_poiReplies(){
 getTweetReplies(){
   this.data = this.tweetService.getData();
       let temp =JSON.stringify(this.data);
-      
-      
+
+
       this.tweetService.getpoiDetailsUrl(temp).subscribe(tweets=>{
-      
+
         //this.getSentimentDetails_poidata = tweets.poidata;
         this.getSentimentDetails_monthdata= tweets.poidata;
 
@@ -599,7 +597,7 @@ getTweetReplies(){
         for(let i=0;i<this.months.length;i++){
           if((month_array.indexOf(this.months[i]))!== -1){
           let monthData = this.sentimentData[this.months[i]];
-          
+
           data_neutral.push(monthData[0].neutral)
           data_negative.push(monthData[0].negative)
           data_positive.push(monthData[0].positive)
@@ -620,7 +618,7 @@ getTweetReplies(){
         res.push({name:'POSITIVE',data:data_positive,type:"line"})
 
       this.sentimentsInfo = res;
-  
+
       this.chart = new Chart({
         chart: { type: 'line' },
         title: { text: 'TIME SERIES OF REPLIES TO POI TWEETS' },
@@ -628,7 +626,7 @@ getTweetReplies(){
         xAxis : {categories: months_str},
         series: this.sentimentsInfo
       });
-        
+
     });
     setTimeout (() => {    }, 3000);
 }
@@ -637,9 +635,9 @@ getTweetReplies(){
     donutForHastags(){
       this.data = this.tweetService.getData();
       let temp =JSON.stringify(this.data);
-      
+
       this.tweetService.postFilterData(temp).subscribe(tweets=>{
-        
+
         let data_hastags=[];
         let data =[];
         let res=[];
@@ -648,23 +646,23 @@ getTweetReplies(){
         let result=[]
         this.filterdata_hashtags = tweets.hashtags;
         this.filterdata_country = tweets.country;
-        this.filterdata_lang = tweets.tweet_lang; 
+        this.filterdata_lang = tweets.tweet_lang;
 
         this.postFilterData_country =tweets.country;
         this.postFilterData_hashtags=tweets.hashtags;
-        this.postFilterData_sentiment=tweets.sentiment;
         this.postFilterData_tweet_lang=tweets.tweet_lang;
         this.postFilterData_verified=tweets.verified;
         this.postFilterData_topic = tweets.topic_str;
-        
-        
+
+
         data_hastags =this.postFilterData_hashtags;
-      
+
+      console.log("...............................Data Update ???...................................")
       if(data_hastags && data_hastags.length>0){
            data_hastags.forEach(function(d) {
-            data.push(d);   
+            data.push(d);
            });
-      } 
+      }
       if(this.postFilterData_hashtags && this.postFilterData_hashtags.length >0){
            for (let i = 0; i < this.postFilterData_hashtags.length; i+=2) {
              if(data[i+1]>0){
@@ -674,13 +672,13 @@ getTweetReplies(){
               chartData.push(this.prop)
              }
           }
-        
+
           for(let i=0;i<chartData.length;i++){
               res.push({name:chartData[i].name,y:chartData[i].y,dataLabels: {  enabled: true  }})
            }
         }
-    
-      this.donutData = res;  
+
+      this.donutData = res;
       this.doughnut = new Chart(
         {
           chart: {type: 'pie'	},
@@ -700,24 +698,24 @@ getTweetReplies(){
                 innerSize: '50%',
                 data:  this.donutData
             }]
-              
+
         }
       );
       this.donutForLanguage();
       this.donutForCountries();
       this.columnChartForCountries();
-      
+
     });
-    setTimeout (() => {    }, 3000);   
+    setTimeout (() => {    }, 3000);
 
     }
-  
+
     donutForLanguage(){
       this.data = this.tweetService.getData();
       let temp =JSON.stringify(this.data);
        this.filterdata_lang = this.postFilterData_tweet_lang;
         this.data =this.filterdata_lang;
-      
+
       let data =[];
       let res=[];
       let  chartData=[];
@@ -727,15 +725,15 @@ getTweetReplies(){
       data_lang =this.filterdata_lang;
       if(data_lang && data_lang.length>0){
             this.data.forEach(function(d) {
-              data.push(d);   
+              data.push(d);
             });
           }
-           
+
           let key=[];
           let val=[];
           let poiNamesList=[];
           for(let i=0;i <3;i++){ key.push(this.languages[i].key);val.push(this.languages[i].value.toLowerCase());}
-      
+
           if(this.postFilterData_tweet_lang && this.postFilterData_tweet_lang.length >0){
            for (let i = 0; i < this.postFilterData_tweet_lang.length; i+=2) {
              if(data[i+1]>0){
@@ -751,7 +749,7 @@ getTweetReplies(){
           }
       //return res;
       this.donutData = res;
-  
+
       this.doughnut_lang = new Chart(
         {
           chart: {type: 'pie'	},
@@ -771,29 +769,29 @@ getTweetReplies(){
                 innerSize: '50%',
                 data:  this.donutData
             }]
-              
+
         }
       );
-        
+
     }
 
     donutForCountries(){
       this.data = this.tweetService.getData();
       let temp =JSON.stringify(this.data);
       this.filterdata_country = this.postFilterData_country;
-      this.data =this.filterdata_country;     
+      this.data =this.filterdata_country;
       let data =[];
       let res=[];
       let  chartData=[];
       let prop : Prop;
       let result=[]
-      let data_c = this.filterdata_country;     
+      let data_c = this.filterdata_country;
       if(data_c&& data_c.length>0){
            this.data.forEach(function(d) {
-            data.push(d);   
+            data.push(d);
            });
           }
-           
+
            for (let i = 0; i < this.postFilterData_country.length; i+=2) {
              if(data[i+1]>0){
               this.prop = new Prop();
@@ -807,7 +805,7 @@ getTweetReplies(){
            }
       //return res;
       this.donutData = res;
-  
+
       this.doughnut_country = new Chart(
         {
           chart: {type: 'pie'	},
@@ -827,10 +825,10 @@ getTweetReplies(){
                 innerSize: '50%',
                 data:  this.donutData
             }]
-              
+
         }
       );
-        
+
     }
 
   pieChartOptions = new Chart( {
@@ -856,7 +854,7 @@ getTweetReplies(){
         dataLabels: {
           enabled: true,
           color: "#000000",
-          connectorColor: "#000000",          
+          connectorColor: "#000000",
         }
       }
     },
@@ -879,7 +877,7 @@ getTweetReplies(){
 // DONUT AND PIE Chart
 // ------------------------------------------------------------------------------------------------------------
 
-  
+
 doughnut = new Chart(
   {
     chart: {type: 'pie'	},
@@ -899,7 +897,7 @@ doughnut = new Chart(
           innerSize: '50%',
           data:  this.donutData
       }]
-				
+
   }
 );
 doughnut_lang = new Chart(
@@ -921,7 +919,7 @@ doughnut_lang = new Chart(
           innerSize: '50%',
           data:  this.donutData
       }]
-				
+
   }
 );
 doughnut_country = new Chart(
@@ -943,7 +941,7 @@ doughnut_country = new Chart(
           innerSize: '50%',
           data:  this.donutData
       }]
-				
+
   }
 );
 // ------------------------------------------------------------------------------------------------------------
@@ -982,7 +980,7 @@ doughnut_country = new Chart(
 //           data: [
 //               ['VERIFIED', this.verified],
 //               ['NOT-VERIFIED', this.non_verified],
-              
+
 //               {
 //                   name: 'Other',
 //                   y: 200-this.non_verified-this.verified,
@@ -992,10 +990,10 @@ doughnut_country = new Chart(
 //               }
 //           ]
 //       }]
-				
+
 //   }
 // );
-  
+
 
 poiSentiments(){
 let poiList =this.getSentimentDetails_poidata?Object.keys(this.getSentimentDetails_poidata):[];
@@ -1062,7 +1060,7 @@ if(this.filterdata_country && Object.keys(this.filterdata_country).length >0){
 
     this.mapChart = new MapChart({
       chart: {
-        map: mapdataJSon,  
+        map: mapdataJSon,
         backgroundColor: '#B0D2F2',
           borderWidth: 1  },
       title: {    text: 'Distribution of Tweets'  },
@@ -1098,12 +1096,12 @@ topicWiseCharts(){
   let chartData=[];
   let res=[];
   let data_hastags =this.postFilterData_topic;
-      
+
       if(data_hastags && data_hastags.length>0){
            data_hastags.forEach(function(d) {
-            data.push(d);   
+            data.push(d);
            });
-      } 
+      }
            for (let i = 0; i < this.postFilterData_topic.length; i+=2) {
              if(data[i+1]>0){
               this.prop = new Prop();
@@ -1123,7 +1121,7 @@ topicWiseCharts(){
     yAxis: {    min: 0,    title: {   text: 'Number of Tweets'    }},
     legend: {    reversed: true},
     plotOptions: {
-        series: {                    
+        series: {
           borderWidth: 0,
           dataLabels: {
               enabled: true
@@ -1136,7 +1134,7 @@ topicWiseCharts(){
           colorByPoint: true,
           type: undefined,
           data : res,
-         
+
       }
   ]
 
@@ -1144,5 +1142,5 @@ topicWiseCharts(){
      });
 
 }
- 
+
 }

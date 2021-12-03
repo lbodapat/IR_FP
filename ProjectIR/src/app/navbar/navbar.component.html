@@ -1,45 +1,65 @@
-<nav class="navbar navbar-expand navbar-dark sticky-top bg-primary mb-4 ">
+<nav class="navbar navbar-expand navbar-light sticky-top mb-4 " style="background-color: #41B3A3;">
   <div class="container">
       <!-- <a routerLink='/' class="navbar-brand">Angular App</a> -->
       <div>
         <ul class='navbar-nav ml-auto'>
           <li class="nav-item">
-              <a class="nav-link" (click)="filterOpen = !filterOpen; openNav(filterOpen)" style="cursor:pointer;position:fixed;left:40px"><i class="fa fa-filter fa-lg"></i></a>
+            <a style="cursor:pointer;position:fixed;left:5px">Inverted Indicies
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-layer-backward" viewBox="0 0 15 18">
+                <path d="M8.354 15.854a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708l1-1a.5.5 0 0 1 .708 0l.646.647V4H1a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H9v7.793l.646-.647a.5.5 0 0 1 .708 0l1 1a.5.5 0 0 1 0 .708l-3 3z"/>
+                <path d="M1 9a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h4.5a.5.5 0 0 1 0 1H1v2h4.5a.5.5 0 0 1 0 1H1zm9.5 0a.5.5 0 0 1 0-1H15V6h-4.5a.5.5 0 0 1 0-1H15a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4.5z"/>
+              </svg>
+            </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" (click)="filterOpen = !filterOpen; openNav(filterOpen)" style="cursor:pointer;position:fixed;right:40px"><i class="fa fa-filter fa-lg"></i></a>
           </li>
           <!-- <li><img src="https://logopond.com/logos/0bad08ba579d7ade49a92940f172fb4d.png" alt=""></li> -->
           <li class="nav-item" [routerLinkActive] = "['active']" [routerLinkActiveOptions] = "{exact: true}" style="position:relative;left:300px">
-              <a routerLink='/' class="nav-link" (click)="openHome()" style="font-size:20px"><b>Home</b></a>
-            </li>
-          <li class="nav-item" [routerLinkActive] = "['active']" [routerLinkActiveOptions] = "{exact: true}" style="position:relative;left:350px">
-            <a routerLink='/visual' class="nav-link" (click)="openChart()" style="font-size:20px"><b>Analytics</b></a>
+              <a routerLink='/' class="nav-link" (click)="openHome()" style="font-size:20px"><b>Home</b>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house" viewBox="0 0 16 10">
+                  <path fill-rule="evenodd" d="M2 13.5V7h1v6.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7h1v6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5zm11-11V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+                  <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/>
+                </svg>
+              </a>
           </li>
-          
+          <li class="nav-item" [routerLinkActive] = "['active']" [routerLinkActiveOptions] = "{exact: true}" style="position:relative;left:350px">
+            <a routerLink='/visual' class="nav-link" (click)="openChart()" style="font-size:20px"><b>Analytics</b>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" fill="currentColor" class="bi bi-bar-chart-line" viewBox="0 0 15 17">
+                <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-5 0v-3H2v3h2z"/>
+              </svg>
+            </a>
+          </li>
+
         </ul>
       </div>
   </div>
 </nav>
-<div class="search mb-3" style="margin-left:50px;">
+
+<div class="search mb-3">
+  <div class="d-inline-flex p-2" style="position:relative;right:250px">
   <form action="/action_page.php">
-    <i class="fa fa-search fa-lg" (click)="onSearch()"></i>
-    <input type="text" placeholder="Search.." name="search" [(ngModel)]="searchText" (keydown.enter)="onSearch()">    
+    <i class="fa fa-search" (click)="onSearch()"></i>
+    <input type="text" placeholder="                                                                             Search Anything.." name="search" [(ngModel)]="searchText" (keydown.enter)="onSearch()">
   </form>
+  </div>
 </div>
 
 
 <div id="mySidenav" class="sidenav" style="width:300px;margin-top:77px;margin-bottom:50px;border-right: 1px solid; border-color: #9e9e9e;" *ngIf = "filterOpen">
     <a href="javascript:void(0)" class="closebtn" (click)="filterOpen=false;closeNav(filterOpen)">&times;</a>
     <br/><br/>
-    <button type="button" class="btn btn-outline-primary" style="margin-left:40px;margin-bottom: 20px;" (click)="onSubmit();" >Apply</button>
-    <button type="button" class="btn btn-outline-primary" style="margin-left:50px;margin-bottom: 20px;" (click)="Initialize();" >Reset</button>
+    <button type="button" class="btn btn btn-success" style="margin-left:40px;margin-bottom: 20px;" (click)="onSubmit();" >Apply</button>
+    <button type="button" class="btn btn btn-secondary" style="margin-left:50px;margin-bottom: 20px;" (click)="Initialize();" >Reset</button>
     <div>
       <a><button (click)="showLanguages = !showLanguages" style="font-size: 0.75rem;margin-right:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showLanguages ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>Language</a>
         <ul class="list-unstyled" *ngIf = "showLanguages">
           <li style="font-size:15px;margin-left:10px" *ngFor="let language of languages">
             <label class="container">{{language.key}}
-              <input type="checkbox" (change)="onLanguageSelect($event)" name ={{language.value}} [checked]="language.status"> 
+              <input type="checkbox" (change)="onLanguageSelect($event)" name ={{language.value}} [checked]="language.status">
               <span class="checkmark"></span>
-            </label>          
-          </li>                
+            </label>
+          </li>
         </ul>
     </div>
     <br/>
@@ -48,10 +68,10 @@
           <ul class="list-unstyled" *ngIf = "showCountries">
             <li style="font-size:15px;margin-left:10px" *ngFor="let country of countries">
               <label class="container">{{country.key}}
-                <input type="checkbox" (change)="onCountrySelect($event)" name ={{country.key}} [checked]="country.status"> 
+                <input type="checkbox" (change)="onCountrySelect($event)" name ={{country.key}} [checked]="country.status">
                 <span class="checkmark"></span>
-              </label>          
-            </li>                
+              </label>
+            </li>
           </ul>
       </div>
     <br/>
@@ -60,9 +80,9 @@
         <ul class="list-unstyled" *ngIf = "showTopics">
           <li style="font-size:17px;margin-left:10px">
             <label class="container">United States
-              <input type="checkbox" [(ngModel)]="selectedUS" (change)="onCheckOfAllUSTopics($event)" name="onCheckOfAllUSTopics"> 
+              <input type="checkbox" [(ngModel)]="selectedUS" (change)="onCheckOfAllUSTopics($event)" name="onCheckOfAllUSTopics">
               <span class="checkmark"></span>
-              <button (click)="showTopicsUS = !showTopicsUS" style="font-size: 0.5rem;margin-left:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showTopicsUS ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>  
+              <button (click)="showTopicsUS = !showTopicsUS" style="font-size: 0.5rem;margin-left:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showTopicsUS ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>
             </label>
           </li>
             <ul class="list-unstyled" *ngIf = "showTopicsUS">
@@ -75,7 +95,7 @@
             </ul>
           <li style="font-size:17px;margin-left:10px">
             <label class="container">India
-              <input type="checkbox" [(ngModel)]="selectedIndia" (change)="onCheckOfAllIndiaTopics($event)" name="onCheckOfAllIndiaTopics"> 
+              <input type="checkbox" [(ngModel)]="selectedIndia" (change)="onCheckOfAllIndiaTopics($event)" name="onCheckOfAllIndiaTopics">
               <span class="checkmark"></span>
               <button (click)="showTopicsIndia = !showTopicsIndia" style="font-size: 0.5rem;margin-left:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showTopicsIndia ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>
             </label>
@@ -120,10 +140,10 @@
         <ul class="list-unstyled" *ngIf = "showSentiments">
             <li style="font-size:15px;margin-left:10px" *ngFor="let Sentiment of sentiments">
               <label class="container">{{Sentiment.key}}
-                <input type="checkbox" (change)="onSentimentSelect($event)" name ={{Sentiment.value}} [checked]="Sentiment.status"> 
+                <input type="checkbox" (change)="onSentimentSelect($event)" name ={{Sentiment.value}} [checked]="Sentiment.status">
                 <span class="checkmark"></span>
               </label>
-            </li>       
+            </li>
         </ul>
     </div><br/>
       <a><button (click)="showHashtags = !showHashtags" style="font-size: 0.75rem;margin-right:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showHashtags ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>Hashtags</a>
@@ -133,8 +153,8 @@
                 <input type="checkbox" (change)="onHashtagSelect($event)" name ={{hashtag.key}} [checked]="hashtag.status">
                 <span class="checkmark"></span>
               </label>
-            </li>       
-        </ul>       
+            </li>
+        </ul>
   </div>
 
 

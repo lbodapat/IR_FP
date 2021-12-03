@@ -94,7 +94,7 @@ export class HomeComponent implements OnInit {
 
     loadData(docs){
         this.tweets = [];
-        //console.log(docs);
+        console.log(docs);
         let tweet = new Tweet();
         for (var i = 0; i < docs.length; i++){
                 let tweet = new Tweet();

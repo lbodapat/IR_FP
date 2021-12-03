@@ -30,12 +30,12 @@ export class TweetService {
     url:string = './assets/json/tweets.json';
 //     searchurl='http://172.31.7.80:9999/getDetails/'
     searchurl='http://localhost:9999/getDetails/'
-    filterurl ='http://172.31.7.80:9999/getFilterDetails/'
-    news_url:string = "http://172.31.7.80:9999/getNewsArticles/";
-    SentimentDetailsurl ='http://172.31.7.80:9999/getSentimentDetails/'
-    poiRepliesUrl='http://172.31.7.80:9999/getSentimentDetails/'
-    poiTweetsUrl= 'http://172.31.7.80:9999/getverifiedSentimentDetails/'
-    getPOIDetails = 'http://172.31.7.80:9999/getPOIDetails/'
+    filterurl ='http://localhost:9999/getFilterDetails/'
+    news_url:string = "http://localhost:9999/getNewsArticles/";
+    SentimentDetailsurl ='http://localhost:9999/getSentimentDetails/'
+    poiRepliesUrl='http://localhost:9999/getSentimentDetails/'
+    poiTweetsUrl= 'http://localhost:9999/getverifiedSentimentDetails/'
+    getPOIDetails = 'http://localhost:9999/getPOIDetails/'
 
 
     private val:any = undefined;

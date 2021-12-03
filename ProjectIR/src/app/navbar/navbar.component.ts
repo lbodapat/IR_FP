@@ -128,7 +128,7 @@ export class NavbarComponent {
         this.checkedHashtags = [];
         if(this.searchText){
             this.obj.query= this.searchText;
-            console.log(this.obj.query);
+            console.log("OBJEDT QUERY",this.obj.query);
         }
         let temp =JSON.stringify(this.obj);
         this.tweetService.setHomeData(this.obj);
@@ -162,9 +162,10 @@ export class NavbarComponent {
      onSubmit(this){
 
         if(this.searchText){
+            console.log('searchText: ',this.searchText)
             this.obj.query= this.searchText;
         }
-        console.log(this.obj)
+        console.log('ABCDS: ',this.obj)
         let temp =JSON.stringify(this.obj);
         this.homeObj = JSON.parse(JSON.stringify(this.obj));
         this.tweetService.setHomeData(this.obj);
