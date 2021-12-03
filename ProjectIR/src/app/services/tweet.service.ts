@@ -20,7 +20,7 @@ const httpOptions = {
     headers: new HttpHeaders({
       'Content-Type':  'application/json',
     'Access-Control-Allow-Origin':'true'
-     
+
     })
   };
 
@@ -28,13 +28,13 @@ let head = new Headers;
 @Injectable()
 export class TweetService {
     url:string = './assets/json/tweets.json';
-    searchurl='http://127.0.0.1:5000/getDetails/'
-    filterurl ='http://127.0.0.1:5000/getFilterDetails/'
-    news_url:string = "http://127.0.0.1:5000/getNewsArticles/";
-    SentimentDetailsurl ='http://127.0.0.1:5000/getSentimentDetails/'
-    poiRepliesUrl='http://127.0.0.1:5000/getSentimentDetails/'
-    poiTweetsUrl= 'http://127.0.0.1:5000/getverifiedSentimentDetails/'
-    getPOIDetails = 'http://127.0.0.1:5000/getPOIDetails/'
+    searchurl='http://3.17.156.95:8983/getDetails/'
+    filterurl ='http://3.17.156.95:8983/getFilterDetails/'
+    news_url:string = "http://3.17.156.95:8983/getNewsArticles/";
+    SentimentDetailsurl ='http://3.17.156.95:8983/getSentimentDetails/'
+    poiRepliesUrl='http://3.17.156.95:8983/getSentimentDetails/'
+    poiTweetsUrl= 'http://3.17.156.95:8983/getverifiedSentimentDetails/'
+    getPOIDetails = 'http://3.17.156.95:8983/getPOIDetails/'
 
     // searchurl='http://13.58.175.62/getDetails/'
     // filterurl ='http://13.58.175.62/getFilterDetails/'
@@ -46,9 +46,9 @@ export class TweetService {
 
 
     private val:any = undefined;
-    private value = new Subject<any>(); 
+    private value = new Subject<any>();
     value$ = this.value.asObservable();
-  
+
     private filterOpen = new Subject<boolean>();
     filterOpen$ = this.filterOpen.asObservable();
 
@@ -58,7 +58,7 @@ export class TweetService {
 
      private homeReturnval = new Subject<any>();
     homeReturnval$ = this.homeReturnval.asObservable();
-    
+
    getTweets():Observable<any>{
        return this.http.get(this.url);
    }
@@ -67,7 +67,7 @@ export class TweetService {
         return this.http.post(this.searchurl, data, httpOptions)
       }
 
-   postFilterData(data:any):Observable<any>{   
+   postFilterData(data:any):Observable<any>{
     return this.http.post(this.filterurl, data, httpOptions)
 }
 
@@ -87,11 +87,11 @@ addComment(body: any): Observable<any> {
             console.log("1");
             return res;
         }
-    
+
 );
-   return;     
-} 
-   
+   return;
+}
+
 setData(val:any){
     this.val = val;
 }
@@ -107,23 +107,23 @@ setFilterStatus(val:boolean){
 setHomeData(val:any){
     this.value.next(val);
 }
-       
-getSentimentDetails(data:any):Observable<any>{   
+
+getSentimentDetails(data:any):Observable<any>{
     return this.http.post(this.SentimentDetailsurl, data, httpOptions)
-}  
-    
-getpoiRepliesUrl(data:any):Observable<any>{   
+}
+
+getpoiRepliesUrl(data:any):Observable<any>{
     return this.http.post(this.poiRepliesUrl, data, httpOptions)
 }
-getpoiTweetsUrl(data:any):Observable<any>{   
+getpoiTweetsUrl(data:any):Observable<any>{
     return this.http.post(this.poiTweetsUrl, data, httpOptions)
 }
-    
+
 setHomeReturnData(val:any){
     this.homeReturnval.next(val);
 }
 
-getpoiDetailsUrl(data:any):Observable<any>{   
+getpoiDetailsUrl(data:any):Observable<any>{
     return this.http.post(this.getPOIDetails, data, httpOptions)
 }
 }

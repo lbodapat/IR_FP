@@ -348,6 +348,26 @@ def getNewsArticles():
         # response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
+
+#######################
+
+def query_solr(query):
+    print("--------------------------")
+    print("query before querying solr:::::: ",query)
+    print("--------------------------")
+    # http://ec2-3-17-156-95.us-east-2.compute.amazonaws.com:8983/solr/#/IRF21P1/query?q=tweet_text:%20Modi%20Covid&q.op=OR
+    if True:
+        # inurl = 'http://localhost:8983/solr/' + 'IRF21P1' + '/select?fl=id%2Cscore&q=text_en%3A(' + query + ')%20or%20text_de%3A(' + query + ')%20or%20text_ru%3A(' + query + ')' + '&rows=20&wt=json'
+        inurl='http://localhost:8983/solr/' + 'IRF21P1' +'/query?q=tweet_text:(' + query + ')'+ '&rows=20&wt=json'
+
+    print("-----------------------------------------------URL-------------------------",inurl)
+    query_conn= requests.get(inurl)
+    return query_conn.json()
+
+@app.route("/getQueryResult/" ,methods=['POST'])
+def getDetails():
+
+
 def read_config(i):
     data = []
     with open("../data/JSON/POI/poi"+str(i)+".json") as f:
