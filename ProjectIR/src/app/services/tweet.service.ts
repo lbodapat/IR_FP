@@ -36,14 +36,6 @@ export class TweetService {
     poiTweetsUrl= 'http://3.17.156.95:8983/getverifiedSentimentDetails/'
     getPOIDetails = 'http://3.17.156.95:8983/getPOIDetails/'
 
-    // searchurl='http://13.58.175.62/getDetails/'
-    // filterurl ='http://13.58.175.62/getFilterDetails/'
-    // news_url:string = "http://13.58.175.62/getNewsArticles/";
-    // SentimentDetailsurl ='http://13.58.175.62/getSentimentDetails/'
-    // poiRepliesUrl='http://13.58.175.62/getSentimentDetails/'
-    // poiTweetsUrl= 'http://13.58.175.62/getverifiedSentimentDetails/'
-    // getPOIDetails = 'http://13.58.175.62/getPOIDetails/'
-
 
     private val:any = undefined;
     private value = new Subject<any>();

@@ -364,10 +364,6 @@ def query_solr(query):
     query_conn= requests.get(inurl)
     return query_conn.json()
 
-@app.route("/getQueryResult/" ,methods=['POST'])
-def getDetails():
-
-
 def read_config(i):
     data = []
     with open("../data/JSON/POI/poi"+str(i)+".json") as f:
