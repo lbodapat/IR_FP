@@ -107,7 +107,7 @@ def getDetails():
            print("Enter")
            modelquery=data["query"].strip()[0]
         modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://18.222.170.193:8983/solr/PROJ4_2/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&+wt=json&rows=1000&fl=id%2Ctweet_text%2Ctweet_lang%2Csentiment%2Cpoi_name%2Cretweet_count%2Cuser.followers_count%2Ccountry%2Cverified%2Ccreated_at%2Cfavorite_count%2Cuser.name%2Cuser.screen_name%2Cuser.profile_image_url_https%2Ctopic%2Cdateformatted%2Ctranslated&facet.field=hashtags&f.hashtags.facet.limit=10&facet=on'+filterquery
+        inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&+wt=json&rows=1000&fl=id%2Ctweet_text%2Ctweet_lang%2Csentiment%2Cpoi_name%2Cretweet_count%2Cuser.followers_count%2Ccountry%2Cverified%2Ccreated_at%2Cfavorite_count%2Cuser.name%2Cuser.screen_name%2Cuser.profile_image_url_https%2Ctopic%2Cdateformatted%2Ctranslated&facet.field=hashtags&f.hashtags.facet.limit=10&facet=on'+filterquery
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
         print("1")
@@ -139,7 +139,7 @@ def getFilterDetails():
         data=request.json
         filterquery=getFilters(data,"user.screen_name")
         modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://18.222.170.193:8983/solr/PROJ4_2/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&+wt=json&facet.field=tweet_lang&facet.field=sentiment&facet.field=country&facet.field=hashtags&f.hashtags.facet.limit=10&facet.field=verified&f.tweet_lang.facet.limit=3&facet.field=topic_str&facet=on&rows=0' +filterquery
+        inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&+wt=json&facet.field=tweet_lang&facet.field=sentiment&facet.field=country&facet.field=hashtags&f.hashtags.facet.limit=10&facet.field=verified&f.tweet_lang.facet.limit=3&facet.field=topic_str&facet=on&rows=0' +filterquery
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
         docs = JSON.loads(data.decode('utf-8'))['facet_counts']['facet_fields']
@@ -160,7 +160,7 @@ def getSentimentDetails():
         data=request.json
         filterquery=getFilters(data,"user.screen_name")
         modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://18.222.170.193:8983/solr/PROJ4_2/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&facet=on&rows=0'+ '&json.facet=%20{%20month_sentiment:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&json.facet=%20{%20country_sentiment:{%20type:%20terms,%20field:%20country,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&json.facet=%20{%20poi_sentiment:{%20type:%20terms,%20field:%20poi_name,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&json.facet=%20{%20country_hashtags:{%20type:%20terms,%20field:%20country,%20facet:{%20hashtagcount:%20{%20type%20:%20terms,%20field:%20hashtags,%20limit%20:%2010%20}%20}%20}%20}' +filterquery
+        inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&facet=on&rows=0'+ '&json.facet=%20{%20month_sentiment:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&json.facet=%20{%20country_sentiment:{%20type:%20terms,%20field:%20country,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&json.facet=%20{%20poi_sentiment:{%20type:%20terms,%20field:%20poi_name,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&json.facet=%20{%20country_hashtags:{%20type:%20terms,%20field:%20country,%20facet:{%20hashtagcount:%20{%20type%20:%20terms,%20field:%20hashtags,%20limit%20:%2010%20}%20}%20}%20}' +filterquery
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
         docs = JSON.loads(data.decode('utf-8'))['facets']['month_sentiment']['buckets']
@@ -241,7 +241,7 @@ def getverifiedSentimentDetails():
         data=request.json
         filterquery=getFilters(data,"user.screen_name")
         modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://18.222.170.193:8983/solr/PROJ4_2/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=verified%3Atrue&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&facet=on&rows=0'+ '&json.facet=%20{%20month_sentiment:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}' +filterquery
+        inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=verified%3Atrue&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&facet=on&rows=0'+ '&json.facet=%20{%20month_sentiment:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}' +filterquery
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
         docs = JSON.loads(data.decode('utf-8'))['facets']['month_sentiment']['buckets']
@@ -283,7 +283,7 @@ def getPOIDetails():
         data=request.json
         filterquery=getFilters(data,"poi_name")
         modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://18.222.170.193:8983/solr/PROJ4_2/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&json.facet=%20{%20poi_sentimentss:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&facet=on&rows=0' +filterquery
+        inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&json.facet=%20{%20poi_sentimentss:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&facet=on&rows=0' +filterquery
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
         poidocs= JSON.loads(data.decode('utf-8'))['facets']['poi_sentimentss']['buckets']
