@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
         keyboard : true,
 
       };
-    
+
 
       poiNames = [{key:'Barkha Dutt',value:'BDUTT'},
                 {key:'Rajdeep Sardesai',value:'sardesairajdeep'},
@@ -54,10 +54,10 @@ export class HomeComponent implements OnInit {
                 {key:'Dilma Rousseff',value:'dilmabr'},
                 {key:'Gleisi Hoffmann',value:'gleisi'}
                 ];
-    
-    constructor(private tweetService: TweetService,private modalService: NgbModal) { 
+
+    constructor(private tweetService: TweetService,private modalService: NgbModal) {
         this.tweetService.value$.subscribe(obj=>
-            {  
+            {
                 this.tweets = [];
                 this.showSpinner = true;
                 this.homeObj = obj;
@@ -70,12 +70,12 @@ export class HomeComponent implements OnInit {
                     this.displayedResults = 1000;
                 }
                 this.docs = tweets.docs;
-                //console.log(this.docs);
+                console.log(this.docs);
                 setTimeout(this.loadData(this.docs) , 100);
                 this.showSpinner = false;
             });
-                
-                
+
+
             });
 
         this.tweetService.filterOpen$.subscribe(status=>{
@@ -83,52 +83,38 @@ export class HomeComponent implements OnInit {
         })
     }
 
-    ngOnInit() {        
+    ngOnInit() {
         this.tweetService.homeReturnval$.subscribe(tweets=>{
             this.showSpinner = true;
             this.tweets = tweets[0];
             this.displayedResults = tweets[1];
             this.docsRetrieved = tweets[2];
-            this.showSpinner = false;});                
+            this.showSpinner = false;});
     }
-    
+
     loadData(docs){
         this.tweets = [];
         //console.log(docs);
         let tweet = new Tweet();
         for (var i = 0; i < docs.length; i++){
                 let tweet = new Tweet();
-                tweet.country =  docs[i].country[0];
-                tweet.created_at = docs[0].created_at[0].substr(0,10)+" "+docs[0].created_at[0].substr(26,4);
-                tweet.favorite_count  =  docs[i].favorite_count[0];
-                tweet.followers  =  docs[i].followers[0];
-                tweet.id  =  docs[i].id;
-                tweet.poi_name = docs[i].poi_name[0];
-                tweet.profileimage = docs[i].profileimage[0];
-                tweet.retweet_count = docs[i].retweet_count[0];
-                tweet.screen_name  = docs[i].screenname[0];
-                tweet.sentiment = docs[i].sentiment[0];
-                tweet.topic  = docs[i].topic;
-                tweet.tweet_lang = docs[i].tweet_lang[0];
-                tweet.tweet_text  = docs[i].tweet_text[0];
-                tweet.username = docs[i].username[0];
-                tweet.verified = docs[i].verified[0];
-                tweet.formatted_date = docs[i].dateformatted[0].substr(0,10);
-                if(docs[i].hasOwnProperty('translated')){
-                    tweet.translatedText = docs[i].translated[0];
-                    tweet.translationExists = true;
-                }
+                tweet.poi_name =  docs[i].poi_name;
+                tweet.country = docs[i].country;
+                tweet.poi_id  =  docs[i].poi_id;
+                tweet.verified=docs[i].verified
+                tweet.tweet_lang  =  docs[i].tweet_lang;
+                tweet.tweet_text  =  docs[i].tweet_text;
+                tweet.tweet_date = docs[i].tweet_date;
+                tweet.tweet_urls = docs[i].tweet_urls;
+                tweet.id = docs[i].id;
                 this.tweets.push(tweet)
                             }
         this.tweetService.setHomeReturnData([this.tweets,this.displayedResults,this.docsRetrieved]);
         //console.log(this.tweets);
     }
-        
-        
-    
 
-    onTweetClick(screenname,id){        
-        let url = "https://twitter.com/" + screenname + "/status/" + id; 
+    onTweetClick(screenname,id){
+        let url = "https://twitter.com/" + screenname + "/status/" + id;
         window.open(url, "_blank");
     }
 
@@ -142,8 +128,8 @@ export class HomeComponent implements OnInit {
         else if (sentiment == 'Negative'){
             return {"color":"red"};
         }
-      } 
-    
+      }
+
     onNews(content,screenname,tweet_date){
         let newDate = new Date(tweet_date);
         for (var i = 0; i<this.poiNames.length; i++){
@@ -158,7 +144,7 @@ export class HomeComponent implements OnInit {
                 break;
             }
         }
-        
+
     }
 
     openArticle(url){

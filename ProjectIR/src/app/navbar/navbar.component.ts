@@ -131,7 +131,6 @@ export class NavbarComponent {
             console.log(this.obj.query);
         }
         let temp =JSON.stringify(this.obj);
-        console.log('TEMP: '+temp)
         this.tweetService.setHomeData(this.obj);
         this.tweetService.postData(temp).subscribe(a=> console.log(a));
         this.tweetService.setData(this.obj);

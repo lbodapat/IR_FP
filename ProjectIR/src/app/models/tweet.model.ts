@@ -1,21 +1,11 @@
 export class Tweet {
-    country:string[];
-    created_at:string;
-    favorite_count:number[];
-    followers:number[];
+    poi_name:string;
+    country:string;
+    poi_id:number;
     id:string;
-    poi_name: string[];
-    profileimage:string[];
-    retweet_count:number[];
-    screen_name:string[];
-    sentiment: string[];
-    topic:string;
-    tweet_lang:string[];
-    tweet_text:string[];
-    username:string[];
-    verified:boolean[]
-    formatted_date :string[];
-    translatedText: string;
-    translationExists: boolean = false;
-    showTranslation:boolean = false;
+    tweet_lang:string;
+    tweet_text:string;
+    verified:boolean
+    tweet_date :string;
+    tweet_urls: string;
     }

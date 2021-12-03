@@ -28,7 +28,8 @@ let head = new Headers;
 @Injectable()
 export class TweetService {
     url:string = './assets/json/tweets.json';
-    searchurl='http://172.31.7.80:9999/getDetails/'
+//     searchurl='http://172.31.7.80:9999/getDetails/'
+    searchurl='http://localhost:9999/getDetails/'
     filterurl ='http://172.31.7.80:9999/getFilterDetails/'
     news_url:string = "http://172.31.7.80:9999/getNewsArticles/";
     SentimentDetailsurl ='http://172.31.7.80:9999/getSentimentDetails/'
