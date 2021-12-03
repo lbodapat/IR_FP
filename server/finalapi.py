@@ -107,17 +107,22 @@ def getDetails():
            print("Enter")
            modelquery=data["query"].strip()[0]
         modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&+wt=json&rows=1000&fl=id%2Ctweet_text%2Ctweet_lang%2Csentiment%2Cpoi_name%2Cretweet_count%2Cuser.followers_count%2Ccountry%2Cverified%2Ccreated_at%2Cfavorite_count%2Cuser.name%2Cuser.screen_name%2Cuser.profile_image_url_https%2Ctopic%2Cdateformatted%2Ctranslated&facet.field=hashtags&f.hashtags.facet.limit=10&facet=on'+filterquery
+        # inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&+wt=json&rows=1000&fl=id%2Ctweet_text%2Ctweet_lang%2Csentiment%2Cpoi_name%2Cretweet_count%2Cuser.followers_count%2Ccountry%2Cverified%2Ccreated_at%2Cfavorite_count%2Cuser.name%2Cuser.screen_name%2Cuser.profile_image_url_https%2Ctopic%2Cdateformatted%2Ctranslated&facet.field=hashtags&f.hashtags.facet.limit=10&facet=on'+filterquery
+        inurl='http://3.17.156.95:8983/solr/#/IRF21P1/query?q=tweet_text:%20Modi%20Covid&q.op=OR'
+
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
-        print("1")
-        docs = JSON.loads(data.decode('utf-8'))['response']
+        print("1: ",data)
+        res = JSON.loads(data.decode('utf-8'))
+        print('Response:::::::::; ',res)
+        docs=res['response']
         print("2")
         for d in docs['docs']:
-            d['username']=d['user.name']
-            d['screenname']=d['user.screen_name']
-            d['followers']=d['user.followers_count']
-            d['profileimage']=d['user.profile_image_url_https'] if 'user.profile_image_url_https' in d else ''
+            d['username']=d['poi_name']
+            d['screenname']=d['poi_name']
+            d['followers']=d['poi_id']
+            # d['profileimage']=d['user.profile_image_url_https'] if 'user.profile_image_url_https' in d else ''
+            d['profileimage']= ''
             d['topic']=''
         print("3")
         docs["status"]= JSON.loads(data.decode('utf-8'))['responseHeader']['status']

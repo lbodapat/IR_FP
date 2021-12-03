@@ -20,7 +20,7 @@ export class NavbarComponent {
     selectedBrazilTopics =[];
     selectedIndiaTopics=[];
     result :any;
-    searchText : string = '';   
+    searchText : string = '';
     from_model;
     to_model;
     filterOpen = false;
@@ -58,7 +58,7 @@ export class NavbarComponent {
                 {key:'Rajdeep Sardesai',value:'sardesairajdeep',status:false},
                 {key:'Sachin Pilot', value:'SachinPilot',status:false},
                 {key:'Narendra Modi',value:'narendramodi',status:false},
-                {key:'Piyush Goyal',value:'PiyushGoyal',status:false},   
+                {key:'Piyush Goyal',value:'PiyushGoyal',status:false},
                 {key:'Bernie Sanders',value:'BernieSanders',status:false},
                 {key:'Cory Booker',value:'CoryBooker',status:false},
                 {key:'Kamala Harris',value:'KamalaHarris',status:false},
@@ -85,14 +85,14 @@ export class NavbarComponent {
     checkedHashtags = [];
 
         constructor(private tweetService: TweetService, private http: HttpClient,private router: Router) {}
-        ngOnInit() {        
-        }    
+        ngOnInit() {
+        }
 
-        openNav(filterOpen) {           
+        openNav(filterOpen) {
             this.tweetService.setFilterStatus(filterOpen);
         }
-  
-    closeNav(filterOpen) {        
+
+    closeNav(filterOpen) {
         this.tweetService.setFilterStatus(filterOpen);
     }
 
@@ -100,7 +100,7 @@ export class NavbarComponent {
         this.selectedUS = false;
         this.selectedIndia  =false;
         this.selectedBrazil = false;
-        
+
         for (var i = 0; i < this.languages.length; i++) {
             this.languages[i].status = false;
         }
@@ -119,7 +119,7 @@ export class NavbarComponent {
         this.checkedHashtags = [];
         this.obj = new Filter();
         }
-   
+
      onSearch(this){
 		this.obj.hashtags = [];
 		for (var i = 0; i < this.hashtags.length; i++) {
@@ -128,8 +128,10 @@ export class NavbarComponent {
         this.checkedHashtags = [];
         if(this.searchText){
             this.obj.query= this.searchText;
+            console.log(this.obj.query);
         }
         let temp =JSON.stringify(this.obj);
+        console.log('TEMP: '+temp)
         this.tweetService.setHomeData(this.obj);
         this.tweetService.postData(temp).subscribe(a=> console.log(a));
         this.tweetService.setData(this.obj);
@@ -155,11 +157,11 @@ export class NavbarComponent {
                     }
                 }
             }
-            
+
          }
      //Form Submit
      onSubmit(this){
-         
+
         if(this.searchText){
             this.obj.query= this.searchText;
         }
@@ -174,7 +176,7 @@ export class NavbarComponent {
         })
       }
 
-      onLanguageSelect(event){ 
+      onLanguageSelect(event){
         for(var i = 0;i < this.languages.length; i++){
             if(event.target.name == this.languages[i].value){
                   this.languages[i].status = !this.languages[i].status;
@@ -187,7 +189,7 @@ export class NavbarComponent {
               else{
                 this.obj.languages.splice( this.obj.languages.indexOf(event.target.name),1);
               }
-          }  
+          }
       }
 
       onCountrySelect(event){
@@ -203,15 +205,15 @@ export class NavbarComponent {
               else{
                 this.obj.countries.splice( this.obj.countries.indexOf(event.target.name),1);
               }
-          }    
+          }
       }
         //For individual US Topic
       onCheckUS(event){
         let index;
-        
+
         if(this.obj.USATopics && this.obj.countries &&this.obj.countries.length >=0 && this.obj.USATopics.length >=0 ){
              index =this.obj.USATopics.indexOf(event.target.name);
-            
+
         }
              if (index ==-1){
                 if (!this.obj.countries.includes("USA")){
@@ -224,7 +226,7 @@ export class NavbarComponent {
                     this.selectedUS = false;
                 }
               }
-                   
+
       }
       onCheckBrazil(event){
         let index;
@@ -238,28 +240,28 @@ export class NavbarComponent {
                 }
                 this.obj.BrazilTopics.push(event.target.name);
               }
-              else{ 
-                this.obj.BrazilTopics.splice(index,1); 
+              else{
+                this.obj.BrazilTopics.splice(index,1);
                 if(this.obj.BrazilTopics.length == 0){
                     this.obj.countries.splice(this.obj.countries.indexOf("Brazil"),1);
                     this.selectedBrazil = false;
                 }
             }
-            
-                   
+
+
       }
       onCheckIndia(event){
         let index;
-        
+
         if(this.obj.IndiaTopics && this.obj.countries &&this.obj.countries.length >=0 && this.obj.IndiaTopics.length >=0 ){
              index =this.obj.IndiaTopics.indexOf(event.target.name);
-            
+
         }
              if (index ==-1){
                 if (!this.obj.countries.includes("India")){
                     this.obj.countries.push('India');
                 }
-                
+
                 this.obj.IndiaTopics.push(event.target.name);
               }
               else{
@@ -269,19 +271,19 @@ export class NavbarComponent {
                     this.selectedIndia = false;
                 }
               }
-                   
+
       }
     onCheckOfAllUSTopics(event){
-        
+
          if(this.obj.USATopics.length <= this.topics.US.length && this.obj.USATopics.length > 0)
-        {       
+        {
             this.obj.USATopics =[]
             //let index =this.obj.countries.indexOf("USA");
             //this.obj.countries.splice(index,1);
         }
         else
         {
-        this.obj.USATopics = JSON.parse(JSON.stringify(this.topics.US));   
+        this.obj.USATopics = JSON.parse(JSON.stringify(this.topics.US));
         //this.obj.countries.push('USA');
          }
 
@@ -294,7 +296,7 @@ export class NavbarComponent {
        }
        else
        {
-        this.obj.BrazilTopics = JSON.parse(JSON.stringify(this.topics.Brazil));   
+        this.obj.BrazilTopics = JSON.parse(JSON.stringify(this.topics.Brazil));
         //this.obj.countries.push('Brazil');
        }
 
@@ -307,7 +309,7 @@ export class NavbarComponent {
    }
    else
    {
-    this.obj.IndiaTopics = JSON.parse(JSON.stringify(this.topics.India)); 
+    this.obj.IndiaTopics = JSON.parse(JSON.stringify(this.topics.India));
     //this.obj.countries.push('India');
     }
 
@@ -322,17 +324,17 @@ onPoiName(event){
         }
     }
     let index;
-    
+
     if(this.obj.POIUsername &&  this.obj.POIUsername.length >=0 ){
          index =this.obj.POIUsername.indexOf(event.target.name);
-        
+
     }
          if (index ==-1){
             this.obj.POIUsername.push(event.target.name);
           }
           else{ this.obj.POIUsername.splice(index,1);
           }
-               
+
   }
 
 
@@ -342,7 +344,7 @@ onPoiName(event){
         if(event.target.name == this.sentiments[i].value){
               this.sentiments[i].status = !this.sentiments[i].status;
         }
-    }   
+    }
     if(this.obj.sentiments && this.obj.sentiments.length >=0){
       if (this.obj.sentiments.indexOf(event.target.name)==-1){
           this.obj.sentiments.push(event.target.name);
@@ -350,8 +352,8 @@ onPoiName(event){
         else{
           this.obj.sentiments.splice( this.obj.sentiments.indexOf(event.target.name),1);
         }
-    }       
-  
+    }
+
 }
 onHashtagSelect(event){
     for(var i = 0;i < this.hashtags.length; i++){
@@ -372,13 +374,13 @@ onHashtagSelect(event){
     }
 }
 
-openHome(){        
+openHome(){
     this.tweetService.setHomeData(this.homeObj);
-    this.tweetService.setFilterStatus(this.filterOpen) 
+    this.tweetService.setFilterStatus(this.filterOpen)
 }
 
-openChart(){        
-    this.tweetService.setHomeData(this.homeObj); 
+openChart(){
+    this.tweetService.setHomeData(this.homeObj);
 }
 
 }
