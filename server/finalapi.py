@@ -364,21 +364,20 @@ def run_keywords():
             i=i+1
 
 def index_poi(indexer):
-    #i=1
-    for i in range(2):
-        datas=read_config(i+1)
-        print("LEN: ",len(datas))
+    i=1
+    for j in range(2):
+        datas=read_config(i)
         for data in datas:
+
             data['tweet_id']=data['id']
             tweet = api.search(q=data['id'])
-            for tw in tweet:
-                print(tw)
-                #data['fav_count'] =
-                # data['profile_background_image_url'] =tw._json['user']['profile_background_image_url']
-                # data['retweet_count'] = tw._json['retweet_count']
-                # data['followers_count'] = tw._json['user']['followers_count']
-                # indexer.create_documents(data)
-        #i+=1
+            print(tweet[0]._json['favorite_count'])
+            #data['fav_count'] =
+            data['profile_background_image_url'] = tweet[0]._json['user']['profile_background_image_url']
+            data['retweet_count'] = tweet[0]._json['retweet_count']
+            data['followers_count'] = tweet[0]._json['user']['followers_count']
+            indexer.create_documents(data)
+        i+=1
 
 def index(indexer):
     index_poi(indexer)
