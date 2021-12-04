@@ -385,4 +385,4 @@ def index(indexer):
 if __name__ == "__main__":
     indexer = Indexer()
     index(indexer)
-    app.run(host = "0.0.0.0",port = 9999)
+    # app.run(host = "0.0.0.0",port = 9999)
