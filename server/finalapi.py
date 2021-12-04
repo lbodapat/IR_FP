@@ -7,8 +7,9 @@ except ImportError:
     import simplejson as JSON
 
 import urllib.request
+import tweepy
 from flask import Flask,request,jsonify
-from flask_cors import CORS	
+#from flask_cors import CORS
 from datetime import datetime, timedelta
 from io import StringIO
 from pandas import DataFrame
@@ -20,7 +21,13 @@ app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
 # cors = CORS(app, resources={r"*": {"origins": ""}})
-CORS(app, resources=r'*', headers='Content-Type')
+#CORS(app, resources=r'*', headers='Content-Type')
+
+auth = tweepy.OAuthHandler("SvX1COY5LDLBSXgT0zFZ8Q5T3",
+                                "25urRNXrihwPw9Z6kd1FnWj7KQasqG0u0GrHhznoH9bqVfCyU3")
+auth.set_access_token("1433793212263682071-FsDVpYfUpf5Hd1nQYzkMEDOuJPvOO2",
+                           "veLak9EPx6EyxVlM4w0LsEDKgPLejEPXkkivJs2DlM0Ss")
+api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 def getFilters(data,user):
     finalquerystr=""
@@ -354,18 +361,25 @@ def run_keywords():
             i=i+1
 
 def index_poi(indexer):
-    i=1
-    for j in range(1):
-        datas=read_config(i)
+    #i=1
+    for i in range(2):
+        datas=read_config(i+1)
         for data in datas:
             data['tweet_id']=data['id']
+            tweet = api.search(q=data['id'])
+            print(tweet[0]._json['favorite_count'])
+            #data['fav_count'] = 
+            data['profile_background_image_url'] = tweet[0]._json['user']['profile_background_image_url']
+            data['retweet_count'] = tweet[0]._json['retweet_count']
+            data['followers_count'] = tweet[0]._json['user']['followers_count']
             indexer.create_documents(data)
-        i+=1
+        #i+=1
 
 def index(indexer):
     index_poi(indexer)
 
+
 if __name__ == "__main__":
-    # indexer = Indexer()
-    # index(indexer)
-    app.run(host = "0.0.0.0",port = 9999)
+    indexer = Indexer()
+    index(indexer)
+    # app.run(host = "0.0.0.0",port = 9999)
