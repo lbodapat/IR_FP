@@ -6,7 +6,7 @@ import requests
 
 
 CORE_NAME = "IRF21P4"
-AWS_IP = "localhost"
+AWS_IP = "3.14.126.14"
 
 
 # [CAUTION] :: Run this script once, i.e. during core creation
@@ -88,19 +88,19 @@ class Indexer:
                     "name": "text_en",
                     "type": "text_en",
                     "multiValued": False,
-		    "indexed": True
+                    "indexed": True
                 },
                 {
                     "name": "text_hi",
                     "type": "text_hi",
                     "multiValued": False,
-		    "indexed": True
+                    "indexed": True
                 },
                 {
                     "name": "text_es",
                     "type": "text_es",
                     "multiValued": False,
-		    "indexed": True
+                    "indexed": True
                 },
                 {
                     "name": "hashtags",
@@ -133,6 +133,11 @@ class Indexer:
                     "multiValued": True
                 },
                 {
+                    "name": "favourite_count",
+                    "type": "plong",
+                    "multiValued": False
+                },
+                {
                     "name": "followers_count",
                     "type": "plong",
                     "multiValued": False
@@ -146,15 +151,9 @@ class Indexer:
                     "name": "profile_background_image_url",
                     "type": "string",
                     "multiValued": False
-                },
-                {
-                    "name": "fav_count",
-                    "type": "plong",
-                    "multiValued": False
                 }
             ]
         }
-        
         print(requests.post(self.solr_url + CORE_NAME + "/schema", json=data).json())
 
 

@@ -10,7 +10,6 @@ import urllib.request
 import tweepy
 from flask_cors import CORS
 from flask import Flask,request,jsonify
-#from flask_cors import CORS
 from datetime import datetime, timedelta
 from io import StringIO
 from pandas import DataFrame
@@ -24,10 +23,13 @@ app.config['JSON_SORT_KEYS'] = False
 # cors = CORS(app, resources={r"*": {"origins": ""}})
 CORS(app, resources=r'*', headers='Content-Type')
 
-auth = tweepy.OAuthHandler("SvX1COY5LDLBSXgT0zFZ8Q5T3",
-                                "25urRNXrihwPw9Z6kd1FnWj7KQasqG0u0GrHhznoH9bqVfCyU3")
-auth.set_access_token("1433793212263682071-FsDVpYfUpf5Hd1nQYzkMEDOuJPvOO2",
-                           "veLak9EPx6EyxVlM4w0LsEDKgPLejEPXkkivJs2DlM0Ss")
+    # self.auth = tweepy.OAuthHandler("UFKPrZYXM1K4d7ePghFdSRS45", "9bQKv3CrRehpY0hUTM3eZ9DnbaRr8xEjBPqQdXQWVSmp6rD6Y3")
+    # self.auth.set_access_token("1432544818358538241-fLcn8NmPWrtjUNTRZlHPA4bN4rAJ4f", "hRlaOyH3Mw1AY10luh2zlM74X0l6uH2ihGq85o0z4uC2Z")
+
+auth = tweepy.OAuthHandler("UFKPrZYXM1K4d7ePghFdSRS45",
+                                "9bQKv3CrRehpY0hUTM3eZ9DnbaRr8xEjBPqQdXQWVSmp6rD6Y3")
+auth.set_access_token("1432544818358538241-fLcn8NmPWrtjUNTRZlHPA4bN4rAJ4f",
+                           "hRlaOyH3Mw1AY10luh2zlM74X0l6uH2ihGq85o0z4uC2Z")
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 def getFilters(data,user):
@@ -364,26 +366,25 @@ def run_keywords():
             i=i+1
 
 def index_poi(indexer):
-    i=1
-    for j in range(2):
+    for i in range(3,5):
         datas=read_config(i)
         for data in datas:
             data['tweet_id']=data['id']
             tweets = api.search(q=data['id'])
             for tweet in tweets:
-                print(dir(tweet))
-                data['fav_count'] =tweet._json['favorite_count']
-                data['profile_background_image_url'] = tweet._json['user']['profile_background_image_url']
+                data['fav_count'] = tweet._json['favorite_count']
+                data['profile_image_url_https'] = tweet._json['user']['profile_image_url_https']
                 data['retweet_count'] = tweet._json['retweet_count']
                 data['followers_count'] = tweet._json['user']['followers_count']
+                data['media_url'] = tweet._json['media']['media_url_https']
+                data['screen_name'] = tweet._json['user']['screen_name']
             indexer.create_documents(data)
-        i+=1
 
 def index(indexer):
     index_poi(indexer)
 
 
 if __name__ == "__main__":
-    indexer = Indexer()
-    index(indexer)
-    # app.run(host = "0.0.0.0",port = 9999)
+    # indexer = Indexer()
+    # index(indexer)
+    app.run(host = "0.0.0.0",port = 9999)
