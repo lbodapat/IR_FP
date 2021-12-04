@@ -148,7 +148,22 @@ class Indexer:
                     "multiValued": False
                 },
                 {
-                    "name": "profile_background_image_url",
+                    "name": "profile_image_url_https",
+                    "type": "string",
+                    "multiValued": False
+                },
+                {
+                    "name": "favorite_count",
+                    "type": "plong",
+                    "multiValued": False
+                },
+                {
+                    "name": "media_url",
+                    "type": "string",
+                    "multiValued": False
+                },
+                {
+                    "name": "screen_name",
                     "type": "string",
                     "multiValued": False
                 }
@@ -159,6 +174,9 @@ class Indexer:
 
 if __name__ == "__main__":
     print("Indexer")
+    # i = Indexer()
+    # i.do_initial_setup()
+    # i.add_fields()
     # i = Indexer()
     # i.do_initial_setup()
     # i.add_fields()
