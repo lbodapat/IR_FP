@@ -368,14 +368,14 @@ def index_poi(indexer):
     for j in range(2):
         datas=read_config(i)
         for data in datas:
-
             data['tweet_id']=data['id']
-            tweet = api.search(q=data['id'])
-            print(tweet[0]._json['favorite_count'])
-            #data['fav_count'] =
-            data['profile_background_image_url'] = tweet[0]._json['user']['profile_background_image_url']
-            data['retweet_count'] = tweet[0]._json['retweet_count']
-            data['followers_count'] = tweet[0]._json['user']['followers_count']
+            tweets = api.search(q=data['id'])
+            for tweet in tweets:
+                print(dir(tweet))
+                #data['fav_count'] =
+                data['profile_background_image_url'] = tweet._json['user']['profile_background_image_url']
+                data['retweet_count'] = tweet._json['retweet_count']
+                data['followers_count'] = tweet._json['user']['followers_count']
             indexer.create_documents(data)
         i+=1
 
