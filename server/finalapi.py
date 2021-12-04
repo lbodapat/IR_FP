@@ -8,6 +8,7 @@ except ImportError:
 
 import urllib.request
 import tweepy
+from flask_cors import CORS
 from flask import Flask,request,jsonify
 #from flask_cors import CORS
 from datetime import datetime, timedelta
@@ -21,7 +22,7 @@ app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
 # cors = CORS(app, resources={r"*": {"origins": ""}})
-#CORS(app, resources=r'*', headers='Content-Type')
+CORS(app, resources=r'*', headers='Content-Type')
 
 auth = tweepy.OAuthHandler("SvX1COY5LDLBSXgT0zFZ8Q5T3",
                                 "25urRNXrihwPw9Z6kd1FnWj7KQasqG0u0GrHhznoH9bqVfCyU3")
@@ -384,4 +385,4 @@ def index(indexer):
 if __name__ == "__main__":
     indexer = Indexer()
     index(indexer)
-    # app.run(host = "0.0.0.0",port = 9999)
+    app.run(host = "0.0.0.0",port = 9999)
