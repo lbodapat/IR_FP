@@ -372,7 +372,7 @@ def index_poi(indexer):
             tweets = api.search(q=data['id'])
             for tweet in tweets:
                 print(dir(tweet))
-                #data['fav_count'] =
+                data['fav_count'] =tweet._json['favorite_count']
                 data['profile_background_image_url'] = tweet._json['user']['profile_background_image_url']
                 data['retweet_count'] = tweet._json['retweet_count']
                 data['followers_count'] = tweet._json['user']['followers_count']
