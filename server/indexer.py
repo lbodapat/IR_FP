@@ -159,3 +159,6 @@ class Indexer:
 
 if __name__ == "__main__":
     print("Indexer")
+    i = Indexer()
+    i.do_initial_setup()
+    i.add_fields()

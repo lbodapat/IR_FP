@@ -376,7 +376,7 @@ def index_poi(indexer):
                 data['profile_image_url_https'] = tweet._json['user']['profile_image_url_https']
                 data['retweet_count'] = tweet._json['retweet_count']
                 data['followers_count'] = tweet._json['user']['followers_count']
-                data['media_url'] = tweet._json['media']['media_url_https']
+                data['media_url'] = tweet._json['entities']['media']['media_url_https']
                 data['screen_name'] = tweet._json['user']['screen_name']
             indexer.create_documents(data)
 
