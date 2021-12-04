@@ -369,7 +369,6 @@ def index_poi(indexer):
     for i in range(3,5):
         datas=read_config(i)
         for data in datas:
-            data['tweet_id']=data['id']
             tweets = api.search(q=data['id'])
             for tweet in tweets:
                 data['fav_count'] = tweet._json['favorite_count']
