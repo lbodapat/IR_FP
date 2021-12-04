@@ -6,7 +6,7 @@ import requests
 
 
 CORE_NAME = "IRF21P4"
-AWS_IP = "localhost"
+AWS_IP = "3.14.126.14"
 
 
 # [CAUTION] :: Run this script once, i.e. during core creation
@@ -143,13 +143,23 @@ class Indexer:
                     "multiValued": False
                 },
                 {
-                    "name": "profile_background_image_url",
+                    "name": "profile_image_url_https",
                     "type": "string",
                     "multiValued": False
                 },
                 {
-                    "name": "fav_count",
+                    "name": "favorite_count",
                     "type": "plong",
+                    "multiValued": False
+                },
+                {
+                    "name": "media_url",
+                    "type": "string",
+                    "multiValued": False
+                },
+                {
+                    "name": "screen_name",
+                    "type": "string",
                     "multiValued": False
                 }
             ]
@@ -160,5 +170,5 @@ class Indexer:
 
 if __name__ == "__main__":
     i = Indexer()
-    #i.do_initial_setup()
+    i.do_initial_setup()
     i.add_fields()

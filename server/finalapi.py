@@ -361,19 +361,21 @@ def run_keywords():
             i=i+1
 
 def index_poi(indexer):
-    #i=1
     for i in range(2):
         datas=read_config(i+1)
+        print("Processing POI ",i+1)
         for data in datas:
-            data['tweet_id']=data['id']
-            tweet = api.search(q=data['id'])
-            print(tweet[0]._json['favorite_count'])
-            #data['fav_count'] = 
-            data['profile_background_image_url'] = tweet[0]._json['user']['profile_background_image_url']
-            data['retweet_count'] = tweet[0]._json['retweet_count']
-            data['followers_count'] = tweet[0]._json['user']['followers_count']
+            print("Data: ", data)
+            tweets = api.search(q=data['id'])
+            for tweet in tweets:
+                print(tweet._json)
+                data['favorite_count'] = tweet._json['favorite_count']
+                data['profile_image_url_https'] = tweet._json['user']['profile_image_url_https']
+                data['retweet_count'] = tweet._json['retweet_count']
+                data['followers_count'] = tweet._json['user']['followers_count']
+                data['media_url'] = tweet._json['entities']['media']['media_url_https'] if hasattr(tweet._json['entities'], 'media') else ""
+                data['screen_name'] = tweet._json['user']['screen_name']
             indexer.create_documents(data)
-        #i+=1
 
 def index(indexer):
     index_poi(indexer)
