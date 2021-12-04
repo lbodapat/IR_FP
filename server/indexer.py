@@ -5,16 +5,14 @@ import requests
 # https://tecadmin.net/install-apache-solr-on-ubuntu/
 
 
-CORE_NAME = "IRF21FP1"
+CORE_NAME = "IRF21P4"
 AWS_IP = "localhost"
 
 
 # [CAUTION] :: Run this script once, i.e. during core creation
 
-
 def delete_core(core=CORE_NAME):
-    print(os.system(
-        'sudo su - solr -c "/opt/solr/bin/solr delete -c {core}"'.format(core=core)))
+    print(os.system('sudo su - solr -c "/opt/solr/bin/solr delete -c {core}"'.format(core=core)))
 
 
 def create_core(core=CORE_NAME):
@@ -22,21 +20,22 @@ def create_core(core=CORE_NAME):
         'sudo su - solr -c "/opt/solr/bin/solr create -c {core} -n data_driven_schema_configs"'.format(
             core=core)))
 
-
 class Indexer:
     def __init__(self):
         self.solr_url = f'http://{AWS_IP}:8983/solr/'
-        self.connection = pysolr.Solr(
-            self.solr_url + CORE_NAME, always_commit=True, timeout=5000000)
-
+        self.connection = pysolr.Solr(self.solr_url + CORE_NAME, always_commit=True, timeout=5000000)
     def do_initial_setup(self):
-        delete_core()
-        create_core()
+       delete_core()
+       create_core()
 
     def create_documents(self, docs):
         print(self.connection.add(docs))
 
     def add_fields(self):
+        '''
+        Define all the fields that are to be indexed in the core. Refer to the project doc for more details
+        :return:
+        '''
         data = {
             "add-field": [
                 {
@@ -58,11 +57,6 @@ class Indexer:
                     "type": "string",
                     "multiValued": False
                 },
-                # {
-                #     "name": "id",
-                #     "type": "string",
-                #     "multiValued": False
-                # },
                 {
                     "name": "replied_to_tweet_id",
                     "type": "plong",
@@ -76,12 +70,14 @@ class Indexer:
                 {
                     "name": "reply_text",
                     "type": "text_general",
-                    "multiValued": False
+                    "multiValued": False,
+                    "indexed": True
                 },
                 {
                     "name": "tweet_text",
                     "type": "text_general",
-                    "multiValued": False
+                    "multiValued": False,
+                    "indexed": True
                 },
                 {
                     "name": "tweet_lang",
@@ -91,17 +87,20 @@ class Indexer:
                 {
                     "name": "text_en",
                     "type": "text_en",
-                    "multiValued": False
+                    "multiValued": False,
+		    "indexed": True
                 },
                 {
                     "name": "text_hi",
                     "type": "text_hi",
-                    "multiValued": False
+                    "multiValued": False,
+		    "indexed": True
                 },
                 {
                     "name": "text_es",
                     "type": "text_es",
-                    "multiValued": False
+                    "multiValued": False,
+		    "indexed": True
                 },
                 {
                     "name": "hashtags",
@@ -130,42 +129,36 @@ class Indexer:
                 },
                 {
                     "name": "geolocation",
+                    "type": "strings",
+                    "multiValued": True
+                },
+                {
+                    "name": "followers_count",
+                    "type": "plong",
+                    "multiValued": False
+                },
+                {
+                    "name": "retweet_count",
+                    "type": "plong",
+                    "multiValued": False
+                },
+                {
+                    "name": "profile_background_image_url",
                     "type": "string",
                     "multiValued": False
                 },
                 {
-                    "name": "tweet_id",
-                    "type": "string",
+                    "name": "fav_count",
+                    "type": "plong",
                     "multiValued": False
                 }
             ]
         }
-
-        print(requests.post(self.solr_url + CORE_NAME + "/schema", json=data).json())
-
-    def replace_fields(self):
-        data = {
-            "replace-field": [
-                {
-                    "name": "text_en",
-                    "type": "text_en",
-                    "multiValued": False
-                },
-                {
-                    "name": "text_hi",
-                    "type": "text_hi",
-                    "multiValued": False
-                },
-                {
-                    "name": "text_es",
-                    "type": "text_es",
-                    "multiValued": False
-                }
-            ]
-        }
-
+        
         print(requests.post(self.solr_url + CORE_NAME + "/schema", json=data).json())
 
 
 if __name__ == "__main__":
-    print("Indexer")
+    i = Indexer()
+    #i.do_initial_setup()
+    i.add_fields()
