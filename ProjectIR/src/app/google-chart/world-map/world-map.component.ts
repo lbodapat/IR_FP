@@ -10,23 +10,23 @@ export class WorldMapComponent implements OnInit {
 
   private google: any;
 
-  
 
-   constructor(private gChartService : GoogleChartService) { 
+
+   constructor(private gChartService : GoogleChartService) {
     this.google = this.gChartService.getGoogle();
     this.google.charts.load('current', {'packages':['geochart']});
     this.google.charts.setOnLoadCallback(this.drawRegionsMap.bind(this));
 
-      
+
    }
-    
+
    private drawRegionsMap() {
 
       var data = this.google.visualization.arrayToDataTable([
         ['Country', 'Popularity'],
         ['Germany', 200],
         ['United States', 300],
-        ['Brazil', 400],
+        ['Mexico', 400],
         ['Canada', 500],
         ['France', 600],
         ['India', 700]

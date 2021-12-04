@@ -54,8 +54,8 @@ def getFilters(data,user):
     
     indialen=len(data['IndiaTopics'])
     usalen=len(data['USATopics'])
-    brazilen=len(data['BrazilTopics'])
-    if(not(indialen == 0 and usalen ==0 and brazilen==0)):
+    mexicolen=len(data['MexicoTopics'])
+    if(not(indialen == 0 and usalen ==0 and mexicolen==0)):
         print("4")
         topicfilter="topic:("
         for i in range(indialen):
@@ -64,9 +64,9 @@ def getFilters(data,user):
         for i in range(usalen):
            
             topicfilter+= data['USATopics'][i]+ " or"
-        for i in range(brazilen):
+        for i in range(mexicolen):
             
-            topicfilter+= data['BrazilTopics'][i]+ " or"    
+            topicfilter+= data['MexicoTopics'][i]+ " or"
         topicfilter+= ")"
         finalquerystr+="&fq=" + urllib.parse.quote(topicfilter)
     
@@ -99,9 +99,11 @@ def hello():
 @app.route("/getDetails/" ,methods=['POST'])
 def getDetails():
     try:
+        print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
         print(request)
         print (request.json )
         data=request.json
+        print("getting filter query")
         filterquery=getFilters(data,"user.screen_name")
         if(data["query"][0]=="#"):
            print("Enter")
@@ -213,8 +215,8 @@ def getSentimentDetails():
             countryhashtags[i['val']].append(hashtag)
         if('usa' not in countryhashtags):
             countryhashtags['usa']=[]
-        if('brazil' not in countryhashtags):
-            countryhashtags['brazil']=[]
+        if('mexico' not in countryhashtags):
+            countryhashtags['mexico']=[]
         if('india' not in countryhashtags):
             countryhashtags['india']=[]
         docs={}

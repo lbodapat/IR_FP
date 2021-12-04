@@ -38,24 +38,34 @@ export class ChartComponent implements OnInit {
   obj  =new Filter();
 
   months=['01-09','02-09','03-09','04-09','05-09','06-09','07-09','08-09','09-09'];
-  languages=[{key:'English', value:'en'},{key:'Hindi', value:'hi'},{key:'Portuguese', value:'pt'}]
-  poiNames = [{key:'Barkha Dutt',value:'BDUTT'},
-                {key:'Rajdeep Sardesai',value:'sardesairajdeep'},
-                {key:'Sachin Pilot', value:'SachinPilot'},
-                {key:'Narendra Modi',value:'narendramodi'},
-                {key:'Piyush Goyal',value:'PiyushGoyal'},
-                {key:'Bernie Sanders',value:'BernieSanders'},
-                {key:'Cory Booker',value:'CoryBooker'},
-                {key:'Kamala Harris',value:'KamalaHarris'},
-                {key:'Ted Lieu',value:'tedlieu'},
-                {key:'Elizabeth Warren',value:'ewarren'},
-                {key:'Carlos Bolsonaro',value:'CarlosBolsonaro'},
-                {key:'Jair Bolsonaro',value:'jairbolsonaro'},
-                {key:'Lula',value:'LulaOficial'},
-                {key:'Dilma Rousseff',value:'dilmabr'},
-                {key:'Gleisi Hoffmann',value:'gleisi'},
-                {key:'Shashi Tharoor', value:'shashitharoor'}
-                ];
+  languages=[{key:'English', value:'en'},{key:'Hindi', value:'hi'},{key:'Spanish', value:'es'}]
+
+  poiNames = [{key:'PMO India',value:'PMOIndia'},
+                  {key:'Narendra Modi',value:'narendramodi'},
+                  {key:'Shashi Tharoor', value:'ShashiTharoor'},
+                  {key:'Mansukh Mandviya',value:'mansukhmandviya'},
+                  {key:'Ayushman NHA',value:'AyushmanNHA'},
+                  {key:'Rahul Gandhi',value:'RahulGandhi'},
+                  {key:'Enrique Peña Nieto',value:'EPN'},
+                  {key:'Felipe Calderon',value:'FelipeCalderon'},
+                  {key:'Andrés Manuel López Obrador',value:'lopezobrador_'},
+                  {key:'Miguel Ángel Mancera',value:'ManceraMiguelMX'},
+                  {key:'Claudia Shein',value:'Claudiashein'},
+                  {key:'Joe Biden',value:'JoeBiden'},
+                  {key:'POTUS',value:'POTUS'},
+                  {key:'CDC gov',value:'CDCgov'},
+                  {key:'Barack Obama',value:'BarackObama'},
+                  {key:'Marcelo Ebrard',value:'m_ebrard'},
+                  {key:'Ministry of Health India',value:'MoHFW_INDIA'},
+                  {key:'U.S. Department of Health & Human Services',value:'HHSGov'},
+                  {key:'Ted Cruz',value:'tedcruz'},
+                  {key:'Marco Rubio',value:'marcorubio'},
+                  {key:'Amit Shah',value:'AmitShah'},
+                  {key:'World Health Organization',value:'WHO'},
+                  {key:'CDC Global',value:'CDCGlobal'},
+                  {key:'White House USA',value:'WhiteHouse'}];
+
+
   state:any;
   data:any;
   url:string = './test.json';
@@ -80,11 +90,11 @@ export class ChartComponent implements OnInit {
 
   pie_India= new Chart({});
   pie_usa= new Chart({});
-  pie_brazil= new Chart({});
+  pie_mexico= new Chart({});
 
   pie_India_hashtags= new Chart({});
   pie_usa_hashtags= new Chart({});
-  pie_brazil_hashtags= new Chart({});
+  pie_mexico_hashtags= new Chart({});
 
 
   options: any = {};
@@ -161,10 +171,10 @@ pie_CountriesWiseSentiments(){
   let temp =JSON.stringify(this.data);
 
   this.pie_India =new Chart({title: {text: 'India'}});
-  this.pie_brazil =new Chart({title: {text: 'Brazil'}});
+  this.pie_mexico =new Chart({title: {text: 'Mexico'}});
   this.pie_usa =new Chart({title: {text: 'USA'}});
   this.pie_India_hashtags =new Chart({title: {text: 'India'}});
-  this.pie_brazil_hashtags =new Chart({title: {text: 'Brazil'}});
+  this.pie_mexico_hashtags =new Chart({title: {text: 'Mexico'}});
   this.pie_usa_hashtags =new Chart({title: {text: 'USA'}});
   this.topicWiseChart = new Chart({});
 
@@ -175,7 +185,7 @@ pie_CountriesWiseSentiments(){
     let data_pie=[];
     let india=[]
     let usa=[];
-    let brazil=[];
+    let mexico=[];
     let index_india=-1;
     data_pie= this.filterdata_country;
     let countries_array  = this.filterdata_country ?Object.keys(this.filterdata_country):[];
@@ -204,34 +214,34 @@ pie_CountriesWiseSentiments(){
 
         }
 
-        if(countries_array.indexOf("brazil") !== -1){
-          brazil.push({name:'POSITIVE',y:data_pie["brazil"][0].positive});
-          brazil.push({name:'NEGATIVE',y:data_pie["brazil"][0].negative});
-          brazil.push({name:'NEUTRAL',y:data_pie["brazil"][0].neutral});
+        if(countries_array.indexOf("mexico") !== -1){
+          mexico.push({name:'POSITIVE',y:data_pie["mexico"][0].positive});
+          mexico.push({name:'NEGATIVE',y:data_pie["mexico"][0].negative});
+          mexico.push({name:'NEUTRAL',y:data_pie["mexico"][0].neutral});
         }
         else{
-          brazil.push({name:'POSITIVE',y:0});
-          brazil.push({name:'NEGATIVE',y:0});
-          brazil.push({name:'NEUTRAL',y:0});
+          mexico.push({name:'POSITIVE',y:0});
+          mexico.push({name:'NEGATIVE',y:0});
+          mexico.push({name:'NEUTRAL',y:0});
 
         }
 
       let countryList = this.getSentimentDetails_countryhashtags?Object.values(this.getSentimentDetails_countryhashtags):[];
       let india_hashtag =[]
-      let brazil_hashtag=[];
+      let mexico_hashtag=[];
       let usa_hashtag =[];
       let all_hashtags =[];
       let indiaHashtaglist =this.getSentimentDetails_countryhashtags.india.length>0  && JSON.stringify(this.getSentimentDetails_countryhashtags.india[0]) !== '{}'? Object.keys(this.getSentimentDetails_countryhashtags.india[0]):[];
-      let brazilHashtaglist =this.getSentimentDetails_countryhashtags.brazil.length>0 && JSON.stringify(this.getSentimentDetails_countryhashtags.brazil[0]) !== '{}'? Object.keys(this.getSentimentDetails_countryhashtags.brazil[0]):[];
+      let mexicoHashtaglist =this.getSentimentDetails_countryhashtags.mexico.length>0 && JSON.stringify(this.getSentimentDetails_countryhashtags.mexico[0]) !== '{}'? Object.keys(this.getSentimentDetails_countryhashtags.mexico[0]):[];
       let usaHashtaglist =this.getSentimentDetails_countryhashtags.usa.length>0 && JSON.stringify(this.getSentimentDetails_countryhashtags.usa[0]) !== '{}'? Object.keys(this.getSentimentDetails_countryhashtags.usa[0]):[];
 
-      if(indiaHashtaglist.length ==0 && brazilHashtaglist.length==0 && usaHashtaglist.length==0){
+      if(indiaHashtaglist.length ==0 && mexicoHashtaglist.length==0 && usaHashtaglist.length==0){
 
       }
-        for(let i=0;i<brazilHashtaglist.length;i++){
-          if(Object.keys(this.getSentimentDetails_countryhashtags.brazil[0]).length> 0){
-          let values = Object.values(this.getSentimentDetails_countryhashtags.brazil[0])
-          brazil_hashtag.push({name:'#'+brazilHashtaglist[i],y:values[i],dataLabels: {  enabled: true  }});
+        for(let i=0;i<mexicoHashtaglist.length;i++){
+          if(Object.keys(this.getSentimentDetails_countryhashtags.mexico[0]).length> 0){
+          let values = Object.values(this.getSentimentDetails_countryhashtags.mexico[0])
+          mexico_hashtag.push({name:'#'+mexicoHashtaglist[i],y:values[i],dataLabels: {  enabled: true  }});
           }
         }
         for(let i=0;i<indiaHashtaglist.length;i++){
@@ -307,8 +317,8 @@ pie_CountriesWiseSentiments(){
         ]
       });}
 
-      if(countries_array.indexOf("brazil") !== -1){
-      this.pie_brazil = new Chart( {
+      if(countries_array.indexOf("mexico") !== -1){
+      this.pie_mexico = new Chart( {
         chart: {
           renderTo: "container",
           plotBackgroundColor: null,
@@ -316,7 +326,7 @@ pie_CountriesWiseSentiments(){
           plotShadow: false
         },
         credits: {  enabled: false  },
-        title: {    text: "Brazil" },
+        title: {    text: "Mexico" },
         subtitle: { text: "" },
         plotOptions: {
           pie: {
@@ -332,7 +342,7 @@ pie_CountriesWiseSentiments(){
         series: [
           {
             type: "pie", name: "",
-            data: brazil
+            data: mexico
           }
         ]
       });}
@@ -367,11 +377,11 @@ this.pie_usa_hashtags = new Chart(
 
   }
 );}
-if(this.getSentimentDetails_countryhashtags.brazil && this.getSentimentDetails_countryhashtags.brazil.length> 0 && JSON.stringify(this.getSentimentDetails_countryhashtags.brazil[0]) !='{}'){
-this.pie_brazil_hashtags = new Chart(
+if(this.getSentimentDetails_countryhashtags.mexico && this.getSentimentDetails_countryhashtags.mexico.length> 0 && JSON.stringify(this.getSentimentDetails_countryhashtags.mexico[0]) !='{}'){
+this.pie_mexico_hashtags = new Chart(
   {
     chart: {type: 'pie'	},
-    title: {text: 'Brazil'},
+    title: {text: 'Mexico'},
     credits: {enabled:  false},
     plotOptions: {
           pie: {
@@ -385,7 +395,7 @@ this.pie_brazil_hashtags = new Chart(
         series: [{
           type: undefined,
           innerSize: '50%',
-          data:  brazil_hashtag
+          data:  mexico_hashtag
       }]
 
   }
@@ -1038,16 +1048,16 @@ series: series_data
 
 generateWorlMap(){
 let worldData = this.filterdata_country;
-let count_brazil =0;
+let count_mexico =0;
 let count_usa =0;
 let count_india =0;
 let series_data =[];
 
 if(this.filterdata_country && Object.keys(this.filterdata_country).length >0){
 
-    if(this.filterdata_country && this.filterdata_country.brazil && this.filterdata_country.brazil[0]){
-    count_brazil =this.filterdata_country.brazil[0].positive +this.filterdata_country.brazil[0].negative + this.filterdata_country.brazil[0].neutral;
-    series_data.push(['br',count_brazil]);
+    if(this.filterdata_country && this.filterdata_country.mexico && this.filterdata_country.mexico[0]){
+    count_mexico =this.filterdata_country.mexico[0].positive +this.filterdata_country.mexico[0].negative + this.filterdata_country.mexico[0].neutral;
+    series_data.push(['br',count_mexico]);
     }
     if(this.filterdata_country && this.filterdata_country.usa && this.filterdata_country.usa[0]){
       count_usa =this.filterdata_country.usa[0].positive +this.filterdata_country.usa[0].negative + this.filterdata_country.usa[0].neutral;
@@ -1076,7 +1086,6 @@ if(this.filterdata_country && Object.keys(this.filterdata_country).length >0){
         name: 'Tweets',
         color: '#5A8CE8',
         enableMouseTracking: true,
-       // data:[['br', count_brazil],['us',count_usa],['in',count_india]],
        data: series_data,
       states: {
         hover: {

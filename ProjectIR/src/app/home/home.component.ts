@@ -37,23 +37,30 @@ export class HomeComponent implements OnInit {
 
       };
 
-
-      poiNames = [{key:'Barkha Dutt',value:'BDUTT'},
-                {key:'Rajdeep Sardesai',value:'sardesairajdeep'},
-                {key:'Sachin Pilot', value:'SachinPilot'},
-                {key:'Narendra Modi',value:'narendramodi'},
-                {key:'Piyush Goyal',value:'PiyushGoyal'},
-                {key:'Bernie Sanders',value:'BernieSanders'},
-                {key:'Cory Booker',value:'CoryBooker'},
-                {key:'Kamala Harris',value:'KamalaHarris'},
-                {key:'Ted Lieu',value:'tedlieu'},
-                {key:'Elizabeth Warren',value:'ewarren'},
-                {key:'Carlos Bolsonaro',value:'CarlosBolsonaro'},
-                {key:'Jair Bolsonaro',value:'jairbolsonaro'},
-                {key:'Lula',value:'LulaOficial'},
-                {key:'Dilma Rousseff',value:'dilmabr'},
-                {key:'Gleisi Hoffmann',value:'gleisi'}
-                ];
+       poiNames = [{key:'PMO India',value:'PMOIndia'},
+                        {key:'Narendra Modi',value:'narendramodi'},
+                        {key:'Shashi Tharoor', value:'ShashiTharoor'},
+                        {key:'Mansukh Mandviya',value:'mansukhmandviya'},
+                        {key:'Ayushman NHA',value:'AyushmanNHA'},
+                        {key:'Rahul Gandhi',value:'RahulGandhi'},
+                        {key:'Enrique Peña Nieto',value:'EPN'},
+                        {key:'Felipe Calderon',value:'FelipeCalderon'},
+                        {key:'Andrés Manuel López Obrador',value:'lopezobrador_'},
+                        {key:'Miguel Ángel Mancera',value:'ManceraMiguelMX'},
+                        {key:'Claudia Shein',value:'Claudiashein'},
+                        {key:'Joe Biden',value:'JoeBiden'},
+                        {key:'POTUS',value:'POTUS'},
+                        {key:'CDC gov',value:'CDCgov'},
+                        {key:'Barack Obama',value:'BarackObama'},
+                        {key:'Marcelo Ebrard',value:'m_ebrard'},
+                        {key:'Ministry of Health India',value:'MoHFW_INDIA'},
+                        {key:'U.S. Department of Health & Human Services',value:'HHSGov'},
+                        {key:'Ted Cruz',value:'tedcruz'},
+                        {key:'Marco Rubio',value:'marcorubio'},
+                        {key:'Amit Shah',value:'AmitShah'},
+                        {key:'World Health Organization',value:'WHO'},
+                        {key:'CDC Global',value:'CDCGlobal'},
+                        {key:'White House USA',value:'WhiteHouse'}];
 
     constructor(private tweetService: TweetService,private modalService: NgbModal) {
         this.tweetService.value$.subscribe(obj=>

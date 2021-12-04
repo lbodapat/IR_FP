@@ -17,7 +17,7 @@ export class NavbarComponent {
     obj  =new Filter();
     result_obj :any;
     selectedUSTopics=[]
-    selectedBrazilTopics =[];
+    selectedMexicoTopics =[];
     selectedIndiaTopics=[];
     result :any;
     searchText : string = '';
@@ -29,46 +29,55 @@ export class NavbarComponent {
     showTopics:boolean = false;
     showTopicsUS:boolean = false;
     showTopicsIndia:boolean = false;
-    showTopicsBrazil:boolean = false;
+    showTopicsMexico:boolean = false;
     showSentiments:boolean = false;
     showHashtags:boolean = false;
     selectedUS: boolean = false;
     selectedIndia: boolean = false;
-    selectedBrazil: boolean = false;
+    selectedMexico: boolean = false;
     selectedLang:boolean =false;
     showPois: boolean = false;
     homeObj= new Filter();
 
     languages=[{key:'English', value:'en',status:false},
-        {key:'Hindi', value:'hi',status:false},{key:'Portuguese', value:'pt',status:false}]
+        {key:'Hindi', value:'hi',status:false},{key:'Spanish', value:'es',status:false}]
 
-    countries = [{key:'USA',status:false},{key:'India',status:false},{key:'Brazil',status:false}];
+    countries = [{key:'USA',status:false},{key:'India',status:false},{key:'Mexico',status:false}];
 
     topics = {
         India:['Happy Birthday Modi','Politics','ISRO','Railway','Development Policies'],
         US: ['Health Care','Gun control','Climate Change','Election Campaign',"Trump's Policies",'Minimum wage and taxes'],
-        Brazil:['Government policies','Presidential candidate','Corruption','Justice for Lula','Democracy']
+        Mexico:['Government policies','Presidential candidate','Corruption','Justice for Lula','Democracy']
     }
     sentiments =[
         {key:'Positive', value:'Positive',status:false},
         {key:'Negative', value:'Negative',status:false},
         {key:'Neutral', value:'Neutral',status:false}
     ]
-    poiNames = [{key:'Barkha Dutt',value:'BDUTT',status:false},
-                {key:'Rajdeep Sardesai',value:'sardesairajdeep',status:false},
-                {key:'Sachin Pilot', value:'SachinPilot',status:false},
+    poiNames = [{key:'PMO India',value:'PMOIndia',status:false},
                 {key:'Narendra Modi',value:'narendramodi',status:false},
-                {key:'Piyush Goyal',value:'PiyushGoyal',status:false},
-                {key:'Bernie Sanders',value:'BernieSanders',status:false},
-                {key:'Cory Booker',value:'CoryBooker',status:false},
-                {key:'Kamala Harris',value:'KamalaHarris',status:false},
-                {key:'Ted Lieu',value:'tedlieu',status:false},
-                {key:'Elizabeth Warren',value:'ewarren',status:false},
-                {key:'Carlos Bolsonaro',value:'CarlosBolsonaro',status:false},
-                {key:'Jair Bolsonaro',value:'jairbolsonaro',status:false},
-                {key:'Lula',value:'LulaOficial',status:false},
-                {key:'Dilma Rousseff',value:'dilmabr',status:false},
-                {key:'Gleisi Hoffmann',value:'gleisi',status:false}
+                {key:'Shashi Tharoor', value:'ShashiTharoor',status:false},
+                {key:'Mansukh Mandviya',value:'mansukhmandviya',status:false},
+                {key:'Ayushman NHA',value:'AyushmanNHA',status:false},
+                {key:'Rahul Gandhi',value:'RahulGandhi',status:false},
+                {key:'Enrique Peña Nieto',value:'EPN',status:false},
+                {key:'Felipe Calderon',value:'FelipeCalderon',status:false},
+                {key:'Andrés Manuel López Obrador',value:'lopezobrador_',status:false},
+                {key:'Miguel Ángel Mancera',value:'ManceraMiguelMX',status:false},
+                {key:'Claudia Shein',value:'Claudiashein',status:false},
+                {key:'Joe Biden',value:'JoeBiden',status:false},
+                {key:'POTUS',value:'POTUS',status:false},
+                {key:'CDC gov',value:'CDCgov',status:false},
+                {key:'Barack Obama',value:'BarackObama',status:false},
+                {key:'Marcelo Ebrard',value:'m_ebrard',status:false},
+                {key:'Ministry of Health India',value:'MoHFW_INDIA',status:false},
+                {key:'U.S. Department of Health & Human Services',value:'HHSGov',status:false},
+                {key:'Ted Cruz',value:'tedcruz',status:false},
+                {key:'Marco Rubio',value:'marcorubio',status:false},
+                {key:'Amit Shah',value:'AmitShah',status:false},
+                {key:'World Health Organization',value:'WHO',status:false},
+                {key:'CDC Global',value:'CDCGlobal',status:false},
+                {key:'White House USA',value:'WhiteHouse',status:false}
                 ];
 
     hashtags = [{key:'isro',status:false},
@@ -99,7 +108,7 @@ export class NavbarComponent {
      Initialize(){
         this.selectedUS = false;
         this.selectedIndia  =false;
-        this.selectedBrazil = false;
+        this.selectedMexico = false;
 
         for (var i = 0; i < this.languages.length; i++) {
             this.languages[i].status = false;
@@ -132,7 +141,7 @@ export class NavbarComponent {
         }
         let temp =JSON.stringify(this.obj);
         this.tweetService.setHomeData(this.obj);
-        this.tweetService.postData(temp).subscribe(a=> console.log(a));
+        this.tweetService.postData(temp).subscribe(a=> console.log("Here: ",a));
         this.tweetService.setData(this.obj);
         this.homeObj = JSON.parse(JSON.stringify(this.obj));
         this.tweetService.postFilterData(this.homeObj).subscribe(data=>{
@@ -228,23 +237,23 @@ export class NavbarComponent {
               }
 
       }
-      onCheckBrazil(event){
+      onCheckMexico(event){
         let index;
         let index_US
-        if(this.obj.BrazilTopics && this.obj.countries &&this.obj.countries.length >=0 && this.obj.BrazilTopics.length >=0 ){
-             index =this.obj.BrazilTopics.indexOf(event.target.name);
+        if(this.obj.MexicoTopics && this.obj.countries &&this.obj.countries.length >=0 && this.obj.MexicoTopics.length >=0 ){
+             index =this.obj.MexicoTopics.indexOf(event.target.name);
                      }
              if (index ==-1){
-                 if (!this.obj.countries.includes("Brazil")){
-                    this.obj.countries.push('Brazil');
+                 if (!this.obj.countries.includes("Mexico")){
+                    this.obj.countries.push('Mexico');
                 }
-                this.obj.BrazilTopics.push(event.target.name);
+                this.obj.MexicoTopics.push(event.target.name);
               }
               else{
-                this.obj.BrazilTopics.splice(index,1);
-                if(this.obj.BrazilTopics.length == 0){
-                    this.obj.countries.splice(this.obj.countries.indexOf("Brazil"),1);
-                    this.selectedBrazil = false;
+                this.obj.MexicoTopics.splice(index,1);
+                if(this.obj.MexicoTopics.length == 0){
+                    this.obj.countries.splice(this.obj.countries.indexOf("Mexico"),1);
+                    this.selectedMexico = false;
                 }
             }
 
@@ -288,16 +297,16 @@ export class NavbarComponent {
          }
 
     }
-    onCheckOfAllBrazilTopics(event){
-        if(this.obj.BrazilTopics.length <= this.topics.US.length && this.obj.BrazilTopics.length > 0)
-       {this.obj.BrazilTopics =[]
+    onCheckOfAllMexicoTopics(event){
+        if(this.obj.MexicoTopics.length <= this.topics.US.length && this.obj.MexicoTopics.length > 0)
+       {this.obj.MexicoTopics =[]
         //    let index =this.obj.countries.indexOf("Brazil");
         //    this.obj.countries.splice(index,1);
        }
        else
        {
-        this.obj.BrazilTopics = JSON.parse(JSON.stringify(this.topics.Brazil));
-        //this.obj.countries.push('Brazil');
+        this.obj.MexicoTopics = JSON.parse(JSON.stringify(this.topics.Mexico));
+        //this.obj.countries.push('Mexico');
        }
 
    }
