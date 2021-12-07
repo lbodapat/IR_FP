@@ -291,7 +291,7 @@ def translate2(tweet):
 # @app.route("/allDocs/",methods=['POST'])
 def getAllDocs(indexer):
     # try:
-    inurl='http://3.144.112.230:8983/solr/IRF21P1/select?q.op=OR&q=*%3A*&rows=60528'
+    inurl='http://3.144.112.230:8983/solr/IRF21P1/select?q.op=OR&q=*%3A*&rows=68868'
     print(inurl)
     data = urllib.request.urlopen(inurl).read()
     res = JSON.loads(data.decode('utf-8'))
