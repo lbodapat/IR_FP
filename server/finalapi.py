@@ -311,4 +311,4 @@ if __name__ == "__main__":
     indexer = Indexer()
     # index_poi(indexer)
     getAllDocs(indexer)
-    app.run(host = "0.0.0.0",port = 9999)
+    # app.run(host = "0.0.0.0",port = 9999)
