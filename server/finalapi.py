@@ -1,6 +1,9 @@
     # -*- coding: utf-8 -*-
-
-
+import textblob as tb
+from nltk.corpus import stopwords
+import os
+import re
+import string
 try:
     import json as JSON
 except ImportError:
@@ -16,21 +19,14 @@ from pandas import DataFrame
 import pickle
 import pandas as pd
 from indexer import Indexer
+from textblob import TextBlob
+import numpy as np
+from googletrans import Translator
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
-# cors = CORS(app, resources={r"*": {"origins": ""}})
 CORS(app, resources=r'*', headers='Content-Type')
-
-    # self.auth = tweepy.OAuthHandler("UFKPrZYXM1K4d7ePghFdSRS45", "9bQKv3CrRehpY0hUTM3eZ9DnbaRr8xEjBPqQdXQWVSmp6rD6Y3")
-    # self.auth.set_access_token("1432544818358538241-fLcn8NmPWrtjUNTRZlHPA4bN4rAJ4f", "hRlaOyH3Mw1AY10luh2zlM74X0l6uH2ihGq85o0z4uC2Z")
-
-auth = tweepy.OAuthHandler("UFKPrZYXM1K4d7ePghFdSRS45",
-                                "9bQKv3CrRehpY0hUTM3eZ9DnbaRr8xEjBPqQdXQWVSmp6rD6Y3")
-auth.set_access_token("1432544818358538241-fLcn8NmPWrtjUNTRZlHPA4bN4rAJ4f",
-                           "hRlaOyH3Mw1AY10luh2zlM74X0l6uH2ihGq85o0z4uC2Z")
-api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 def getFilters(data,user):
     finalquerystr=""
@@ -101,11 +97,6 @@ def getFilters(data,user):
     print(finalquerystr)
     return (finalquerystr)
 
-@app.route("/",methods = ["POST"])
-def hello():
-    print (request.json)
-    return "Hello World"
-
 @app.route("/getDetails/" ,methods=['POST'])
 def getDetails():
     try:
@@ -116,18 +107,14 @@ def getDetails():
         print("getting filter query")
         filterquery=getFilters(data,"user.screen_name")
         if(data["query"][0]=="#"):
-           print("Enter")
            modelquery=data["query"].strip()[0]
-        modelquery = urllib.parse.quote(data["query"])
-        # inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&+wt=json&rows=1000&fl=id%2Ctweet_text%2Ctweet_lang%2Csentiment%2Cpoi_name%2Cretweet_count%2Cuser.followers_count%2Ccountry%2Cverified%2Ccreated_at%2Cfavorite_count%2Cuser.name%2Cuser.screen_name%2Cuser.profile_image_url_https%2Ctopic%2Cdateformatted%2Ctranslated&facet.field=hashtags&f.hashtags.facet.limit=10&facet=on'+filterquery
-        inurl='http://3.17.156.95:8983/solr/IRF21P1/select?q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000'
 
+        modelquery = urllib.parse.quote(data["query"])
+        inurl='http://3.144.112.230:8983/solr/IRF21P1/select?q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000'+filterquery
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
-        print("1: ")
         res = JSON.loads(data.decode('utf-8'))
         docs=res['response']
-        print("4")
         response = jsonify(docs)
         print(response)
         return response
@@ -137,7 +124,6 @@ def getDetails():
         response = jsonify(data)
         return response
 
-
 @app.route("/getFilterDetails/",methods=['POST'])
 def getFilterDetails():
     try:
@@ -146,216 +132,97 @@ def getFilterDetails():
         filterquery=getFilters(data,"poi_name")
         print("------_>>>>>> ",filterquery)
         modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20&q='+ modelquery +'&+wt=json&facet.field=tweet_lang&facet.field=country&facet.field=hashtags&f.hashtags.facet.limit=10&facet.field=verified&f.tweet_lang.facet.limit=3&facet.field=topic_str&facet=on&rows=0' +filterquery
-        print("INURL:::::::   ",inurl)
+        inurl = 'http://3.144.112.230:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20&q='+ modelquery +'&+wt=json&facet.field=tweet_lang&facet.field=country&facet.field=hashtags&f.hashtags.facet.limit=10&facet.field=verified&f.tweet_lang.facet.limit=3&facet.field=topic_str&facet=on&rows=0' +filterquery
+        print(inurl)
         data = urllib.request.urlopen(inurl).read()
         docs = JSON.loads(data.decode('utf-8'))['facet_counts']['facet_fields']
         docs["status"]= JSON.loads(data.decode('utf-8'))['responseHeader']['status']
         response = jsonify(docs)
-        # response.headers.add('Access-Control-Allow-Origin', '*')
-        print("RESPONSE:::::::::::::::::")
-        print(response)
+        print(dir(response))
         return response
     except:
         data=  {"status":500, "data":[]}
         response = jsonify(data)
-        # response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
 
-@app.route("/getSentimentDetails/",methods=['POST'])
-def getSentimentDetails():
+@app.route("/getSentimentDetailsNew/",methods=['POST'])
+def getSentimentDetails_new():
     try:
+        print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
+        print(request)
+        print (request.json )
         data=request.json
+        print("getting filter query")
         filterquery=getFilters(data,"user.screen_name")
+        if(data["query"][0]=="#"):
+            print("Enter")
+            modelquery=data["query"].strip()[0]
         modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&facet=on&rows=0'+ '&json.facet=%20{%20month_sentiment:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&json.facet=%20{%20country_sentiment:{%20type:%20terms,%20field:%20country,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&json.facet=%20{%20poi_sentiment:{%20type:%20terms,%20field:%20poi_name,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&json.facet=%20{%20country_hashtags:{%20type:%20terms,%20field:%20country,%20facet:{%20hashtagcount:%20{%20type%20:%20terms,%20field:%20hashtags,%20limit%20:%2010%20}%20}%20}%20}' +filterquery
+        inurl='http://3.144.112.230:8983/solr/IRF21P1/select?q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000'
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
-        docs = JSON.loads(data.decode('utf-8'))['facets']['month_sentiment']['buckets']
-        sentiments={}
-        for i in docs:
-            sentiments[i['val']]=[]
-            month={}
-            for j in i['sentimentcount']['buckets']:
-                month[j['val']]=j['count']
-            if('positive' not in month):
-                month['positive']=0
-            if('negative' not in month):
-                month['negative']=0
-            if('neutral' not in month):
-                month['neutral']=0
-            sentiments[i['val']].append(month)
-        sentimentsorderd=sentiments
-        countrydocs= JSON.loads(data.decode('utf-8'))['facets']['country_sentiment']['buckets']
-        countrysentiment={}
-        for i in countrydocs:
-            countrysentiment[i['val']]=[]
-            country={}
-            for j in i['sentimentcount']['buckets']:
-                country[j['val']]=j['count']
-            if('positive' not in country):
-                country['positive']=0
-            if('negative' not in country):
-                country['negative']=0
-            if('neutral' not in country):
-                country['neutral']=0
-            countrysentiment[i['val']].append(country)
-        poidocs= JSON.loads(data.decode('utf-8'))['facets']['poi_sentiment']['buckets']
-        poisentiment={}
-        for i in poidocs:
-            poisentiment[i['val']]=[]
-            poi={}
-            for j in i['sentimentcount']['buckets']:
-                poi[j['val']]=j['count']
-            if('positive' not in poi):
-                poi['positive']=0
-            if('negative' not in poi):
-                poi['negative']=0
-            if('neutral' not in poi):
-                poi['neutral']=0
-            poisentiment[i['val']].append(poi)
-        hashtagsdocs= JSON.loads(data.decode('utf-8'))['facets']['country_hashtags']['buckets']
-        countryhashtags={}
-        for i in hashtagsdocs:
-            countryhashtags[i['val']]=[]
-            hashtag={}
-            for j in i['hashtagcount']['buckets']:
-                hashtag[j['val']]=j['count']
-            countryhashtags[i['val']].append(hashtag)
-        if('usa' not in countryhashtags):
-            countryhashtags['usa']=[]
-        if('mexico' not in countryhashtags):
-            countryhashtags['mexico']=[]
-        if('india' not in countryhashtags):
-            countryhashtags['india']=[]
-        docs={}
-        docs['monthdata']=sentimentsorderd
-        docs['countrydata']=countrysentiment
-        docs['poidata']=poisentiment
-        docs['countryhashtags']=countryhashtags
-        docs= JSON.loads(JSON.dumps(docs))
-        docs['status']=0   
+        res = JSON.loads(data.decode('utf-8'))
+        docs=res['response']
         response = jsonify(docs)
-        return response
-    except:
-        data=  {"status":500, "data":[]}
-        response = jsonify(data)
-        # response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
-
-@app.route("/getverifiedSentimentDetails/",methods=['POST'])
-def getverifiedSentimentDetails():
-    try:
-        data=request.json
-        filterquery=getFilters(data,"user.screen_name")
-        modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=verified%3Atrue&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&facet=on&rows=0'+ '&json.facet=%20{%20month_sentiment:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}' +filterquery
-        print(inurl)
-        data = urllib.request.urlopen(inurl).read()
-        docs = JSON.loads(data.decode('utf-8'))['facets']['month_sentiment']['buckets']
-        sentiments={}
-        for i in docs:
-            sentiments[i['val']]=[]
-            month={}
-            for j in i['sentimentcount']['buckets']:
-                month[j['val']]=j['count']
-            if('positive' not in month):
-                month['positive']=0
-            if('negative' not in month):
-                month['negative']=0
-            if('neutral' not in month):
-                month['neutral']=0
-            sentiments[i['val']].append(month)
-        sentimentsorderd=sentiments
-#        for i in dayorder:
-#            if(i in sentiments):
-#                sentimentsorderd[i]=sentiments[i]
-        docs={}
-        print(sentimentsorderd)
-        docs['data']=sentimentsorderd
-        docs= JSON.loads(JSON.dumps(docs))
-        docs['status']=0   
-        print(docs)
-        response = jsonify(docs)
-        print(response)
-        return response
-    except:
-        data=  {"status":500, "data":[]}
-        response = jsonify(data)
-        # response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
-
-@app.route("/getPOIDetails/",methods=['POST'])
-def getPOIDetails():
-    try:
-        data=request.json
-        filterquery=getFilters(data,"poi_name")
-        print("-----_>>>>>>>> ",filterquery)
-        modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://3.17.156.95:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&json.facet=%20{%20poi_sentimentss:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&facet=on&rows=0' +filterquery
-        print(inurl)
-        data = urllib.request.urlopen(inurl).read()
-        poidocs= JSON.loads(data.decode('utf-8'))['facets']['poi_sentimentss']['buckets']
-        poisentiment={}
-        for i in poidocs:
-            poisentiment[i['val']]=[]
-            poi={}
-            for j in i['sentimentcount']['buckets']:
-                poi[j['val']]=j['count']
-            if('positive' not in poi):
-                poi['positive']=0
-            if('negative' not in poi):
-                poi['negative']=0
-            if('neutral' not in poi):
-                poi['neutral']=0
-            poisentiment[i['val']].append(poi)
-        docs={}
-        docs['poidata']=poisentiment
-        docs= JSON.loads(JSON.dumps(docs))
-        docs['status']=0   
-        
-        response = jsonify(docs)
-        # response.headers.add('Access-Control-Allow-Origin', '*')
+        datas=getSentiment(response.json)
+        print("datas type: ",type(datas))
+        print("Resp dir: ",dir(response))
+        response.set_data(str(datas))
         return response
     except Exception as e:
-        print(e)                                                                                                    
+        print(e)
         data=  {"status":500, "data":[]}
         response = jsonify(data)
-        # response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
+def getSentiment(datas):
+    polarity_data=[]
+    subjectivity_data=[]
+    for data in datas['docs']:
+        text=translate(data)
+        polarity = TextBlob(text).polarity
+        subjectivity = TextBlob(text).subjectivity
+        polarity_data.append(polarity)
+        subjectivity_data.append(subjectivity)
+        data['translated_text']=text
+        data['polarity']=polarity
+        data['subjectivity']=subjectivity
+    return datas
+
+def translate(tweet):
+    tr = Translator()
+    lang = tweet['tweet_lang']
+    text = tweet['tweet_text']
+    if lang != 'en':
+        try:
+            translated_text = tr.translate(text, dest = 'en').text
+            text = translated_text
+        except:
+            print('Not Translated')
+    return text
+
+def remove_noise(text, stop_words = ()):
+    cleaned_text = ''
+
+    for token, tag in text.pos_tags:
+        token = re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", token)
+        #token = re.sub("(@[A-Za-z0-9_]+)","", token)
+
+        if tag.startswith("NN"):
+            pos = 'n'
+        elif tag.startswith('VB'):
+            pos = 'v'
+        else:
+            pos = 'a'
+
+        token = tb.Word(token).lemmatize(pos)
+
+        if len(token) > 0 and token not in string.punctuation and token.lower() not in stop_words:
+            cleaned_text += token.lower().strip() + ' '
+    return tb.TextBlob(cleaned_text.strip())
 
 #######################
-
-def query_solr(query):
-    print("--------------------------")
-    print("query before querying solr:::::: ",query)
-    print("--------------------------")
-    # http://ec2-3-17-156-95.us-east-2.compute.amazonaws.com:8983/solr/#/IRF21P1/query?q=tweet_text:%20Modi%20Covid&q.op=OR
-    if True:
-        # inurl = 'http://localhost:8983/solr/' + 'IRF21P1' + '/select?fl=id%2Cscore&q=text_en%3A(' + query + ')%20or%20text_de%3A(' + query + ')%20or%20text_ru%3A(' + query + ')' + '&rows=20&wt=json'
-        inurl='http://localhost:8983/solr/' + 'IRF21P1' +'/query?q=tweet_text:(' + query + ')'+ '&rows=20&wt=json'
-
-    print("-----------------------------------------------URL-------------------------",inurl)
-    query_conn= requests.get(inurl)
-    return query_conn.json()
-
-def read_config(i):
-    data = []
-    with open("../data/JSON/POI/poi"+str(i)+".json") as f:
-        for line in f:
-            data.append(JSON.loads(line))
-    return data
-
-def run_poi(i):
-    for j in range(1):
-        print("::::::--------->>>>>>>>>",(i))
-        with open("/Users/surajbodapati/Desktop/University_at_Buffalo/SEM1/Information_Retreival/Assignments/p4/CSE-535-Project-4--master/data/POI/poi_"+str(i)+".pkl","rb") as input_file:
-            new_dict = pickle.load(input_file)
-            i=i+1
-            data=JSON.dumps(JSON.loads(new_dict.to_json(orient="records")))
-
 def run_keywords():
     i=1
     for j in range(80):
@@ -365,8 +232,26 @@ def run_keywords():
             new_dict.to_json('../data/JSON/keywords/keywords_'+str(i)+'.json', orient='records', lines=True)
             i=i+1
 
+
+def convert_pkl_to_json(i):
+    for j in range(1):
+        print("::::::--------->>>>>>>>>",(i))
+        with open("../data/new_data/poi_"+str(i)+".pkl","rb") as input_file:
+            new_dict = pickle.load(input_file)
+            i=i+1
+            # data=JSON.dumps(JSON.loads(new_dict.to_json(orient="records")))
+            new_dict=new_dict.replace("False", '"False"')
+            new_dict.to_json('../data/new_data/poi_'+str(i)+'.json', orient='records', lines=True)
+
+def read_config(i):
+    data = []
+    with open("../data/JSON/POI/poi"+str(i)+".json") as f:
+        for line in f:
+            data.append(JSON.loads(line))
+    return data
+
 def index_poi(indexer):
-    for i in range(3,5):
+    for i in range(40):
         datas=read_config(i)
         print("Processing POI ",i)
         for data in datas:
@@ -374,20 +259,56 @@ def index_poi(indexer):
             tweets = api.search(q=data['id'])
             for tweet in tweets:
                 print(tweet._json)
-                data['favorite_count'] = tweet._json['favorite_count']
-                data['profile_image_url_https'] = tweet._json['user']['profile_image_url_https']
-                data['retweet_count'] = tweet._json['retweet_count']
-                data['followers_count'] = tweet._json['user']['followers_count']
-                data['media_url'] = tweet._json['entities']['media']['media_url_https'] if hasattr(tweet._json['entities'], 'media') else ""
                 data['screen_name'] = tweet._json['user']['screen_name']
-            indexer.create_documents(data)
+            indexer.create_documents(data) #data or tweet ??
 
-def index(indexer):
-    index_poi(indexer)
+def getSentiment2(datas):
+    polarity_data=[]
+    subjectivity_data=[]
+    for data in datas['docs']:
+        text=translate(data)
+        polarity = TextBlob(text).polarity
+        subjectivity = TextBlob(text).subjectivity
+        polarity_data.append(polarity)
+        subjectivity_data.append(subjectivity)
+        data['translated_text']=text
+        data['polarity']=polarity
+        data['subjectivity']=subjectivity
+    return datas
 
+def translate2(tweet):
+    tr = Translator()
+    lang = tweet['tweet_lang']
+    text = tweet['tweet_text']
+    if lang != 'en':
+        try:
+            translated_text = tr.translate(text, dest = 'en').text
+            text = translated_text
+        except:
+            print('Not Translated')
+    return text
+
+# @app.route("/allDocs/",methods=['POST'])
+def getAllDocs(indexer):
+    # try:
+    inurl='http://3.144.112.230:8983/solr/IRF21P1/select?q.op=OR&q=*%3A*'
+    print(inurl)
+    data = urllib.request.urlopen(inurl).read()
+    res = JSON.loads(data.decode('utf-8'))
+    datas=res['response']
+    datas=getSentiment2(datas)
+    print(type(datas))
+    indexer.create_documents(datas)
+    # response = jsonify(datas)
+    # return response
+    # except:
+    #     data=  {"status":500, "data":[]}
+    #     response = jsonify(data)
+    #     return response
 
 if __name__ == "__main__":
-    print("Main")
+    # convert_pkl_to_json(40)
     indexer = Indexer()
-    index(indexer)
-    # app.run(host = "0.0.0.0",port = 9999)
+    # index_poi(indexer)
+    getAllDocs(indexer)
+    app.run(host = "0.0.0.0",port = 9999)

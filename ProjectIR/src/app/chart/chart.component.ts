@@ -489,6 +489,7 @@ columnChartForCountries(){
         let data_negative =[];
         let data_positive=[];
         let months_str =[];
+        //Dictionary--> keys-> values-> Dictionary()
         let month_array  = tweets&& tweets.data?Object.keys(tweets.data):[];
         for(let i=0;i<this.months.length;i++){
               if((month_array.indexOf(this.months[i]))!== -1){
@@ -570,18 +571,6 @@ lineChartSentimentalAnalysis_poiReplies(){
         res.push({name:'POSITIVE',data:data_positive,type:"line"})
 
       this.sentimentsInfo = res;
-
-      // this.chart = new Chart({
-      //   chart: { type: 'line' },
-      //   title: { text: 'TIME SERIES OF REPLIES TO POI TWEETS' },
-      //   credits: { enabled: false  },
-      //   xAxis : {categories: months_str},
-      //   series: this.sentimentsInfo
-      // });
-//         this.pie_CountriesWiseSentiments();
-//         this.poiSentiments();
-//         this.generateWorlMap();
-//         this.topicWiseCharts();
     });
     setTimeout (() => {    }, 3000);
 }
@@ -589,11 +578,7 @@ lineChartSentimentalAnalysis_poiReplies(){
 getTweetReplies(){
   this.data = this.tweetService.getData();
       let temp =JSON.stringify(this.data);
-
-
       this.tweetService.getpoiDetailsUrl(temp).subscribe(tweets=>{
-
-        //this.getSentimentDetails_poidata = tweets.poidata;
         this.getSentimentDetails_monthdata= tweets.poidata;
 
         this.sentimentData = this.getSentimentDetails_monthdata

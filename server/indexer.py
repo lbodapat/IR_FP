@@ -5,9 +5,9 @@ import requests
 # https://tecadmin.net/install-apache-solr-on-ubuntu/
 
 
-CORE_NAME = "IRF21P4"
-AWS_IP = "3.14.126.14"
-
+CORE_NAME = "IRF21P4_test"
+# AWS_IP = "3.14.126.14"
+AWS_IP = "localhost"
 
 # [CAUTION] :: Run this script once, i.e. during core creation
 
@@ -166,6 +166,21 @@ class Indexer:
                     "name": "screen_name",
                     "type": "string",
                     "multiValued": False
+                },
+                {
+                    "name": "translated_text",
+                    "type": "string",
+                    "multiValued": False
+                },
+                {
+                    "name": "polarity",
+                    "type": "plong",
+                    "multiValued": False
+                },
+                {
+                    "name": "subjectivity",
+                    "type": "plong",
+                    "multiValued": False
                 }
             ]
         }
@@ -174,9 +189,9 @@ class Indexer:
 
 if __name__ == "__main__":
     print("Indexer")
-    # i = Indexer()
-    # i.do_initial_setup()
-    # i.add_fields()
+    i = Indexer()
+    i.do_initial_setup()
+    i.add_fields()
     # i = Indexer()
     # i.do_initial_setup()
     # i.add_fields()
