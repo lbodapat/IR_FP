@@ -291,14 +291,15 @@ def translate2(tweet):
 # @app.route("/allDocs/",methods=['POST'])
 def getAllDocs(indexer):
     # try:
-    inurl='http://3.144.112.230:8983/solr/IRF21P1/select?q.op=OR&q=*%3A*'
+    inurl='http://3.144.112.230:8983/solr/IRF21P1/select?q.op=OR&q=*%3A*&rows=90528'
     print(inurl)
     data = urllib.request.urlopen(inurl).read()
     res = JSON.loads(data.decode('utf-8'))
     datas=res['response']
     datas=getSentiment2(datas)
     print(type(datas))
-    indexer.create_documents(datas)
+    for data in datas:
+        indexer.create_documents(datas)
     # response = jsonify(datas)
     # return response
     # except:
