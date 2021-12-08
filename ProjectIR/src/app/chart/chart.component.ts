@@ -162,7 +162,6 @@ setTimeout(this.donutForHastags(), 5000);  //postfilter
           setTimeout(this.lineChartSentimentalAnalysis_poiReplies(),3000)  //getSentimentDetails
           setTimeout(this.getTweetReplies(),3000)
 
-
 }
 
 
@@ -674,6 +673,7 @@ getTweetReplies(){
         }
 
       this.donutData = res;
+      console.log("THIS DONUT DATA: ",this.donutData)
       this.doughnut = new Chart(
         {
           chart: {type: 'pie'	},
@@ -706,6 +706,7 @@ getTweetReplies(){
     }
 
     donutForLanguage(){
+      //CHECK1
       this.data = this.tweetService.getData();
       let temp =JSON.stringify(this.data);
        this.filterdata_lang = this.postFilterData_tweet_lang;

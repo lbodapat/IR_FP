@@ -45,9 +45,9 @@ export class NavbarComponent {
     countries = [{key:'USA',status:false},{key:'India',status:false},{key:'Mexico',status:false}];
 
     topics = {
-        India:['Happy Birthday Modi','Politics','ISRO','Railway','Development Policies'],
-        US: ['Health Care','Gun control','Climate Change','Election Campaign',"Trump's Policies",'Minimum wage and taxes'],
-        Mexico:['Government policies','Presidential candidate','Corruption','Justice for Lula','Democracy']
+        India:['वैश्विकमहामारी','covid19','quarantine','मास्क','covidsecondwaveinindia','कोविड मृत्यु','संगरोध'],
+        US: ['rt-pcr','flattenthecurve','Corona virus','deltavariant',"sarscov2",'Minimum wage and taxes'],
+        Mexico:['quarentena','pandemia de covid-19','oxígeno','desinfectante','trabajar desde casa']
     }
     sentiments =[
         {key:'Positive', value:'Positive',status:false},
@@ -80,16 +80,16 @@ export class NavbarComponent {
                 {key:'White House USA',value:'WhiteHouse',status:false}
                 ];
 
-    hashtags = [{key:'isro',status:false},
-                {key:'chandrayaan2',status:false},
-                {key:'lulalivre',status:false},
-                {key:'showdopalocci',status:false},
-                {key:'vikramlander',status:false},
-                {key:'euconfioembolsonaro',status:false},
-                {key:'bolsonaropresidenteate2026',status:false},
-                {key:'trump2020',status:false},
-                {key:'euapoioopresidente',status:false},
-                {key:'proudofisro',status:false}];
+    hashtags = [{key:'covid',status:false},
+                {key:'corona',status:false},
+                {key:'vacuna',status:false},
+                {key:'vaccine',status:false},
+                {key:'covaxin',status:false},
+                {key:'covisheild',status:false},
+                {key:'wuhan',status:false},
+                {key:'covid-19',status:false},
+                {key:'jab',status:false},
+                {key:'tika',status:false}];
 
     checkedHashtags = [];
 
@@ -137,7 +137,7 @@ export class NavbarComponent {
         this.checkedHashtags = [];
         if(this.searchText){
             this.obj.query= this.searchText;
-            console.log("OBJEDT QUERY",this.obj.query);
+            console.log("OBJEDT QUERY",this.obj);
         }
         let temp =JSON.stringify(this.obj);
         this.tweetService.setHomeData(this.obj);
@@ -155,7 +155,7 @@ export class NavbarComponent {
                 this.hashtags.push({key:data[i],status:false});
             }
             if (this.checkedHashtags.length != 0){
-                console.log(this.checkedHashtags);
+                console.log("HASHTAGS LENGTH:",this.checkedHashtags);
                 for(var i = 0;i < this.checkedHashtags.length; i++){
                     for (var j = 0; j < this.hashtags.length; j++){
                         if(this.hashtags[j].key == this.checkedHashtags[i]){
@@ -174,13 +174,14 @@ export class NavbarComponent {
             console.log('searchText: ',this.searchText)
             this.obj.query= this.searchText;
         }
-        console.log('ABCDS: ',this.obj)
+        console.log('ABCDS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::: ',this.obj)
         let temp =JSON.stringify(this.obj);
         this.homeObj = JSON.parse(JSON.stringify(this.obj));
         this.tweetService.setHomeData(this.obj);
         this.tweetService.postData(temp).subscribe(a=> console.log(a));
         this.tweetService.setData(this.obj);
 		this.tweetService.postFilterData(this.homeObj).subscribe(data=>{
+		        console.log("DD: ",data)
             setTimeout(this.loadHashtags(data.hashtags),500)
         })
       }
