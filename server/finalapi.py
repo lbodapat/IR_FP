@@ -505,7 +505,7 @@ def read_config_replies(i):
     return data
 
 def index_replies(indexer):
-    for i in range(25):
+    for i in range(7,25):
         datas=read_config_replies(i+1)
         print("Processing POI ",i+1)
         for data in datas:
@@ -560,8 +560,9 @@ def getAllDocs(indexer):
 if __name__ == "__main__":
     # convert_pkl_to_json_keywords(110)
     indexer = Indexer()
-    index_main(indexer)
-    #index_replies(indexer)
+    #
+    #index_main(indexer)
+    index_replies(indexer)
     #index_kw(indexer)
 
 #TODO: Index keywords xD
