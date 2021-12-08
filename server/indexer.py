@@ -5,7 +5,7 @@ import requests
 # https://tecadmin.net/install-apache-solr-on-ubuntu/
 
 
-CORE_NAME = "IRF21P4_aks"
+CORE_NAME = "oneplusone"
 # AWS_IP = "3.14.126.14"
 AWS_IP = "localhost"
 
@@ -189,9 +189,9 @@ class Indexer:
 
 if __name__ == "__main__":
     print("Indexer")
-    #i = Indexer()
-    #i.do_initial_setup()
-    #i.add_fields()
+    i = Indexer()
+    i.do_initial_setup()
+    i.add_fields()
     # i = Indexer()
     # i.do_initial_setup()
     # i.add_fields()
