@@ -157,11 +157,6 @@ class Indexer:
                     "multiValued": False
                 },
                 {
-                    "name": "favorite_count",
-                    "type": "plong",
-                    "multiValued": False
-                },
-                {
                     "name": "media_url",
                     "type": "string",
                     "multiValued": False
@@ -183,21 +178,21 @@ class Indexer:
                 },
                 {
                     "name": "polarity",
-                    "type": "plong",
+                    "type": "pdouble",
                     "multiValued": False
                 },
                 {
                     "name": "subjectivity",
-                    "type": "plong",
+                    "type": "pdouble",
                     "multiValued": False
                 },{
                     "name": "reply_polarity",
-                    "type": "plong",
+                    "type": "pdouble",
                     "multiValued": False
                 },
                 {
                     "name": "reply_subjectivity",
-                    "type": "plong",
+                    "type": "pdouble",
                     "multiValued": False
                 }
             ]
