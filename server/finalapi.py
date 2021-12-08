@@ -480,5 +480,5 @@ if __name__ == "__main__":
     # convert_pkl_to_json(40)
     indexer = Indexer()
     # index_poi(indexer)
-    # getAllDocs(indexer)
-    app.run(host = "0.0.0.0",port = 9999)
+    getAllDocs(indexer)
+    # app.run(host = "0.0.0.0",port = 9999)
