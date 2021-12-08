@@ -468,7 +468,7 @@ def read_config_main(i):
     return data
 
 def index_main(indexer):
-    for i in range(4,31):
+    for i in range(31):
         datas=read_config_main(i+1)
         print("Processing POI ",i+1)
         for data in datas:
