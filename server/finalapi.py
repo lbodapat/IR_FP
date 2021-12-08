@@ -458,7 +458,8 @@ def translate2(tweet):
 # @app.route("/allDocs/",methods=['POST'])
 def getAllDocs(indexer):
     # try:
-    inurl='http://18.219.230.238:8983/solr/IRF21P1/select?q.op=OR&q=*%3A*&rows=69455'
+    # inurl='http://18.219.230.238:8983/solr/IRF21P1/select?q.op=OR&q=*%3A*&rows=69455'
+    inurl='http://18.219.230.238:8983/solr/IRF21P1/select?q.op=OR&q=*%3A*&rows=15000'
     print(inurl)
     data = urllib.request.urlopen(inurl).read()
     res = JSON.loads(data.decode('utf-8'))
@@ -479,5 +480,5 @@ if __name__ == "__main__":
     # convert_pkl_to_json(40)
     indexer = Indexer()
     # index_poi(indexer)
-    getAllDocs(indexer)
-    # app.run(host = "0.0.0.0",port = 9999)
+    # getAllDocs(indexer)
+    app.run(host = "0.0.0.0",port = 9999)
