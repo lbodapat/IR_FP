@@ -5,7 +5,7 @@ import requests
 # https://tecadmin.net/install-apache-solr-on-ubuntu/
 
 
-CORE_NAME = "IRF21P4_aks"
+CORE_NAME = "IRF21P4_finale1"
 # AWS_IP = "3.14.126.14"
 AWS_IP = "localhost"
 
@@ -49,6 +49,10 @@ class Indexer:
                     "multiValued": False
                 }, {
                     "name": "verified",
+                    "type": "boolean",
+                    "multiValued": False
+                }, {
+                    "name": "isKeyWord",
                     "type": "boolean",
                     "multiValued": False
                 },
@@ -173,12 +177,26 @@ class Indexer:
                     "multiValued": False
                 },
                 {
+                    "name": "reply_translated",
+                    "type": "string",
+                    "multiValued": False
+                },
+                {
                     "name": "polarity",
                     "type": "plong",
                     "multiValued": False
                 },
                 {
                     "name": "subjectivity",
+                    "type": "plong",
+                    "multiValued": False
+                },{
+                    "name": "reply_polarity",
+                    "type": "plong",
+                    "multiValued": False
+                },
+                {
+                    "name": "reply_subjectivity",
                     "type": "plong",
                     "multiValued": False
                 }
@@ -189,9 +207,9 @@ class Indexer:
 
 if __name__ == "__main__":
     print("Indexer")
-    #i = Indexer()
-    #i.do_initial_setup()
-    #i.add_fields()
+    i = Indexer()
+    i.do_initial_setup()
+    i.add_fields()
     # i = Indexer()
     # i.do_initial_setup()
     # i.add_fields()

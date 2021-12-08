@@ -400,50 +400,54 @@ def run_keywords():
             i=i+1
 
 
-def convert_pkl_to_json(i):
-    for j in range(1):
+def convert_pkl_to_json(r):
+    i=1
+    for j in range(r):
         print("::::::--------->>>>>>>>>",(i))
-        with open("../data/new_data/poi_"+str(i)+".pkl","rb") as input_file:
+        with open("../new_data/POI/poi_"+str(i)+".pkl","rb") as input_file:
             new_dict = pickle.load(input_file)
-            i=i+1
-            # data=JSON.dumps(JSON.loads(new_dict.to_json(orient="records")))
             new_dict=new_dict.replace("False", '"False"')
-            new_dict.to_json('../data/new_data/poi_'+str(i)+'.json', orient='records', lines=True)
+            new_dict.to_json('../new_data/JSON/POI/poi_'+str(i)+'.json', orient='records', lines=True)
+            i=i+1
 
-def read_config(i):
+def convert_pkl_to_json_keywords(r):
+    i=1
+    for j in range(r):
+        print("::::::--------->>>>>>>>>",(i))
+        with open("../data/keywords/keywords_"+str(i)+".pkl","rb") as input_file:
+            new_dict = pickle.load(input_file)
+            new_dict=new_dict.replace("False", '"False"')
+            new_dict.to_json('../new_data/JSON/keywords/keywords_'+str(i)+'.json', orient='records', lines=True)
+            i=i+1
+
+####################### INDEXING FROM JSON DATA ################################
+
+def read_config_kw(i):
     data = []
-    with open("../data/JSON/POI/poi"+str(i)+".json") as f:
+    with open("../new_data/JSON/POI/poi_"+str(i)+".json") as f:
         for line in f:
             data.append(JSON.loads(line))
     return data
 
-def index_poi(indexer):
-    for i in range(40):
-        datas=read_config(i)
-        print("Processing POI ",i)
+def index_kw(indexer):
+    for i in range(109):
+        datas=read_config_kw(i+1)
+        print("Processing POI ",i+1)
         for data in datas:
-            print("Data: ", data)
-            tweets = api.search(q=data['id'])
-            for tweet in tweets:
-                print(tweet._json)
-                data['screen_name'] = tweet._json['user']['screen_name']
-            indexer.create_documents(data) #data or tweet ??
+            data=getSentiment_kw(data)
+            indexer.create_documents(data)
 
-def getSentiment2(datas):
-    # polarity_data=[]
-    # subjectivity_data=[]
-    for data in datas['docs']:
-        text=translate(data)
-        polarity = TextBlob(text).polarity
-        subjectivity = TextBlob(text).subjectivity
-        # polarity_data.append(polarity)
-        # subjectivity_data.append(subjectivity)
-        data['translated_text']=text
-        data['polarity']=polarity
-        data['subjectivity']=subjectivity
-    return datas
+def getSentiment_kw(data):
+    text=translate_kw(data)
+    polarity = TextBlob(text).polarity
+    subjectivity = TextBlob(text).subjectivity
+    data['translated_text']=text
+    data['polarity']=polarity
+    data['subjectivity']=subjectivity
+    data['isKeyWord']=True
+    return data
 
-def translate2(tweet):
+def translate_kw(tweet):
     tr = Translator()
     lang = tweet['tweet_lang']
     text = tweet['tweet_text']
@@ -454,6 +458,83 @@ def translate2(tweet):
         except:
             print('Not Translated')
     return text
+
+
+def read_config_main(i):
+    data = []
+    with open("../new_data/JSON/POI/poi_"+str(i)+".json") as f:
+        for line in f:
+            data.append(JSON.loads(line))
+    return data
+
+def index_main(indexer):
+    for i in range(31):
+        datas=read_config_main(i+1)
+        print("Processing POI ",i+1)
+        for data in datas:
+            data=getSentiment_main(data)
+            indexer.create_documents(data)
+
+def getSentiment_main(data):
+    text=translate_main(data)
+    polarity = TextBlob(text).polarity
+    subjectivity = TextBlob(text).subjectivity
+    data['translated_text']=text
+    data['polarity']=polarity
+    data['subjectivity']=subjectivity
+    data['isKeyWord']=False
+    return data
+
+def translate_main(tweet):
+    tr = Translator()
+    lang = tweet['tweet_lang']
+    text = tweet['tweet_text']
+    if lang != 'en':
+        try:
+            translated_text = tr.translate(text, dest = 'en').text
+            text = translated_text
+        except:
+            print('Not Translated')
+    return text
+
+def read_config_replies(i):
+    data = []
+    with open("../new_data/JSON/POI/poireplies_"+str(i)+".json") as f:
+        for line in f:
+            data.append(JSON.loads(line))
+    return data
+
+def index_replies(indexer):
+    for i in range(25):
+        datas=read_config_replies(i+1)
+        print("Processing POI ",i+1)
+        for data in datas:
+            data=getSentiment_replies(data)
+            indexer.create_documents(data)
+
+def getSentiment_replies(data):
+    text=translate_replies(data)
+    polarity = TextBlob(text).polarity
+    subjectivity = TextBlob(text).subjectivity
+    data['reply_translated']=text
+    data['reply_polarity']=polarity
+    data['reply_subjectivity']=subjectivity
+    data['isKeyWord']=False
+    return data
+
+def translate_replies(tweet):
+    tr = Translator()
+    lang = tweet['tweet_lang']
+    text = tweet['tweet_text']
+    if lang != 'en':
+        try:
+            translated_text = tr.translate(text, dest = 'en').text
+            text = translated_text
+        except:
+            print('Not Translated')
+    return text
+
+ ################################
 
 # @app.route("/allDocs/",methods=['POST'])
 def getAllDocs(indexer):
@@ -477,8 +558,10 @@ def getAllDocs(indexer):
     #     return response
 
 if __name__ == "__main__":
-    # convert_pkl_to_json(40)
+    # convert_pkl_to_json_keywords(110)
     indexer = Indexer()
-    # index_poi(indexer)
-    getAllDocs(indexer)
-    # app.run(host = "0.0.0.0",port = 9999)
+    index_main(indexer)
+    index_replies(indexer)
+    index_kw(indexer)
+
+#TODO: Index keywords xD
