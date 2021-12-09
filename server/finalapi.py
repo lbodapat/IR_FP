@@ -424,15 +424,15 @@ def convert_pkl_to_json_keywords(r):
 
 def read_config_kw(i):
     data = []
-    with open("../new_data/JSON/POI/poi_"+str(i)+".json") as f:
+    with open("../new_data/JSON/keywords/keywords_"+str(i)+".json") as f:
         for line in f:
             data.append(JSON.loads(line))
     return data
 
 def index_kw(indexer):
-    for i in range(109):
+    for i in range(50,109):
         datas=read_config_kw(i+1)
-        print("Processing POI ",i+1)
+        print("Processing KW ",i+1)
         for data in datas:
             data=getSentiment_kw(data)
             indexer.create_documents(data)
@@ -562,7 +562,7 @@ if __name__ == "__main__":
     indexer = Indexer()
     #
     #index_main(indexer)
-    index_replies(indexer)
-    #index_kw(indexer)
+    #index_replies(indexer)
+    index_kw(indexer)
 
 #TODO: Index keywords xD
