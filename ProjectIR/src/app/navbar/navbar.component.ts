@@ -347,7 +347,6 @@ onPoiName(event){
 
   }
 
-
   //For Sentiments
   onSentimentSelect(event){
     for(var i = 0;i < this.sentiments.length; i++){
