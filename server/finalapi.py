@@ -715,13 +715,9 @@ if __name__ == "__main__":
     indexer = Indexer()
     #
     #index_main(indexer)
-<<<<<<< HEAD
     #index_replies(indexer)
-    index_kw(indexer)
-
-=======
+    # index_kw(indexer)
     # index_replies(indexer)
     #index_kw(indexer)
     app.run(host = "0.0.0.0",port = 9999)
->>>>>>> 352e8b16f497b66b3b103b9b06b47873e2064ec2
 #TODO: Index keywords xD
