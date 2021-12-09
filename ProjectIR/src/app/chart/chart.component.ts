@@ -106,6 +106,14 @@ export class ChartComponent implements OnInit {
   postFilterData_verified=[];
   wordData=new Array<AgWordCloudData>();
 
+  postFilterData_poiSentiment_neg;
+  postFilterData_poiSentiment_neutral;
+  postFilterData_poiSentiment_pos;
+
+  postFilterData_poiSentiment_neg_rep;
+  postFilterData_poiSentiment_neutral_rep;
+  postFilterData_poiSentiment_pos_rep;
+
   getSentimentDetails_countrydata=[];
   getSentimentDetails_monthdata=[];
   filterOpen :boolean=false;
@@ -648,6 +656,13 @@ getTweetReplies(){
         this.postFilterData_verified=tweets.verified;
         this.postFilterData_topic = tweets.topic_str;
 
+        this.postFilterData_poiSentiment_neg=tweets.poi_sentiment.negative_sentiment_count;
+        this.postFilterData_poiSentiment_neutral=tweets.poi_sentiment.neutral_sentiment_count;
+        this.postFilterData_poiSentiment_pos=tweets.poi_sentiment.pos_sentiment_count;
+
+        this.postFilterData_poiSentiment_neg_rep=tweets.poi_sentiment_replies.negative_sentiment_count;
+        this.postFilterData_poiSentiment_neutral_rep=tweets.poi_sentiment_replies.neutral_sentiment_count;
+        this.postFilterData_poiSentiment_pos_rep=tweets.poi_sentiment_replies.pos_sentiment_count;
 
         data_hastags =this.postFilterData_hashtags;
 
@@ -666,7 +681,6 @@ getTweetReplies(){
               chartData.push(this.prop)
              }
           }
-
           for(let i=0;i<chartData.length;i++){
               res.push({name:chartData[i].name,y:chartData[i].y,dataLabels: {  enabled: true  }})
            }
@@ -699,11 +713,121 @@ getTweetReplies(){
       this.donutForLanguage();
       this.donutForCountries();
       this.columnChartForCountries();
-
+      this.donutForSentimentPoi_mine();
+      this.donutForSentimentPoi_replies_mine();
     });
     setTimeout (() => {    }, 3000);
 
     }
+
+//---------------------ATP
+
+  donutForSentimentPoi_mine(){
+      //CHECK1
+      let  chartData=[];
+      let res=[];
+      let prop : Prop;
+
+      this.prop = new Prop();
+      this.prop.name= "Negative";
+      this.prop.y = this.postFilterData_poiSentiment_neg;
+      chartData.push(this.prop)
+
+      this.prop = new Prop();
+      this.prop.name= "Neutral";
+      this.prop.y = this.postFilterData_poiSentiment_neutral;
+      chartData.push(this.prop)
+
+      this.prop = new Prop();
+      this.prop.name= "Positive";
+      this.prop.y = this.postFilterData_poiSentiment_pos;
+      chartData.push(this.prop)
+
+      for(let i=0;i<chartData.length;i++){
+          res.push({name:chartData[i].name,y:chartData[i].y,dataLabels: {  enabled: true  }})
+       }
+
+      this.donutData = res;
+
+      this.doughnut_senti_poi = new Chart(
+        {
+          chart: {type: 'pie'	},
+          title: {text: ''},
+          credits: {enabled:  false},
+          plotOptions: {
+                pie: {
+                  allowPointSelect: true,
+                  dataLabels: {	enabled: false},
+                  size: 300,
+                  innerSize: '50%',
+                  center: ['50%', '40%']
+                }
+              },
+              series: [{
+                type: undefined,
+                innerSize: '50%',
+                data:  this.donutData
+            }]
+
+        }
+      );
+
+    }
+  donutForSentimentPoi_replies_mine(){
+      //CHECK1
+      let  chartData=[];
+      let res=[];
+      let prop : Prop;
+
+      this.prop = new Prop();
+      this.prop.name= "Negative";
+      this.prop.y = this.postFilterData_poiSentiment_neg_rep;
+      chartData.push(this.prop)
+
+      this.prop = new Prop();
+      this.prop.name= "Neutral";
+      this.prop.y = this.postFilterData_poiSentiment_neutral_rep;
+      chartData.push(this.prop)
+
+      this.prop = new Prop();
+      this.prop.name= "Positive";
+      this.prop.y = this.postFilterData_poiSentiment_pos_rep;
+      chartData.push(this.prop)
+
+      for(let i=0;i<chartData.length;i++){
+          res.push({name:chartData[i].name,y:chartData[i].y,dataLabels: {  enabled: true  }})
+       }
+
+      this.donutData = res;
+
+      this.doughnut_senti_poi_replies = new Chart(
+        {
+          chart: {type: 'pie'	},
+          title: {text: ''},
+          credits: {enabled:  false},
+          plotOptions: {
+                pie: {
+                  allowPointSelect: true,
+                  dataLabels: {	enabled: false},
+                  size: 300,
+                  innerSize: '50%',
+                  center: ['50%', '40%']
+                }
+              },
+              series: [{
+                type: undefined,
+                innerSize: '50%',
+                data:  this.donutData
+            }]
+
+        }
+      );
+
+    }
+
+
+//--------------------//
+
 
     donutForLanguage(){
       //CHECK1
