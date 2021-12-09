@@ -115,6 +115,9 @@ export class ChartComponent implements OnInit {
   postFilterData_poiSentiment_neutral_rep;
   postFilterData_poiSentiment_pos_rep;
 
+  country_metrics;
+  lang_metrics;
+
   postFilterData_vaccSentiment_neg;
   postFilterData_vaccSentiment_neutral;
   postFilterData_vaccSentiment_pos;
@@ -435,109 +438,6 @@ this.pie_India_hashtags = new Chart(
 );
 }}
 
-columnChartForCountries(){
-  this.data = this.tweetService.getData();
-      let temp =JSON.stringify(this.data);
-       this.filterdata_country = this.postFilterData_country;
-        this.data =this.filterdata_country;
-        let data =[];
-        let res=[];
-        let  chartData=[];
-        let prop : Prop;
-        let result=[];
-        let data_country=[]
-        data_country=   this.filterdata_country;
-        if(data_country && data_country.length>0){
-            this.data.forEach(function(d) {
-              data.push(d);
-            });
-
-           for (let i = 0; i < this.data.length; i+=2) {
-            res.push({name:this.data[i],y:[this.data[i+1]]})
-          }
-        }
-
-          this.columnChartOptions = new Chart( {
-            chart: {
-              type: "column",
-              renderTo: "container"
-            },
-            credits: { enabled: false  },
-            title: {   text: " Column Title"    },
-            subtitle: {text: ""    },
-            xAxis: { categories: ["Distribution of Tweets"]    },
-            yAxis: { min: 0,  title: {        text: "Number of tweets"      }    },
-            legend: {
-              layout: "vertical",
-              backgroundColor: "#FFFFFF",
-              align: "left",
-              verticalAlign: "top",
-              x: 50,
-              y: 70,
-              floating: true,
-              shadow: true
-            },
-            tooltip: {    },
-            plotOptions: {
-              column: {
-                pointPadding: 0.2,  borderWidth: 0  }
-            },
-            series: res
-          });
-
-        }
-
-        lineChartSentimentalAnalysis_poitweets(){
-          this.data = this.tweetService.getData();
-      let temp =JSON.stringify(this.data);
-      this.tweetService.getpoiTweetsUrl(temp).subscribe(tweets=>{
-        this.getpoiTweetsUrl_data = tweets.date;
-        this.sentimentData = tweets.data;
-         this.count = tweets&& tweets.data?Object.keys(tweets.data).length:0;
-        let res=[];
-        let data_neutral =[];
-        let data_negative =[];
-        let data_positive=[];
-        let months_str =[];
-        //Dictionary--> keys-> values-> Dictionary()
-        let month_array  = tweets&& tweets.data?Object.keys(tweets.data):[];
-        for(let i=0;i<this.months.length;i++){
-              if((month_array.indexOf(this.months[i]))!== -1){
-              let monthData = this.sentimentData[this.months[i]];
-
-              data_neutral.push(monthData[0].neutral)
-              data_negative.push(monthData[0].negative)
-              data_positive.push(monthData[0].positive)
-              }
-              else{
-                  if(this.count >0){
-                  data_neutral.push(0)
-                  data_negative.push(0)
-                  data_positive.push(0)
-                  }
-                 }
-                 for(let i=0;i<this.months.length;i++){
-                  months_str.push(this.months[i]+'-2019')
-                }
-        }
-        res.push({name:'NEUTRAL',data:data_neutral,type:"line"})
-        res.push({name:'NEGATIVE',data:data_negative,type:"line"})
-        res.push({name:'POSITIVE',data:data_positive,type:"line"})
-
-      this.sentimentsInfo = res;
-
-      this.chart_poiTweets = new Chart({
-        chart: { type: 'line' },
-        title: { text: 'TIME SERIES OF TWEETS' },
-        credits: { enabled: false  },
-        xAxis : {categories: months_str},
-        series: this.sentimentsInfo
-      });
-
-    });
-    setTimeout (() => {    }, 3000);
-        }
-
     donutDonut(){
           this.data = this.tweetService.getData();
           let temp =JSON.stringify(this.data);
@@ -575,13 +475,16 @@ columnChartForCountries(){
         this.postFilterData_verified=tweets.verified;
         this.postFilterData_topic = tweets.topic_str;
 
-        this.postFilterData_poiSentiment_neg=tweets.poi_sentiment.negative_sentiment_count;
-        this.postFilterData_poiSentiment_neutral=tweets.poi_sentiment.neutral_sentiment_count;
-        this.postFilterData_poiSentiment_pos=tweets.poi_sentiment.pos_sentiment_count;
+        this.postFilterData_poiSentiment_neg=tweets.metrics.poi_sentiment.negative_sentiment_count;
+        this.postFilterData_poiSentiment_neutral=tweets.metrics.poi_sentiment.neutral_sentiment_count;
+        this.postFilterData_poiSentiment_pos=tweets.metrics.poi_sentiment.pos_sentiment_count;
 
-        this.postFilterData_poiSentiment_neg_rep=tweets.poi_sentiment_replies.negative_sentiment_count;
-        this.postFilterData_poiSentiment_neutral_rep=tweets.poi_sentiment_replies.neutral_sentiment_count;
-        this.postFilterData_poiSentiment_pos_rep=tweets.poi_sentiment_replies.pos_sentiment_count;
+        this.postFilterData_poiSentiment_neg_rep=tweets.metrics.poi_sentiment_replies.negative_sentiment_count;
+        this.postFilterData_poiSentiment_neutral_rep=tweets.metrics.poi_sentiment_replies.neutral_sentiment_count;
+        this.postFilterData_poiSentiment_pos_rep=tweets.metrics.poi_sentiment_replies.pos_sentiment_count;
+
+        this.country_metrics=tweets.country_metrics;
+        this.lang_metrics=tweets.lang_metrics;
 
         data_hastags =this.postFilterData_hashtags;
 

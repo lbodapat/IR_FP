@@ -10,7 +10,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
-
+   lang_count;
    model = new Filter();
     country=[];
     lang=[];
@@ -39,10 +39,10 @@ export class NavbarComponent {
     showPois: boolean = false;
     homeObj= new Filter();
 
-    languages=[{key:'English', value:'en',status:false},
-        {key:'Hindi', value:'hi',status:false},{key:'Spanish', value:'es',status:false}]
+    languages=[{key:'English', value:'en',status:false,count:0},
+        {key:'Hindi', value:'hi',status:false,count:0},{key:'Spanish', value:'es',status:false,count:0}]
 
-    countries = [{key:'USA',status:false},{key:'India',status:false},{key:'Mexico',status:false}];
+    countries = [{key:'USA',status:false,count:0},{key:'India',status:false,count:0},{key:'Mexico',status:false,count:0}];
 
     topics = {
         India:['वैश्विकमहामारी','covid19','quarantine','मास्क','covidsecondwaveinindia','कोविड मृत्यु','संगरोध'],
@@ -145,6 +145,14 @@ export class NavbarComponent {
         this.tweetService.setData(this.obj);
         this.homeObj = JSON.parse(JSON.stringify(this.obj));
         this.tweetService.postFilterData(this.homeObj).subscribe(data=>{
+            this.languages[0].count=data.metrics.lang_metrics.en
+            this.languages[1].count=data.metrics.lang_metrics.hi
+            this.languages[2].count=data.metrics.lang_metrics.es
+
+            this.countries[0].count=data.metrics.country_metrics.USA
+            this.countries[1].count=data.metrics.country_metrics.India
+            this.countries[2].count=data.metrics.country_metrics.Mexico
+
             setTimeout(this.loadHashtags(data.hashtags),500)
         })
         }
@@ -181,6 +189,15 @@ export class NavbarComponent {
         this.tweetService.postData(temp).subscribe(a=> console.log(a));
         this.tweetService.setData(this.obj);
 		this.tweetService.postFilterData(this.homeObj).subscribe(data=>{
+		        this.languages[0].count=data.metrics.lang_metrics.en
+            this.languages[1].count=data.metrics.lang_metrics.hi
+            this.languages[2].count=data.metrics.lang_metrics.es
+
+            this.countries[0].count=data.metrics.country_metrics.USA
+            this.countries[1].count=data.metrics.country_metrics.India
+            this.countries[2].count=data.metrics.country_metrics.Mexico
+
+
 		        console.log("DD: ",data)
             setTimeout(this.loadHashtags(data.hashtags),500)
         })

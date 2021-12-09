@@ -106,22 +106,9 @@ setHomeData(val:any){
     this.value.next(val);
 }
 
-getSentimentDetails(data:any):Observable<any>{
-    return this.http.post(this.SentimentDetailsurl, data, httpOptions)
-}
-
-getpoiRepliesUrl(data:any):Observable<any>{
-    return this.http.post(this.poiRepliesUrl, data, httpOptions)
-}
-getpoiTweetsUrl(data:any):Observable<any>{
-    return this.http.post(this.poiTweetsUrl, data, httpOptions)
-}
 
 setHomeReturnData(val:any){
     this.homeReturnval.next(val);
 }
 
-getpoiDetailsUrl(data:any):Observable<any>{
-    return this.http.post(this.getPOIDetails, data, httpOptions)
-}
 }

@@ -4,18 +4,18 @@
                <br>
                <br>
                 <div>
-                  <h1>Impact of Covid related political rhetoric on the common masses</h1>
+                  <h1 style="text-align:center">Impact of Covid related political rhetoric on the common masses</h1>
                   <br>
                   <br>
                   <div class="row">
                     <div class="col-6">
-                      <h2>Sentiment of POI tweets</h2>
+                      <h3 style="text-align:center"> Sentiment of POI tweets</h3>
                       <div [chart]="doughnut_senti_poi"></div>
                     </div>
                     <br>
                     <br>
                     <div class="col-6">
-                      <h2>Sentiment of replies on POI tweets</h2>
+                      <h3 style="text-align:center">Sentiment of replies on POI tweets</h3>
                       <div [chart]="doughnut_senti_poi_replies"></div>
                     </div>
                   </div>
@@ -26,7 +26,7 @@
                 <br>
                 <br>
                 <div>
-                  <h1>Attitude of the general population towards Covid vaccines</h1>
+                  <h1 style="text-align:center">Attitude of the general population towards Covid vaccines</h1>
                   <br>
                   <br>
                   <div [chart]="doughnut_senti_vaccines"></div>
@@ -36,24 +36,27 @@
 
 
                 <div>
-                    <div class="row">
+                  <h1 style="text-align:center">Analytics</h1>
+                  <br>
+                  <br>
+                  <div class="row">
                         <div class="col-6">
-                            <h2>Language Wise Distribution of Tweets</h2>
+                            <h3 style="text-align:center">Language Wise Distribution of Tweets</h3>
                             <div [chart]="doughnut_lang"></div>
                         </div>
                         <br>
                         <br>
                         <div class="col-6">
-                            <h2>Country Wise Distribution of Tweets</h2>
+                            <h3 style="text-align:center">Country Wise Distribution of Tweets</h3>
                             <div [chart]="doughnut_country"></div>
                         </div>
                     </div>
                 </div>
                 <br>
-                <h2>Overall Top Hashtags</h2>
+                <h3 style="text-align:center">Overall Top Hashtags</h3>
                 <div [chart]="doughnut"></div>
                 <br>
-                <h2>Country Wise Top Hashtags</h2>
+                <h3 style="text-align:center">Country Wise Top Hashtags</h3>
                 <div class="row">
                         <div class="col-4">
                             <a [chart]="pie_India_hashtags"></a>
@@ -68,18 +71,18 @@
                         </div>
                 </div>
 
-                <h2>POI Sentiment Distribution</h2>
+                <h3 style="text-align:center">POI Sentiment Distribution</h3>
                 <div [chart] ="stackedBarChart"></div>
                 <br>
 
-                <h2>Topic Wise Distribution</h2>
+                <h3 style="text-align:center">Topic Wise Distribution</h3>
                 <div [chart] ="topicWiseChart"></div>
                 <br>
 
-                <h2>Country Wise Distribution of Tweets</h2>
+                <h3 style="text-align:center">Country Wise Distribution of Tweets</h3>
                 <br>
                 <div class="row" style="margin-left:420px ;margin-bottom: 50px;margin-top: 20px;">  <div [chart]="mapChart"></div>  </div>
-                <h2>Country Wise Sentiment Analysis</h2>
+                <h3 style="text-align:center">Country Wise Sentiment Analysis</h3>
                 <div class="row">
                         <div class="col-4">
                             <a [chart]="pie_India"></a>
@@ -102,29 +105,29 @@
 <ng-container *ngIf= "filterOpen">
         <li class="card card-body" style="margin-right:80px;margin-left:350px" >
 <!--            <span>-->
-<!--                <h2>Time Series for POI </h2>-->
+<!--                <h3>Time Series for POI </h3>-->
 <!--                <div [chart]="chart_poiTweets"></div>-->
 <!--            </span>-->
 
-<!--                <h2>Time Series for POI replies </h2>-->
+<!--                <h3>Time Series for POI replies </h3>-->
 <!--                <div [chart]="chart"></div>-->
 
 
           <br>
           <br>
           <div>
-            <h1>Impact of Covid related political rhetoric on the common masses</h1>
+            <h1 style="text-align:center">Impact of Covid related political rhetoric on the common masses</h1>
             <br>
             <br>
             <div class="row">
               <div class="col-6">
-                <h2>Sentiment of POI tweets</h2>
+                <h3 style="text-align:center">Sentiment of POI tweets</h3>
                 <div [chart]="doughnut_senti_poi"></div>
               </div>
               <br>
               <br>
               <div class="col-6">
-                <h2>Sentiment of replies on POI tweets</h2>
+                <h3 style="text-align:center">Sentiment of replies on POI tweets</h3>
                 <div [chart]="doughnut_senti_poi_replies"></div>
               </div>
             </div>
@@ -135,7 +138,7 @@
           <br>
           <br>
           <div>
-            <h1>Attitude of the general population towards Covid vaccines</h1>
+            <h1 style="text-align:center">Attitude of the general population towards Covid vaccines</h1>
             <br>
             <br>
             <div [chart]="doughnut_senti_vaccines"></div>
@@ -156,9 +159,9 @@
                     </div>
                 </div>
 
-                <h2>Overall Top Hashtags</h2>
+                <h3 style="text-align:center">Overall Top Hashtags</h3>
                 <div [chart]="doughnut"></div>
-                <h2>Country Wise Top Hashtags</h2>
+                <h3>Country Wise Top Hashtags</h3>
                 <!-- <h3>No Hastags Found</h3> -->
                 <div class="row">
                         <div class="col-4">
@@ -174,13 +177,13 @@
                         </div>
                 </div>
 
-                <h2>POI Sentiment Distribution</h2>
+                <h3 style="text-align:center">POI Sentiment Distribution</h3>
                 <div [chart] ="stackedBarChart"></div>
 
-                <h2>Topic Wise Distribution</h2>
+                <h3 style="text-align:center">Topic Wise Distribution</h3>
                 <div [chart] ="topicWiseChart"></div>
 
-                <h2>Country Wise Sentiment Analysis</h2>
+                <h3 style="text-align:center">Country Wise Sentiment Analysis</h3>
 
                 <div class="row" style="margin-left:400px;margin-bottom: 20px;">
                      <div [chart]="mapChart" ></div>

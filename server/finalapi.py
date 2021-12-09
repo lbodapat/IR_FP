@@ -110,8 +110,8 @@ def getFilterDetails():
         data = urllib.request.urlopen(inurl).read()
         docs = JSON.loads(data.decode('utf-8'))['facet_counts']['facet_fields']
         docs["status"]= JSON.loads(data.decode('utf-8'))['responseHeader']['status']
-        docs['poi_sentiment']=sentimentMethodPoi(request)
-        docs['poi_sentiment_replies']=sentimentMethodPoiReplies(request)
+        docs['metrics']=sentimentMethodPoi(request)
+        # docs['poi_sentiment_replies']=sentimentMethodPoiReplies(request)
         response = jsonify(docs)
         return response
     except:
@@ -138,6 +138,7 @@ def getDetails():
         res = JSON.loads(data.decode('utf-8'))
         docs=res['response']
         docs['vaccines_sentiment']=sentimentMethodVaccines(request)
+        docs['subjectivity']=getSubjectivity(request)
         response = jsonify(docs)
         print(type(response))
         return response
@@ -157,28 +158,65 @@ def sentimentMethodPoi(request):
         modelquery=data["query"].strip()[0]
     modelquery = urllib.parse.quote(data["query"])
 
-    neg_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity'+filterquery
+    neg_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity&f.reply_polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=reply_polarity&facet.field=country&facet.field=tweet_lang'+filterquery
     print("NEG URL",neg_inurl)
     neg_data = urllib.request.urlopen(neg_inurl).read()
     neg_res = JSON.loads(neg_data.decode('utf-8'))
-    neg_senti_count=neg_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+    neg_senti_count =neg_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+    neg_senti_count_rep =neg_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
+    country_metrics =neg_res['facet_counts']['facet_fields']['country']
+    lang_metrics =neg_res['facet_counts']['facet_fields']['tweet_lang']
+    keys=[]
+    values=[]
+    i=0
+    while(i<len(country_metrics)):
+        keys.append(country_metrics[i])
+        values.append(country_metrics[i+1])
+        i+=2
 
-    neut_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=polarity'+filterquery
+    country_metrics = dict(zip(keys, values))
+
+    keys2=[]
+    values2=[]
+    i=0
+    while(i<len(lang_metrics)):
+        keys2.append(lang_metrics[i])
+        values2.append(lang_metrics[i+1])
+        i+=2
+        # if(i==6):
+        #     break
+    lang_metrics = dict(zip(keys2, values2))
+
+    neut_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=polarity&f.reply_polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
     print("Neut URL",neut_inurl)
     neut_data = urllib.request.urlopen(neut_inurl).read()
     neut_res = JSON.loads(neut_data.decode('utf-8'))
     neut_senti_count=neut_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+    neut_senti_count_rep=neut_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
 
-    pos_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=polarity'+filterquery
+    pos_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=polarity&f.reply_polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=reply_polarity'+filterquery
     print("Pos URL",pos_inurl)
     pos_data = urllib.request.urlopen(pos_inurl).read()
     pos_res = JSON.loads(pos_data.decode('utf-8'))
     pos_senti_count=pos_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+    pos_senti_count_rep=pos_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
 
-    response = {}
-    response['negative_sentiment_count']=neg_senti_count
-    response['neutral_sentiment_count']=neut_senti_count
-    response['pos_sentiment_count']=pos_senti_count
+    response_poi = {}
+    response_poi['negative_sentiment_count']=neg_senti_count
+    response_poi['neutral_sentiment_count']=neut_senti_count
+    response_poi['pos_sentiment_count']=pos_senti_count
+
+    response_poi_replies = {}
+    response_poi_replies['negative_sentiment_count']=neg_senti_count_rep
+    response_poi_replies['neutral_sentiment_count']=neut_senti_count_rep
+    response_poi_replies['pos_sentiment_count']=pos_senti_count_rep
+
+    response={}
+    response['poi_sentiment']=response_poi
+    response['poi_sentiment_replies']=response_poi_replies
+    response['country_metrics']=country_metrics
+    response['lang_metrics']=lang_metrics
+
     print(response)
     return response
 
@@ -216,6 +254,53 @@ def sentimentMethodVaccines(request):
     response['pos_sentiment_count']=neut_senti_count
     # print(response)
     return response
+
+def getSubjectivity(request):
+    print(request)
+    print (request.json )
+    data=request.json
+    print("getting filter query")
+    filterquery=getFilters(data,"user.screen_name")
+    if(data["query"][0]=="#"):
+        modelquery=data["query"].strip()[0]
+    modelquery = urllib.parse.quote(data["query"])
+
+    op_inurl_poi='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0.496&facet.range.end=1&facet.range.gap=0.6&facet.range=subjectivity&f.reply_subjectivity.facet.range.start=0.496&facet.range.end=1&facet.range.gap=0.6&facet.range=reply_subjectivity'+filterquery
+    op_data = urllib.request.urlopen(op_inurl_poi).read()
+    op_res = JSON.loads(op_data.decode('utf-8'))
+    op_count=op_res['facet_counts']['facet_ranges']['subjectivity']['counts'][1]
+    op_count_reply=op_res['facet_counts']['facet_ranges']['reply_subjectivity']['counts'][1]
+
+    fact_inurl_poi='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0&facet.range.end=0.495&facet.range.gap=0.5&facet.range=subjectivity&f.reply_subjectivity.facet.range.start=0&facet.range.end=0.495&facet.range.gap=0.6&facet.range=reply_subjectivity'+filterquery
+    print("JSJJ ",fact_inurl_poi)
+    fact_data = urllib.request.urlopen(fact_inurl_poi).read()
+    fact_res = JSON.loads(fact_data.decode('utf-8'))
+    fact_count=fact_res['facet_counts']['facet_ranges']['subjectivity']['counts'][1]
+    print(fact_count)
+    fact_count_reply=fact_res['facet_counts']['facet_ranges']['reply_subjectivity']['counts'][1]
+    print(fact_count_reply)
+
+
+    op_inurl_vac='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0.496&facet.range.end=1&facet.range.gap=0.6&facet.range=subjectivity'+filterquery
+    op_data_vac = urllib.request.urlopen(op_inurl_vac).read()
+    op_res_vac = JSON.loads(op_data_vac.decode('utf-8'))
+    op_count_vac=op_res_vac['facet_counts']['facet_ranges']['subjectivity']['counts'][1]
+
+    fact_inurl_vac='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0&facet.range.end=0.495&facet.range.gap=0.5&facet.range=subjectivity'+filterquery
+    print("JSJJ ",fact_inurl_vac)
+    fact_data_vac = urllib.request.urlopen(fact_inurl_vac).read()
+    fact_res_vac = JSON.loads(fact_data_vac.decode('utf-8'))
+    fact_count_vac=fact_res_vac['facet_counts']['facet_ranges']['subjectivity']['counts'][1]
+
+    response = {}
+    response['opinions_poi']=op_count
+    response['facts_poi']=fact_count
+    response['opinions_poi_reply']=op_count_reply
+    response['facts_poi_reply']=fact_count_reply
+    response['opinions_vac']=op_count_vac
+    response['facts_vac']=fact_count_vac
+    return response
+
 
 def sentimentMethodPoiReplies(request):
     print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
