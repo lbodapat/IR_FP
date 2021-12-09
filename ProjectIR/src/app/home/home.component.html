@@ -14,9 +14,13 @@
           <div class="col-md-11">
               <h4>{{tweet.username}}
                 <i *ngIf="tweet.verified" class="fa fa-check-circle" style="color:rgba(29,161,242,1.00); margin-left:10px"></i>
-                <span style="position: absolute;right:10px;font-size:17.5px">
+                <span style="position: absolute;right:120px;font-size:17.5px">
                   <i class="fa fa-circle" [ngStyle]="sentimentStyle(tweet.sentiment)" ></i>
                   {{tweet.sentiment}}
+                </span>
+                <span style="position: absolute;right:10px;font-size:17.5px">
+                  <i class="fa fa-circle" [ngStyle]="opinionStyle(tweet.subjectivity)" ></i>
+                  {{tweet.subjectivity}}
                 </span>
               </h4>
               <ul class="list-unstyled">
@@ -65,7 +69,7 @@
                   <span style="margin-right:10px;font-size:18px"><i class="fa fa-heart" style="margin-right:2px;"></i>{{tweet.favorite_count}}</span>
                   <span style="font-size:18px"><i class="fa fa-retweet" style="margin-right:2px"></i>{{tweet.retweet_count}}</span>
                   <!-- background-color:#66CCFF;border:none;color:white; -->
-                  <span><button (click.stop)="onNews(content,tweet.poi_name,tweet.formatted_date)" class="btn btn-outline-primary" style="position: absolute;right:10px;cursor: pointer;height:40px">Related News Articles</button></span>
+<!--                  <span><button (click.stop)="onNews(content,tweet.poi_name,tweet.formatted_date)" class="btn btn-outline-primary" style="position: absolute;right:10px;cursor: pointer;height:40px">Related News Articles</button></span>-->
                 </li>
                   </ul>
               </div>
@@ -80,7 +84,7 @@
 
     <ng-template #content let-d="dismiss">
         <div class="modal-header">
-            <h4 class="modal-title" style="text-align:center">{{newsArticleCount}} Related News Articles</h4>
+<!--            <h4 class="modal-title" style="text-align:center">{{newsArticleCount}} Related News Articles</h4>-->
             <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
             <span aria-hidden="true">&times;</span>
             </button>

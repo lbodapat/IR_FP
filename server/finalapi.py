@@ -28,173 +28,6 @@ app.config['JSON_SORT_KEYS'] = False
 
 CORS(app, resources=r'*', headers='Content-Type')
 
-@app.route("/getverifiedSentimentDetails/",methods=['POST'])
-def getverifiedSentimentDetails():
-    try:
-        data=request.json
-        print("VSA: ",data)
-        filterquery=getFilters(data,"user.screen_name")
-        modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://18.222.170.193:8983/solr/PROJ4_2/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=verified%3Atrue&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&facet=on&rows=0'+ '&json.facet=%20{%20month_sentiment:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}' +filterquery
-        print(inurl)
-        data = urllib.request.urlopen(inurl).read()
-        docs = JSON.loads(data.decode('utf-8'))['facets']['month_sentiment']['buckets']
-        sentiments={}
-        for i in docs:
-            sentiments[i['val']]=[]
-            month={}
-            for j in i['sentimentcount']['buckets']:
-                month[j['val']]=j['count']
-            if('positive' not in month):
-                month['positive']=0
-            if('negative' not in month):
-                month['negative']=0
-            if('neutral' not in month):
-                month['neutral']=0
-            sentiments[i['val']].append(month)
-            # seniments - array of maps(Month) if map --> i--> map of val
-        sentimentsorderd=sentiments
-        #        for i in dayorder:
-        #            if(i in sentiments):
-        #                sentimentsorderd[i]=sentiments[i]
-        docs={}
-        print(sentimentsorderd)
-        docs['data']=sentimentsorderd
-        docs= JSON.loads(JSON.dumps(docs))
-        docs['status']=0
-        print(docs)
-        response = jsonify(docs)
-        print(response)
-        return response
-    except:
-        data=  {"status":500, "data":[]}
-        response = jsonify(data)
-        # response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
-
-@app.route("/getPOIDetails/",methods=['POST'])
-def getPOIDetails():
-    try:
-        data=request.json
-        print("POI DATA",data)
-        filterquery=getFilters(data,"poi_name")
-        modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://18.222.170.193:8983/solr/PROJ4_2/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&json.facet=%20{%20poi_sentimentss:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&facet=on&rows=0' +filterquery
-        print(inurl)
-        data = urllib.request.urlopen(inurl).read()
-        poidocs= JSON.loads(data.decode('utf-8'))['facets']['poi_sentimentss']['buckets']
-        poisentiment={}
-        for i in poidocs:
-            poisentiment[i['val']]=[]
-            poi={}
-            for j in i['sentimentcount']['buckets']:
-                poi[j['val']]=j['count']
-            if('positive' not in poi):
-                poi['positive']=0
-            if('negative' not in poi):
-                poi['negative']=0
-            if('neutral' not in poi):
-                poi['neutral']=0
-            poisentiment[i['val']].append(poi)
-        docs={}
-        docs['poidata']=poisentiment
-        docs= JSON.loads(JSON.dumps(docs))
-        docs['status']=0
-
-        response = jsonify(docs)
-        # response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
-    except Exception as e:
-        print(e)
-        data=  {"status":500, "data":[]}
-        response = jsonify(data)
-        # response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
-
-
-@app.route("/getSentimentDetails/",methods=['POST'])
-def getSentimentDetails():
-    try:
-        data=request.json
-        print("GSA DATA",data)
-        filterquery=getFilters(data,"user.screen_name")
-        modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://18.222.170.193:8983/solr/PROJ4_2/select?defType=edismax&stopwords=true&qf=tweet_text%20translated&q='+ modelquery +'&wt=json&fq=tweet_date%3A%5B2019-09-01T00%3A00%3A00Z%20TO%202019-09-15T00%3A00%3A00Z%7D&facet=on&rows=0'+ '&json.facet=%20{%20month_sentiment:{%20type:%20terms,%20field:%20daymonth_str,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&json.facet=%20{%20country_sentiment:{%20type:%20terms,%20field:%20country,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&json.facet=%20{%20poi_sentiment:{%20type:%20terms,%20field:%20poi_name,%20facet:{%20sentimentcount:%20{%20type%20:%20terms,%20field:%20sentiment%20}%20}%20}%20}&json.facet=%20{%20country_hashtags:{%20type:%20terms,%20field:%20country,%20facet:{%20hashtagcount:%20{%20type%20:%20terms,%20field:%20hashtags,%20limit%20:%2010%20}%20}%20}%20}' +filterquery
-        print(inurl)
-        data = urllib.request.urlopen(inurl).read()
-        docs = JSON.loads(data.decode('utf-8'))['facets']['month_sentiment']['buckets']
-        sentiments={}
-        for i in docs:
-            sentiments[i['val']]=[]
-            month={}
-            for j in i['sentimentcount']['buckets']:
-                month[j['val']]=j['count']
-            if('positive' not in month):
-                month['positive']=0
-            if('negative' not in month):
-                month['negative']=0
-            if('neutral' not in month):
-                month['neutral']=0
-            sentiments[i['val']].append(month)
-        sentimentsorderd=sentiments
-        countrydocs= JSON.loads(data.decode('utf-8'))['facets']['country_sentiment']['buckets']
-        countrysentiment={}
-        for i in countrydocs:
-            countrysentiment[i['val']]=[]
-            country={}
-            for j in i['sentimentcount']['buckets']:
-                country[j['val']]=j['count']
-            if('positive' not in country):
-                country['positive']=0
-            if('negative' not in country):
-                country['negative']=0
-            if('neutral' not in country):
-                country['neutral']=0
-            countrysentiment[i['val']].append(country)
-        poidocs= JSON.loads(data.decode('utf-8'))['facets']['poi_sentiment']['buckets']
-        poisentiment={}
-        for i in poidocs:
-            poisentiment[i['val']]=[]
-            poi={}
-            for j in i['sentimentcount']['buckets']:
-                poi[j['val']]=j['count']
-            if('positive' not in poi):
-                poi['positive']=0
-            if('negative' not in poi):
-                poi['negative']=0
-            if('neutral' not in poi):
-                poi['neutral']=0
-            poisentiment[i['val']].append(poi)
-        hashtagsdocs= JSON.loads(data.decode('utf-8'))['facets']['country_hashtags']['buckets']
-        countryhashtags={}
-        for i in hashtagsdocs:
-            countryhashtags[i['val']]=[]
-            hashtag={}
-            for j in i['hashtagcount']['buckets']:
-                hashtag[j['val']]=j['count']
-            countryhashtags[i['val']].append(hashtag)
-        if('usa' not in countryhashtags):
-            countryhashtags['usa']=[]
-        if('brazil' not in countryhashtags):
-            countryhashtags['brazil']=[]
-        if('india' not in countryhashtags):
-            countryhashtags['india']=[]
-        docs={}
-        docs['monthdata']=sentimentsorderd
-        docs['countrydata']=countrysentiment
-        docs['poidata']=poisentiment
-        docs['countryhashtags']=countryhashtags
-        docs= JSON.loads(JSON.dumps(docs))
-        docs['status']=0
-        response = jsonify(docs)
-        return response
-    except:
-        data=  {"status":500, "data":[]}
-        response = jsonify(data)
-        # response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
-
-
 def getFilters(data,user):
     finalquerystr=""
     nlen=len(data["languages"])
@@ -264,6 +97,28 @@ def getFilters(data,user):
     print(finalquerystr)
     return (finalquerystr)
 
+@app.route("/getFilterDetails/",methods=['POST'])
+def getFilterDetails():
+    try:
+        data=request.json
+        print("FILTER IN ADATA ",data)
+        filterquery=getFilters(data,"poi_name")
+        print("------_>>>>>> ",filterquery)
+        modelquery = urllib.parse.quote(data["query"])
+        inurl = 'http://18.217.102.217:8983/solr/IRF21P4_f2/select?defType=edismax&stopwords=true&qf=tweet_text%20&q='+ modelquery +'&+wt=json&facet.field=tweet_lang&facet.field=country&facet.field=hashtags&f.hashtags.facet.limit=10&facet.field=verified&f.tweet_lang.facet.limit=3&facet.field=topic_str&facet=on&rows=0' +filterquery
+        print(inurl)
+        data = urllib.request.urlopen(inurl).read()
+        docs = JSON.loads(data.decode('utf-8'))['facet_counts']['facet_fields']
+        docs["status"]= JSON.loads(data.decode('utf-8'))['responseHeader']['status']
+        docs['metrics']=sentimentMethodPoi(request)
+        # docs['poi_sentiment_replies']=sentimentMethodPoiReplies(request)
+        response = jsonify(docs)
+        return response
+    except:
+        data=  {"status":500, "data":[]}
+        response = jsonify(data)
+        return response
+
 @app.route("/getDetails/" ,methods=['POST'])
 def getDetails():
     try:
@@ -277,12 +132,248 @@ def getDetails():
            modelquery=data["query"].strip()[0]
 
         modelquery = urllib.parse.quote(data["query"])
-        inurl='http://18.219.230.238:8983/solr/IRF21P1/select?q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000'+filterquery
+        inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000'+filterquery
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
         res = JSON.loads(data.decode('utf-8'))
         docs=res['response']
+        docs['vaccines_sentiment']=sentimentMethodVaccines(request)
+        docs['subjectivity']=getSubjectivity(request)
         response = jsonify(docs)
+        print(type(response))
+        return response
+    except Exception as e:
+        print(e)
+        data=  {"status":500, "data":[]}
+        response = jsonify(data)
+        return response
+
+def sentimentMethodPoi(request):
+    print(request)
+    print (request.json )
+    data=request.json
+    print("getting filter query")
+    filterquery=getFilters(data,"user.screen_name")
+    if(data["query"][0]=="#"):
+        modelquery=data["query"].strip()[0]
+    modelquery = urllib.parse.quote(data["query"])
+
+    neg_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity&f.reply_polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=reply_polarity&facet.field=country&facet.field=tweet_lang'+filterquery
+    print("NEG URL",neg_inurl)
+    neg_data = urllib.request.urlopen(neg_inurl).read()
+    neg_res = JSON.loads(neg_data.decode('utf-8'))
+    neg_senti_count =neg_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+    neg_senti_count_rep =neg_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
+    country_metrics =neg_res['facet_counts']['facet_fields']['country']
+    lang_metrics =neg_res['facet_counts']['facet_fields']['tweet_lang']
+    keys=[]
+    values=[]
+    i=0
+    while(i<len(country_metrics)):
+        keys.append(country_metrics[i])
+        values.append(country_metrics[i+1])
+        i+=2
+
+    country_metrics = dict(zip(keys, values))
+
+    keys2=[]
+    values2=[]
+    i=0
+    while(i<len(lang_metrics)):
+        keys2.append(lang_metrics[i])
+        values2.append(lang_metrics[i+1])
+        i+=2
+        # if(i==6):
+        #     break
+    lang_metrics = dict(zip(keys2, values2))
+
+    neut_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=polarity&f.reply_polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+    print("Neut URL",neut_inurl)
+    neut_data = urllib.request.urlopen(neut_inurl).read()
+    neut_res = JSON.loads(neut_data.decode('utf-8'))
+    neut_senti_count=neut_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+    neut_senti_count_rep=neut_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
+
+    pos_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=polarity&f.reply_polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+    print("Pos URL",pos_inurl)
+    pos_data = urllib.request.urlopen(pos_inurl).read()
+    pos_res = JSON.loads(pos_data.decode('utf-8'))
+    pos_senti_count=pos_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+    pos_senti_count_rep=pos_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
+
+    response_poi = {}
+    response_poi['negative_sentiment_count']=neg_senti_count
+    response_poi['neutral_sentiment_count']=neut_senti_count
+    response_poi['pos_sentiment_count']=pos_senti_count
+
+    response_poi_replies = {}
+    response_poi_replies['negative_sentiment_count']=neg_senti_count_rep
+    response_poi_replies['neutral_sentiment_count']=neut_senti_count_rep
+    response_poi_replies['pos_sentiment_count']=pos_senti_count_rep
+
+    response={}
+    response['poi_sentiment']=response_poi
+    response['poi_sentiment_replies']=response_poi_replies
+    response['country_metrics']=country_metrics
+    response['lang_metrics']=lang_metrics
+
+    print(response)
+    return response
+
+def sentimentMethodVaccines(request):
+    print(request)
+    print (request.json )
+    data=request.json
+    print("getting filter query")
+    filterquery=getFilters(data,"user.screen_name")
+    if(data["query"][0]=="#"):
+        modelquery=data["query"].strip()[0]
+    modelquery = urllib.parse.quote(data["query"])
+
+    neg_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=0.01&facet.range.gap=1&facet.range=polarity'+filterquery
+    print("NEG URL",neg_inurl)
+    neg_data = urllib.request.urlopen(neg_inurl).read()
+    neg_res = JSON.loads(neg_data.decode('utf-8'))
+    neg_senti_count=neg_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+
+    neut_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.01&facet.range.end=0.02&facet.range.gap=1&facet.range=polarity'+filterquery
+    print("Neut URL",neut_inurl)
+    neut_data = urllib.request.urlopen(neut_inurl).read()
+    neut_res = JSON.loads(neut_data.decode('utf-8'))
+    neut_senti_count=neut_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+
+    pos_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.&op=ORq=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.02&facet.range.end=1&facet.range.gap=1&facet.range=polarity'+filterquery
+    print("Pos URL",pos_inurl)
+    pos_data = urllib.request.urlopen(pos_inurl).read()
+    pos_res = JSON.loads(pos_data.decode('utf-8'))
+    pos_senti_count=pos_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+
+    response = {}
+    response['negative_sentiment_count']=neg_senti_count
+    response['neutral_sentiment_count']=pos_senti_count
+    response['pos_sentiment_count']=neut_senti_count
+    # print(response)
+    return response
+
+def getSubjectivity(request):
+    print(request)
+    print (request.json )
+    data=request.json
+    print("getting filter query")
+    filterquery=getFilters(data,"user.screen_name")
+    if(data["query"][0]=="#"):
+        modelquery=data["query"].strip()[0]
+    modelquery = urllib.parse.quote(data["query"])
+
+    op_inurl_poi='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0.496&facet.range.end=1&facet.range.gap=0.6&facet.range=subjectivity&f.reply_subjectivity.facet.range.start=0.496&facet.range.end=1&facet.range.gap=0.6&facet.range=reply_subjectivity'+filterquery
+    op_data = urllib.request.urlopen(op_inurl_poi).read()
+    op_res = JSON.loads(op_data.decode('utf-8'))
+    op_count=op_res['facet_counts']['facet_ranges']['subjectivity']['counts'][1]
+    op_count_reply=op_res['facet_counts']['facet_ranges']['reply_subjectivity']['counts'][1]
+
+    fact_inurl_poi='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0&facet.range.end=0.495&facet.range.gap=0.5&facet.range=subjectivity&f.reply_subjectivity.facet.range.start=0&facet.range.end=0.495&facet.range.gap=0.6&facet.range=reply_subjectivity'+filterquery
+    print("JSJJ ",fact_inurl_poi)
+    fact_data = urllib.request.urlopen(fact_inurl_poi).read()
+    fact_res = JSON.loads(fact_data.decode('utf-8'))
+    fact_count=fact_res['facet_counts']['facet_ranges']['subjectivity']['counts'][1]
+    print(fact_count)
+    fact_count_reply=fact_res['facet_counts']['facet_ranges']['reply_subjectivity']['counts'][1]
+    print(fact_count_reply)
+
+
+    op_inurl_vac='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0.496&facet.range.end=1&facet.range.gap=0.6&facet.range=subjectivity'+filterquery
+    op_data_vac = urllib.request.urlopen(op_inurl_vac).read()
+    op_res_vac = JSON.loads(op_data_vac.decode('utf-8'))
+    op_count_vac=op_res_vac['facet_counts']['facet_ranges']['subjectivity']['counts'][1]
+
+    fact_inurl_vac='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0&facet.range.end=0.495&facet.range.gap=0.5&facet.range=subjectivity'+filterquery
+    print("JSJJ ",fact_inurl_vac)
+    fact_data_vac = urllib.request.urlopen(fact_inurl_vac).read()
+    fact_res_vac = JSON.loads(fact_data_vac.decode('utf-8'))
+    fact_count_vac=fact_res_vac['facet_counts']['facet_ranges']['subjectivity']['counts'][1]
+
+    response = {}
+    response['opinions_poi']=op_count
+    response['facts_poi']=fact_count
+    response['opinions_poi_reply']=op_count_reply
+    response['facts_poi_reply']=fact_count_reply
+    response['opinions_vac']=op_count_vac
+    response['facts_vac']=fact_count_vac
+    return response
+
+
+def sentimentMethodPoiReplies(request):
+    print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
+    print(request)
+    print (request.json )
+    data=request.json
+    print("getting filter query")
+    filterquery=getFilters(data,"user.screen_name")
+    if(data["query"][0]=="#"):
+        modelquery=data["query"].strip()[0]
+    modelquery = urllib.parse.quote(data["query"])
+
+    neg_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+    print("NEG URL",neg_inurl)
+    neg_data = urllib.request.urlopen(neg_inurl).read()
+    neg_res = JSON.loads(neg_data.decode('utf-8'))
+    neg_senti_count=neg_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
+    print(neg_senti_count)
+    neut_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+    print("Neut URL",neut_inurl)
+    neut_data = urllib.request.urlopen(neut_inurl).read()
+    neut_res = JSON.loads(neut_data.decode('utf-8'))
+    neut_senti_count=neut_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
+    print(neut_senti_count)
+    pos_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+    print("Pos URL",pos_inurl)
+    pos_data = urllib.request.urlopen(pos_inurl).read()
+    pos_res = JSON.loads(pos_data.decode('utf-8'))
+    pos_senti_count=pos_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
+    print(pos_senti_count)
+    response = {}
+    response['negative_sentiment_count']=neg_senti_count
+    response['neutral_sentiment_count']=neut_senti_count
+    response['pos_sentiment_count']=pos_senti_count
+    return response
+
+
+@app.route("/getSentimentDetails/" ,methods=['POST'])
+def sentimentPoi():
+    print("snenti")
+    try:
+        print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
+        print(request)
+        print (request.json )
+        data=request.json
+        print("getting filter query")
+        filterquery=getFilters(data,"user.screen_name")
+        if(data["query"][0]=="#"):
+            modelquery=data["query"].strip()[0]
+        modelquery = urllib.parse.quote(data["query"])
+
+        neg_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity'+filterquery
+        print("NEG URL",neg_inurl)
+        neg_data = urllib.request.urlopen(neg_inurl).read()
+        neg_res = JSON.loads(neg_data.decode('utf-8'))
+        neg_senti_count=neg_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+
+        neut_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=polarity'+filterquery
+        print("Neut URL",neut_inurl)
+        neut_data = urllib.request.urlopen(neut_inurl).read()
+        neut_res = JSON.loads(neut_data.decode('utf-8'))
+        neut_senti_count=neut_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+
+        pos_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=polarity'+filterquery
+        print("Pos URL",pos_inurl)
+        pos_data = urllib.request.urlopen(pos_inurl).read()
+        pos_res = JSON.loads(pos_data.decode('utf-8'))
+        pos_senti_count=pos_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+
+        response = {}
+        response['negative_sentiment_count']=neg_senti_count
+        response['neutral_sentiment_count']=neut_senti_count
+        response['pos_sentiment_count']=pos_senti_count
         print(response)
         return response
     except Exception as e:
@@ -291,27 +382,91 @@ def getDetails():
         response = jsonify(data)
         return response
 
-@app.route("/getFilterDetails/",methods=['POST'])
-def getFilterDetails():
+@app.route("/sentimentVaccine/" ,methods=['POST'])
+def sentimentVaccine():
     try:
+        print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
+        print(request)
+        print (request.json )
         data=request.json
-        print("FILTER IN ADATA ",data)
-        filterquery=getFilters(data,"poi_name")
-        print("------_>>>>>> ",filterquery)
+        print("getting filter query")
+        filterquery=getFilters(data,"user.screen_name")
+        if(data["query"][0]=="#"):
+            modelquery=data["query"].strip()[0]
         modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://18.219.230.238:8983/solr/IRF21P1/select?defType=edismax&stopwords=true&qf=tweet_text%20&q='+ modelquery +'&+wt=json&facet.field=tweet_lang&facet.field=country&facet.field=hashtags&f.hashtags.facet.limit=10&facet.field=verified&f.tweet_lang.facet.limit=3&facet.field=topic_str&facet=on&rows=0' +filterquery
-        print(inurl)
-        data = urllib.request.urlopen(inurl).read()
-        docs = JSON.loads(data.decode('utf-8'))['facet_counts']['facet_fields']
-        docs["status"]= JSON.loads(data.decode('utf-8'))['responseHeader']['status']
-        response = jsonify(docs)
-        print(dir(response))
+
+        neg_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity'+filterquery
+        print("NEG URL",neg_inurl)
+        neg_data = urllib.request.urlopen(neg_inurl).read()
+        neg_res = JSON.loads(neg_data.decode('utf-8'))
+        neg_senti_count=neg_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+
+        neut_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=polarity'+filterquery
+        print("Neut URL",neut_inurl)
+        neut_data = urllib.request.urlopen(neut_inurl).read()
+        neut_res = JSON.loads(neut_data.decode('utf-8'))
+        neut_senti_count=neut_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+
+        pos_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.&op=ORq=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=polarity'+filterquery
+        print("Pos URL",pos_inurl)
+        pos_data = urllib.request.urlopen(pos_inurl).read()
+        pos_res = JSON.loads(pos_data.decode('utf-8'))
+        pos_senti_count=pos_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+
+        response = {}
+        response['negative_sentiment_count']=neg_senti_count
+        response['neutral_sentiment_count']=neut_senti_count
+        response['pos_sentiment_count']=pos_senti_count
+        # print(response)
         return response
-    except:
+    except Exception as e:
+        print(e)
         data=  {"status":500, "data":[]}
         response = jsonify(data)
         return response
 
+@app.route("/sentimentReplies/" ,methods=['POST'])
+def sentimentReplies():
+    try:
+        print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
+        print(request)
+        print (request.json )
+        data=request.json
+        print("getting filter query")
+        filterquery=getFilters(data,"user.screen_name")
+        if(data["query"][0]=="#"):
+            modelquery=data["query"].strip()[0]
+        modelquery = urllib.parse.quote(data["query"])
+
+        neg_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+        print("NEG URL",neg_inurl)
+        neg_data = urllib.request.urlopen(neg_inurl).read()
+        neg_res = JSON.loads(neg_data.decode('utf-8'))
+        neg_senti_count=neg_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
+        print(neg_senti_count)
+        neut_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+        print("Neut URL",neut_inurl)
+        neut_data = urllib.request.urlopen(neut_inurl).read()
+        neut_res = JSON.loads(neut_data.decode('utf-8'))
+        neut_senti_count=neut_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
+        print(neut_senti_count)
+        pos_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+        print("Pos URL",pos_inurl)
+        pos_data = urllib.request.urlopen(pos_inurl).read()
+        pos_res = JSON.loads(pos_data.decode('utf-8'))
+        pos_senti_count=pos_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
+        print(pos_senti_count)
+        response = {}
+        response['negative_sentiment_count']=neg_senti_count
+        response['neutral_sentiment_count']=neut_senti_count
+        response['pos_sentiment_count']=pos_senti_count
+        # print(response)
+        return response
+    except Exception as e:
+        print(e)
+        data=  {"status":500, "data":[]}
+        response = jsonify(data)
+        return response
 
 @app.route("/getSentimentDetailsNew/",methods=['POST'])
 def getSentimentDetails_new():
@@ -326,15 +481,13 @@ def getSentimentDetails_new():
             print("Enter")
             modelquery=data["query"].strip()[0]
         modelquery = urllib.parse.quote(data["query"])
-        inurl='http://18.219.230.238:8983/solr/IRF21P1/select?q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000'
+        inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000'
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
         res = JSON.loads(data.decode('utf-8'))
         docs=res['response']
         response = jsonify(docs)
         datas=getSentiment(response.json)
-        print("datas type: ",type(datas))
-        print("Resp dir: ",dir(response))
         response.set_data(str(datas))
         return response
     except Exception as e:
@@ -539,8 +692,8 @@ def translate_replies(tweet):
 # @app.route("/allDocs/",methods=['POST'])
 def getAllDocs(indexer):
     # try:
-    # inurl='http://18.219.230.238:8983/solr/IRF21P1/select?q.op=OR&q=*%3A*&rows=69455'
-    inurl='http://18.219.230.238:8983/solr/IRF21P1/select?q.op=OR&q=*%3A*&rows=15000'
+    # inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?q.op=OR&q=*%3A*&rows=69455'
+    inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?q.op=OR&q=*%3A*&rows=15000'
     print(inurl)
     data = urllib.request.urlopen(inurl).read()
     res = JSON.loads(data.decode('utf-8'))
@@ -562,7 +715,13 @@ if __name__ == "__main__":
     indexer = Indexer()
     #
     #index_main(indexer)
+<<<<<<< HEAD
     #index_replies(indexer)
     index_kw(indexer)
 
+=======
+    # index_replies(indexer)
+    #index_kw(indexer)
+    app.run(host = "0.0.0.0",port = 9999)
+>>>>>>> 352e8b16f497b66b3b103b9b06b47873e2064ec2
 #TODO: Index keywords xD

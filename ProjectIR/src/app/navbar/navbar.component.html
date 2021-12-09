@@ -55,7 +55,7 @@
       <a><button (click)="showLanguages = !showLanguages" style="font-size: 0.75rem;margin-right:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showLanguages ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>Language</a>
         <ul class="list-unstyled" *ngIf = "showLanguages">
           <li style="font-size:15px;margin-left:10px" *ngFor="let language of languages">
-            <label class="container">{{language.key}}
+            <label class="container">{{language.key}} - {{language.count}}
               <input type="checkbox" (change)="onLanguageSelect($event)" name ={{language.value}} [checked]="language.status">
               <span class="checkmark"></span>
             </label>
@@ -67,7 +67,7 @@
         <a><button (click)="showCountries = !showCountries" style="font-size: 0.75rem;margin-right:5px;border-radius:12px" class="btn btn-outline-primary btn-sm"><i [ngClass]="showCountries ? 'fa fa-angle-up fa-xs':'fa fa-angle-down fa-xs'"></i></button>Country</a>
           <ul class="list-unstyled" *ngIf = "showCountries">
             <li style="font-size:15px;margin-left:10px" *ngFor="let country of countries">
-              <label class="container">{{country.key}}
+              <label class="container">{{country.key}} - {{country.count}}
                 <input type="checkbox" (change)="onCountrySelect($event)" name ={{country.key}} [checked]="country.status">
                 <span class="checkmark"></span>
               </label>

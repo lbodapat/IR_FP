@@ -8,4 +8,10 @@ export class Tweet {
     verified:boolean
     tweet_date :string;
     tweet_urls: string;
+    profileimage:string;
+    profileimage:string;
+    username:string;
+    favorite_count:number;
+    showTranslation:boolean;
+    translationExists:boolean;
     }

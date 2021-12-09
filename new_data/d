@@ -1,0 +1,25 @@
+{
+    "negative_sentiment_count": 191,
+    "neutral_sentiment_count": 8338,
+    "pos_sentiment_count": 1998
+}
+
+        neg_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=AND&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity'+filterquery
+
+{
+    "negative_sentiment_count": 1330,
+    "neutral_sentiment_count": 8338,
+    "pos_sentiment_count": 1998
+}
+
+{
+    "negative_sentiment_count": 191,
+    "neutral_sentiment_count": 1296,
+    "pos_sentiment_count": 454
+}
+
+{
+    "negative_sentiment_count": 1139,
+    "neutral_sentiment_count": 7042,
+    "pos_sentiment_count": 1544
+}
