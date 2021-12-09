@@ -122,6 +122,13 @@ export class ChartComponent implements OnInit {
   postFilterData_vaccSentiment_neutral;
   postFilterData_vaccSentiment_pos;
 
+  postFilterData_opinions_poi;
+  postFilterData_facts_poi;
+  postFilterData_opinions_poi_reply;
+  postFilterData_facts_poi_reply;
+  postFilterData_opinions_vac;
+  postFilterData_facts_vac;
+
   getSentimentDetails_countrydata=[];
   getSentimentDetails_monthdata=[];
   filterOpen :boolean=false;
@@ -164,7 +171,18 @@ export class ChartComponent implements OnInit {
           this.tweetService.postData(this.homeObj).subscribe(tweets=>{
             this.postFilterData_vaccSentiment_neg=tweets.vaccines_sentiment.negative_sentiment_count;
             this.postFilterData_vaccSentiment_pos=tweets.vaccines_sentiment.pos_sentiment_count;
+
+            this.postFilterData_opinions_poi=tweets.subjectivity.opinions_poi;
+            this.postFilterData_facts_poi=tweets.subjectivity.facts_poi;
+            this.postFilterData_opinions_poi_reply=tweets.subjectivity.opinions_poi_reply;
+            this.postFilterData_facts_poi_reply=tweets.subjectivity.facts_poi_reply;
+            this.postFilterData_opinions_vac=tweets.subjectivity.opinions_vac;
+            this.postFilterData_facts_vac=tweets.subjectivity.facts_vac;
+
             setTimeout(this.donutForSentimentVaccines_mine(), 5000);  //postfilter
+            setTimeout(this.donutForSubjectivity_vacc_mine(), 5000);  //postfilter
+            setTimeout(this.donutForSubjectivity_poi_mine(), 5000);  //postfilter
+            setTimeout(this.donutForSubjectivity_poi_reply_mine(), 5000);  //postfilter
           });
     });
 
@@ -179,7 +197,6 @@ let a=[]
 let b=[]
 setTimeout(this.donutForHastags(), 5000);
 setTimeout(this.donutDonut(), 5000);
-// loading_complete=false;
 }
 
 
@@ -447,7 +464,17 @@ this.pie_India_hashtags = new Chart(
           this.postFilterData_vaccSentiment_neg=tweets.vaccines_sentiment.negative_sentiment_count;
           this.postFilterData_vaccSentiment_pos=tweets.vaccines_sentiment.pos_sentiment_count;
 
+            this.postFilterData_opinions_poi=tweets.subjectivity.opinions_poi;
+            this.postFilterData_facts_poi=tweets.subjectivity.facts_poi;
+            this.postFilterData_opinions_poi_reply=tweets.subjectivity.opinions_poi_reply;
+            this.postFilterData_facts_poi_reply=tweets.subjectivity.facts_poi_reply;
+            this.postFilterData_opinions_vac=tweets.subjectivity.opinions_vac;
+            this.postFilterData_facts_vac=tweets.subjectivity.facts_vac;
+
           this.donutForSentimentVaccines_mine();
+            setTimeout(this.donutForSubjectivity_vacc_mine(), 5000);  //postfilter
+            setTimeout(this.donutForSubjectivity_poi_mine(), 5000);  //postfilter
+            setTimeout(this.donutForSubjectivity_poi_reply_mine(), 5000);  //postfilter
         });
         setTimeout (() => {    }, 3000);
 
@@ -699,6 +726,149 @@ this.pie_India_hashtags = new Chart(
     }
 
 
+    donutForSubjectivity_poi_mine(){
+          //CHECK1
+          let  chartData_poi=[];
+          let res_poi=[];
+          let prop_poi : Prop;
+
+          this.prop_poi = new Prop();
+          this.prop_poi.name= "Facts";
+          this.prop_poi.y = this.postFilterData_facts_poi;
+          chartData_poi.push(this.prop_poi)
+
+          this.prop_poi = new Prop();
+          this.prop_poi.name= "Opinions";
+          this.prop_poi.y = this.postFilterData_opinions_poi;
+          chartData_poi.push(this.prop_poi)
+
+          for(let i=0;i<chartData_poi.length;i++){
+              res_poi.push({name:chartData_poi[i].name,y:chartData_poi[i].y,dataLabels: {  enabled: true  }})
+           }
+
+          this.donutData_poi = res_poi;
+
+          this.pie_poi_subj = new Chart(
+            {
+              chart: {type: 'pie'	},
+              title: {text: ''},
+              credits: {enabled:  false},
+              plotOptions: {
+                    pie: {
+                      allowPointSelect: true,
+                      dataLabels: {	enabled: false},
+                      size: 300,
+                      innerSize: '50%',
+                      center: ['50%', '40%']
+                    }
+                  },
+                  series: [{
+                    type: undefined,
+                    innerSize: '50%',
+                    data:  this.donutData_poi
+                }]
+
+            }
+          );
+
+        }
+
+donutForSubjectivity_poi_reply_mine(){
+          //CHECK1
+
+
+          let  chartData_poi_reply=[];
+          let res_poi_reply=[];
+          let prop_poi_reply : Prop;
+
+
+      this.prop_poi_reply = new Prop();
+      this.prop_poi_reply.name= "Facts";
+      this.prop_poi_reply.y = this.postFilterData_facts_poi_reply;
+      chartData_poi_reply.push(this.prop_poi_reply)
+
+      this.prop_poi_reply = new Prop();
+      this.prop_poi_reply.name= "Opinions";
+      this.prop_poi_reply.y = this.postFilterData_opinions_poi_reply;
+      chartData_poi_reply.push(this.prop_poi_reply)
+
+      for(let i=0;i<chartData_poi_reply.length;i++){
+          res_poi_reply.push({name:chartData_poi_reply[i].name,y:chartData_poi_reply[i].y,dataLabels: {  enabled: true  }})
+       }
+
+      this.donutData_poi_reply = res_poi_reply;
+
+      this.pie_poi_reply_subj = new Chart(
+        {
+          chart: {type: 'pie'	},
+          title: {text: ''},
+          credits: {enabled:  false},
+          plotOptions: {
+                pie: {
+                  allowPointSelect: true,
+                  dataLabels: {	enabled: false},
+                  size: 300,
+                  innerSize: '50%',
+                  center: ['50%', '40%']
+                }
+              },
+              series: [{
+                type: undefined,
+                innerSize: '50%',
+                data:  this.donutData_poi_reply
+            }]
+
+        }
+      );
+
+        }
+
+donutForSubjectivity_vacc_mine(){
+
+           let  chartData_vacc=[];
+           let res_vacc=[];
+           let prop_vacc : Prop;
+
+            this.prop_vacc = new Prop();
+            this.prop_vacc.name= "Facts";
+            this.prop_vacc.y = this.postFilterData_facts_poi_reply;
+            chartData_vacc.push(this.prop_vacc)
+
+            this.prop_vacc = new Prop();
+            this.prop_vacc.name= "Opinions";
+            this.prop_vacc.y = this.postFilterData_opinions_poi_reply;
+            chartData_vacc.push(this.prop_vacc)
+
+            for(let i=0;i<chartData_vacc.length;i++){
+                res_vacc.push({name:chartData_vacc[i].name,y:chartData_vacc[i].y,dataLabels: {  enabled: true  }})
+             }
+
+            this.donutData_vacc = res_vacc;
+
+            this.pie_vacc_subj = new Chart(
+              {
+                chart: {type: 'pie'	},
+                title: {text: ''},
+                credits: {enabled:  false},
+                plotOptions: {
+                      pie: {
+                        allowPointSelect: true,
+                        dataLabels: {	enabled: false},
+                        size: 300,
+                        innerSize: '50%',
+                        center: ['50%', '40%']
+                      }
+                    },
+                    series: [{
+                      type: undefined,
+                      innerSize: '50%',
+                      data:  this.donutData_vacc
+                  }]
+
+              }
+            );
+
+        }
 //--------------------//
 
 

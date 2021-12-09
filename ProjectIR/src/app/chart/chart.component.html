@@ -1,6 +1,7 @@
 
 <ng-container *ngIf= "!filterOpen">
         <li class="card card-body" style="margin-right:80px;margin-left:80px" >
+          <p>Data loading.... Please be patient. Thank you :)</p>
                <br>
                <br>
                 <div>
@@ -34,6 +35,26 @@
                 <br>
                 <br>
 
+          <h1 style="text-align:center">Nature of Tweets</h1>
+          <br>
+          <br>
+          <div class="row">
+
+            <div class="col-5">
+              <h3 style="text-align:center">Nature of POI Tweets</h3>
+              <a [chart]="pie_poi_subj"></a>
+            </div>
+
+            <div class="col-5">
+              <h3 style="text-align:center">Nature of Replies</h3>
+              <a [chart]="pie_poi_reply_subj"></a>
+            </div>
+
+            <div class="col-5">
+              <h3 style="text-align:center">Nature of Vaccine related Tweets</h3>
+              <a [chart]="pie_vacc_subj"></a>
+            </div>
+          </div>
 
                 <div>
                   <h1 style="text-align:center">Analytics</h1>
@@ -58,15 +79,15 @@
                 <br>
                 <h3 style="text-align:center">Country Wise Top Hashtags</h3>
                 <div class="row">
-                        <div class="col-4">
+                        <div class="col-3">
                             <a [chart]="pie_India_hashtags"></a>
                         </div>
 
-                        <div class="col-4">
+                        <div class="col-3">
                             <a [chart]="pie_usa_hashtags"></a>
                         </div>
 
-                        <div class="col-4">
+                        <div class="col-3">
                             <a [chart]="pie_mexico_hashtags"></a>
                         </div>
                 </div>
