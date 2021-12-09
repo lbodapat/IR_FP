@@ -8,7 +8,7 @@
 
 <!--                <h2>Time Series for POI replies </h2>-->
 <!--                <div [chart]="chart"></div>-->
-
+<!--          attitude of the general population towards Covid vaccines-->
                <br>
                <br>
                 <div>
@@ -30,6 +30,19 @@
                 </div>
                 <br>
                 <br>
+
+                <br>
+                <br>
+                <div>
+                  <h1>Attitude of the general population towards Covid vaccines</h1>
+                  <br>
+                  <br>
+                  <div [chart]="doughnut_senti_vaccines"></div>
+                </div>
+                <br>
+                <br>
+
+
                 <div>
                     <div class="row">
                         <div class="col-6">
@@ -105,7 +118,40 @@
 <!--                <div [chart]="chart"></div>-->
 
 
-                <div>
+          <br>
+          <br>
+          <div>
+            <h1>Impact of Covid related political rhetoric on the common masses</h1>
+            <br>
+            <br>
+            <div class="row">
+              <div class="col-6">
+                <h2>Sentiment of POI tweets</h2>
+                <div [chart]="doughnut_senti_poi"></div>
+              </div>
+              <br>
+              <br>
+              <div class="col-6">
+                <h2>Sentiment of replies on POI tweets</h2>
+                <div [chart]="doughnut_senti_poi_replies"></div>
+              </div>
+            </div>
+          </div>
+          <br>
+          <br>
+
+          <br>
+          <br>
+          <div>
+            <h1>Attitude of the general population towards Covid vaccines</h1>
+            <br>
+            <br>
+            <div [chart]="doughnut_senti_vaccines"></div>
+          </div>
+          <br>
+          <br>
+
+          <div>
                     <div class="row">
                         <div class="col-6">
                             <h1>Language Wise Distribution of Tweets</h1>

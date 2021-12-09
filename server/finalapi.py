@@ -327,6 +327,41 @@ def sentimentMethodPoi(request):
     print(response)
     return response
 
+def sentimentMethodVaccines(request):
+    print(request)
+    print (request.json )
+    data=request.json
+    print("getting filter query")
+    filterquery=getFilters(data,"user.screen_name")
+    if(data["query"][0]=="#"):
+        modelquery=data["query"].strip()[0]
+    modelquery = urllib.parse.quote(data["query"])
+
+    neg_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=0.01&facet.range.gap=1&facet.range=polarity'+filterquery
+    print("NEG URL",neg_inurl)
+    neg_data = urllib.request.urlopen(neg_inurl).read()
+    neg_res = JSON.loads(neg_data.decode('utf-8'))
+    neg_senti_count=neg_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+
+    neut_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.01&facet.range.end=0.02&facet.range.gap=1&facet.range=polarity'+filterquery
+    print("Neut URL",neut_inurl)
+    neut_data = urllib.request.urlopen(neut_inurl).read()
+    neut_res = JSON.loads(neut_data.decode('utf-8'))
+    neut_senti_count=neut_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+
+    pos_inurl='http://18.217.102.217:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.&op=ORq=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.02&facet.range.end=1&facet.range.gap=1&facet.range=polarity'+filterquery
+    print("Pos URL",pos_inurl)
+    pos_data = urllib.request.urlopen(pos_inurl).read()
+    pos_res = JSON.loads(pos_data.decode('utf-8'))
+    pos_senti_count=pos_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
+
+    response = {}
+    response['negative_sentiment_count']=neg_senti_count
+    response['neutral_sentiment_count']=pos_senti_count
+    response['pos_sentiment_count']=neut_senti_count
+    # print(response)
+    return response
+
 def sentimentMethodPoiReplies(request):
     print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
     print(request)
@@ -512,6 +547,7 @@ def getFilterDetails():
         docs["status"]= JSON.loads(data.decode('utf-8'))['responseHeader']['status']
         docs['poi_sentiment']=sentimentMethodPoi(request)
         docs['poi_sentiment_replies']=sentimentMethodPoiReplies(request)
+        docs['vaccines_sentiment']=sentimentMethodVaccines(request)
         response = jsonify(docs)
         return response
     except:

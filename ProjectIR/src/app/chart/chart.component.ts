@@ -114,6 +114,10 @@ export class ChartComponent implements OnInit {
   postFilterData_poiSentiment_neutral_rep;
   postFilterData_poiSentiment_pos_rep;
 
+  postFilterData_vaccSentiment_neg;
+  postFilterData_vaccSentiment_neutral;
+  postFilterData_vaccSentiment_pos;
+
   getSentimentDetails_countrydata=[];
   getSentimentDetails_monthdata=[];
   filterOpen :boolean=false;
@@ -147,17 +151,20 @@ export class ChartComponent implements OnInit {
       this.tweetService.postFilterData(this.homeObj).subscribe(tweets=>{
           this.docs = tweets.country;
           setTimeout(this.donutForHastags(), 5000);  //postfilter
-          setTimeout(this.lineChartSentimentalAnalysis_poitweets(),3000) //getpoiTweetsUrl
-          setTimeout(this.lineChartSentimentalAnalysis_poiReplies(),3000)  //getSentimentDetails
-          setTimeout(this.getTweetReplies(),3000)
       });
+    });
 
 
-      });
+    this.tweetService.value$.subscribe(obj=>
+          {this.homeObj = obj;
+          this.tweetService.postFilterData(this.homeObj).subscribe(tweets=>{
+              this.docs = tweets.country;
+              setTimeout(this.donutForHastags(), 5000);  //postfilter
+          });
+     });
 
     if(this.searchText){
       this.obj.query= this.searchText;
-
   }
 
 }
@@ -166,9 +173,6 @@ ngOnInit() {
 let a=[]
 let b=[]
 setTimeout(this.donutForHastags(), 5000);  //postfilter
-          setTimeout(this.lineChartSentimentalAnalysis_poitweets(),3000) //getpoiTweetsUrl
-          setTimeout(this.lineChartSentimentalAnalysis_poiReplies(),3000)  //getSentimentDetails
-          setTimeout(this.getTweetReplies(),3000)
 
 }
 
@@ -356,11 +360,7 @@ pie_CountriesWiseSentiments(){
 
 
 //Country wise hashtags
-
-
-
-
-  if(this.getSentimentDetails_countryhashtags.usa && this.getSentimentDetails_countryhashtags.usa.length> 0 && JSON.stringify(this.getSentimentDetails_countryhashtags.usa[0]) !='{}'){
+if(this.getSentimentDetails_countryhashtags.usa && this.getSentimentDetails_countryhashtags.usa.length> 0 && JSON.stringify(this.getSentimentDetails_countryhashtags.usa[0]) !='{}'){
 
 this.pie_usa_hashtags = new Chart(
   {
@@ -664,6 +664,10 @@ getTweetReplies(){
         this.postFilterData_poiSentiment_neutral_rep=tweets.poi_sentiment_replies.neutral_sentiment_count;
         this.postFilterData_poiSentiment_pos_rep=tweets.poi_sentiment_replies.pos_sentiment_count;
 
+        this.postFilterData_vaccSentiment_neg=tweets.vaccines_sentiment.negative_sentiment_count;
+//         this.postFilterData_vaccSentiment_neutral=tweets.vaccines_sentiment.neutral_sentiment_count;
+        this.postFilterData_vaccSentiment_pos=tweets.vaccines_sentiment.pos_sentiment_count;
+
         data_hastags =this.postFilterData_hashtags;
 
       console.log("...............................Data Update ???...................................")
@@ -715,6 +719,7 @@ getTweetReplies(){
       this.columnChartForCountries();
       this.donutForSentimentPoi_mine();
       this.donutForSentimentPoi_replies_mine();
+      this.donutForSentimentVaccines_mine();
     });
     setTimeout (() => {    }, 3000);
 
@@ -773,6 +778,7 @@ getTweetReplies(){
       );
 
     }
+
   donutForSentimentPoi_replies_mine(){
       //CHECK1
       let  chartData=[];
@@ -801,6 +807,58 @@ getTweetReplies(){
       this.donutData = res;
 
       this.doughnut_senti_poi_replies = new Chart(
+        {
+          chart: {type: 'pie'	},
+          title: {text: ''},
+          credits: {enabled:  false},
+          plotOptions: {
+                pie: {
+                  allowPointSelect: true,
+                  dataLabels: {	enabled: false},
+                  size: 300,
+                  innerSize: '50%',
+                  center: ['50%', '40%']
+                }
+              },
+              series: [{
+                type: undefined,
+                innerSize: '50%',
+                data:  this.donutData
+            }]
+
+        }
+      );
+
+    }
+
+  donutForSentimentVaccines_mine(){
+      //CHECK1
+      let  chartData=[];
+      let res=[];
+      let prop : Prop;
+
+      this.prop = new Prop();
+      this.prop.name= "Anti-Vaccine";
+      this.prop.y = this.postFilterData_vaccSentiment_neg;
+      chartData.push(this.prop)
+
+//       this.prop = new Prop();
+//       this.prop.name= "Neutral";
+//       this.prop.y = this.postFilterData_vaccSentiment_neutral;
+//       chartData.push(this.prop)
+
+      this.prop = new Prop();
+      this.prop.name= "Pro-Vaccine";
+      this.prop.y = this.postFilterData_vaccSentiment_pos;
+      chartData.push(this.prop)
+
+      for(let i=0;i<chartData.length;i++){
+          res.push({name:chartData[i].name,y:chartData[i].y,dataLabels: {  enabled: true  }})
+       }
+
+      this.donutData = res;
+
+      this.doughnut_senti_vaccines = new Chart(
         {
           chart: {type: 'pie'	},
           title: {text: ''},
