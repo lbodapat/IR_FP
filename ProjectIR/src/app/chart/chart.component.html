@@ -1,34 +1,54 @@
 
 <ng-container *ngIf= "!filterOpen">
         <li class="card card-body" style="margin-right:80px;margin-left:80px" >
-            <span>
-                <h2>Time Series for POI </h2>
-                <div [chart]="chart_poiTweets"></div></span>
+<!--            <span>-->
+<!--                <h2>Time Series for POI </h2>-->
+<!--                <div [chart]="chart_poiTweets"></div>-->
+<!--            </span>-->
 
-                <h2>Time Series for POI replies </h2>
-                <div [chart]="chart"></div>
+<!--                <h2>Time Series for POI replies </h2>-->
+<!--                <div [chart]="chart"></div>-->
 
                <br>
                <br>
                 <div>
+                  <h1>Impact of Covid related political rhetoric on the common masses</h1>
+                  <br>
+                  <br>
+                  <div class="row">
+                    <div class="col-6">
+                      <h2>Sentiment of POI tweets</h2>
+                      <div [chart]="doughnut_lang"></div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="col-6">
+                      <h2>Sentiment of replies on POI tweets</h2>
+                      <div [chart]="doughnut_country"></div>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <br>
+                <div>
                     <div class="row">
                         <div class="col-6">
-                            <h1>Language Wise Distribution of Tweets</h1>
+                            <h2>Language Wise Distribution of Tweets</h2>
                             <div [chart]="doughnut_lang"></div>
                         </div>
                         <br>
                         <br>
                         <div class="col-6">
-                            <h1>Country Wise Distribution of Tweets</h1>
+                            <h2>Country Wise Distribution of Tweets</h2>
                             <div [chart]="doughnut_country"></div>
                         </div>
                     </div>
                 </div>
                 <br>
-                <h1>Overall Top Hashtags</h1>
+                <h2>Overall Top Hashtags</h2>
                 <div [chart]="doughnut"></div>
                 <br>
-                <h1>Country Wise Top Hashtags</h1>
+                <h2>Country Wise Top Hashtags</h2>
                 <div class="row">
                         <div class="col-4">
                             <a [chart]="pie_India_hashtags"></a>
@@ -43,18 +63,18 @@
                         </div>
                 </div>
 
-                <h1>POI Sentiment Distribution</h1>
+                <h2>POI Sentiment Distribution</h2>
                 <div [chart] ="stackedBarChart"></div>
                 <br>
 
-                <h1>Topic Wise Distribution</h1>
+                <h2>Topic Wise Distribution</h2>
                 <div [chart] ="topicWiseChart"></div>
                 <br>
 
-                <h1>Country Wise Distribution of Tweets</h1>
+                <h2>Country Wise Distribution of Tweets</h2>
                 <br>
                 <div class="row" style="margin-left:420px ;margin-bottom: 50px;margin-top: 20px;">  <div [chart]="mapChart"></div>  </div>
-                <h1>Country Wise Sentiment Analysis</h1>
+                <h2>Country Wise Sentiment Analysis</h2>
                 <div class="row">
                         <div class="col-4">
                             <a [chart]="pie_India"></a>
@@ -76,12 +96,13 @@
 
 <ng-container *ngIf= "filterOpen">
         <li class="card card-body" style="margin-right:80px;margin-left:350px" >
-            <span>
-                <h2>Time Series for POI </h2>
-                <div [chart]="chart_poiTweets"></div></span>
+<!--            <span>-->
+<!--                <h2>Time Series for POI </h2>-->
+<!--                <div [chart]="chart_poiTweets"></div>-->
+<!--            </span>-->
 
-                <h2>Time Series for POI replies </h2>
-                <div [chart]="chart"></div>
+<!--                <h2>Time Series for POI replies </h2>-->
+<!--                <div [chart]="chart"></div>-->
 
 
                 <div>
@@ -97,9 +118,9 @@
                     </div>
                 </div>
 
-                <h1>Overall Top Hashtags</h1>
+                <h2>Overall Top Hashtags</h2>
                 <div [chart]="doughnut"></div>
-                <h1>Country Wise Top Hashtags</h1>
+                <h2>Country Wise Top Hashtags</h2>
                 <!-- <h3>No Hastags Found</h3> -->
                 <div class="row">
                         <div class="col-4">
@@ -115,13 +136,13 @@
                         </div>
                 </div>
 
-                <h1>POI Sentiment Distribution</h1>
+                <h2>POI Sentiment Distribution</h2>
                 <div [chart] ="stackedBarChart"></div>
 
-                <h1>Topic Wise Distribution</h1>
+                <h2>Topic Wise Distribution</h2>
                 <div [chart] ="topicWiseChart"></div>
 
-                <h1>Country Wise Sentiment Analysis</h1>
+                <h2>Country Wise Sentiment Analysis</h2>
 
                 <div class="row" style="margin-left:400px;margin-bottom: 20px;">
                      <div [chart]="mapChart" ></div>

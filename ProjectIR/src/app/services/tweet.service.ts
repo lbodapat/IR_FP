@@ -36,7 +36,7 @@ export class TweetService {
     poiRepliesUrl='http://localhost:9999/getSentimentDetails/'
     poiTweetsUrl= 'http://localhost:9999/getverifiedSentimentDetails/'
     getPOIDetails = 'http://localhost:9999/getPOIDetails/'
-
+    sentiPoiUrl='http://localhost:9999/sentimentPOI'
 
     private val:any = undefined;
     private value = new Subject<any>();
@@ -62,7 +62,11 @@ export class TweetService {
 
    postFilterData(data:any):Observable<any>{
     return this.http.post(this.filterurl, data, httpOptions)
-}
+    }
+
+    postSentimentPoiData(data:any):Observable<any>{
+        return this.http.post(this.sentiPoiUrl, data, httpOptions)
+     }
 
 getNewsData(poiname,mindate):Observable<any>{
     let obj =  {'q':poiname,'mindate': mindate};
