@@ -38,24 +38,34 @@ export class ChartComponent implements OnInit {
   obj  =new Filter();
 
   months=['01-09','02-09','03-09','04-09','05-09','06-09','07-09','08-09','09-09'];
-  languages=[{key:'English', value:'en'},{key:'Hindi', value:'hi'},{key:'Portuguese', value:'pt'}]
-  poiNames = [{key:'Barkha Dutt',value:'BDUTT'},
-                {key:'Rajdeep Sardesai',value:'sardesairajdeep'},
-                {key:'Sachin Pilot', value:'SachinPilot'},
-                {key:'Narendra Modi',value:'narendramodi'},
-                {key:'Piyush Goyal',value:'PiyushGoyal'},
-                {key:'Bernie Sanders',value:'BernieSanders'},
-                {key:'Cory Booker',value:'CoryBooker'},
-                {key:'Kamala Harris',value:'KamalaHarris'},
-                {key:'Ted Lieu',value:'tedlieu'},
-                {key:'Elizabeth Warren',value:'ewarren'},
-                {key:'Carlos Bolsonaro',value:'CarlosBolsonaro'},
-                {key:'Jair Bolsonaro',value:'jairbolsonaro'},
-                {key:'Lula',value:'LulaOficial'},
-                {key:'Dilma Rousseff',value:'dilmabr'},
-                {key:'Gleisi Hoffmann',value:'gleisi'},
-                {key:'Shashi Tharoor', value:'shashitharoor'}
-                ];
+  languages=[{key:'English', value:'en'},{key:'Hindi', value:'hi'},{key:'Spanish', value:'es'}]
+
+  poiNames = [{key:'PMO India',value:'PMOIndia'},
+                  {key:'Narendra Modi',value:'narendramodi'},
+                  {key:'Shashi Tharoor', value:'ShashiTharoor'},
+                  {key:'Mansukh Mandviya',value:'mansukhmandviya'},
+                  {key:'Ayushman NHA',value:'AyushmanNHA'},
+                  {key:'Rahul Gandhi',value:'RahulGandhi'},
+                  {key:'Enrique Peña Nieto',value:'EPN'},
+                  {key:'Felipe Calderon',value:'FelipeCalderon'},
+                  {key:'Andrés Manuel López Obrador',value:'lopezobrador_'},
+                  {key:'Miguel Ángel Mancera',value:'ManceraMiguelMX'},
+                  {key:'Claudia Shein',value:'Claudiashein'},
+                  {key:'Joe Biden',value:'JoeBiden'},
+                  {key:'POTUS',value:'POTUS'},
+                  {key:'CDC gov',value:'CDCgov'},
+                  {key:'Barack Obama',value:'BarackObama'},
+                  {key:'Marcelo Ebrard',value:'m_ebrard'},
+                  {key:'Ministry of Health India',value:'MoHFW_INDIA'},
+                  {key:'U.S. Department of Health & Human Services',value:'HHSGov'},
+                  {key:'Ted Cruz',value:'tedcruz'},
+                  {key:'Marco Rubio',value:'marcorubio'},
+                  {key:'Amit Shah',value:'AmitShah'},
+                  {key:'World Health Organization',value:'WHO'},
+                  {key:'CDC Global',value:'CDCGlobal'},
+                  {key:'White House USA',value:'WhiteHouse'}];
+
+
   state:any;
   data:any;
   url:string = './test.json';
@@ -67,6 +77,10 @@ export class ChartComponent implements OnInit {
   filterdata_country :any=[];
   filterdata_hashtags:any=[];
   donutData:any = [];
+  doughnut_senti_poi.any = [];
+  doughnut_senti_poi_replies.any = [];
+  doughnut_senti_vaccines.any = [];
+  donutData.any = []
   homeObj:any;
   docs:any = [];
   sentimentData:any=[];
@@ -80,12 +94,15 @@ export class ChartComponent implements OnInit {
 
   pie_India= new Chart({});
   pie_usa= new Chart({});
-  pie_brazil= new Chart({});
-
+  pie_mexico= new Chart({});
+  pie_poi_reply_subj= new Chart({});
+  pie_poi_subj= new Chart({});
+  
   pie_India_hashtags= new Chart({});
   pie_usa_hashtags= new Chart({});
-  pie_brazil_hashtags= new Chart({});
+  pie_mexico_hashtags= new Chart({});
 
+  loading_complete=true;
 
   options: any = {};
   count =0;
@@ -95,6 +112,28 @@ export class ChartComponent implements OnInit {
   postFilterData_tweet_lang=[];
   postFilterData_verified=[];
   wordData=new Array<AgWordCloudData>();
+
+  postFilterData_poiSentiment_neg;
+  postFilterData_poiSentiment_neutral;
+  postFilterData_poiSentiment_pos;
+
+  postFilterData_poiSentiment_neg_rep;
+  postFilterData_poiSentiment_neutral_rep;
+  postFilterData_poiSentiment_pos_rep;
+
+  country_metrics;
+  lang_metrics;
+
+  postFilterData_vaccSentiment_neg;
+  postFilterData_vaccSentiment_neutral;
+  postFilterData_vaccSentiment_pos;
+
+  postFilterData_opinions_poi;
+  postFilterData_facts_poi;
+  postFilterData_opinions_poi_reply;
+  postFilterData_facts_poi_reply;
+  postFilterData_opinions_vac;
+  postFilterData_facts_vac;
 
   getSentimentDetails_countrydata=[];
   getSentimentDetails_monthdata=[];
@@ -129,17 +168,32 @@ export class ChartComponent implements OnInit {
       this.tweetService.postFilterData(this.homeObj).subscribe(tweets=>{
           this.docs = tweets.country;
           setTimeout(this.donutForHastags(), 5000);  //postfilter
-          setTimeout(this.lineChartSentimentalAnalysis_poitweets(),3000) //getpoiTweetsUrl
-          setTimeout(this.lineChartSentimentalAnalysis_poiReplies(),3000)  //getSentimentDetails
-          setTimeout(this.getTweetReplies(),3000)
+          setTimeout(this.donutDonut(), 5000);  //postfilter
       });
+    });
 
+    this.tweetService.value$.subscribe(obj=>
+          {this.homeObj = obj;
+          this.tweetService.postData(this.homeObj).subscribe(tweets=>{
+            this.postFilterData_vaccSentiment_neg=tweets.vaccines_sentiment.negative_sentiment_count;
+            this.postFilterData_vaccSentiment_pos=tweets.vaccines_sentiment.pos_sentiment_count;
 
-      });
+            this.postFilterData_opinions_poi=tweets.subjectivity.opinions_poi;
+            this.postFilterData_facts_poi=tweets.subjectivity.facts_poi;
+            this.postFilterData_opinions_poi_reply=tweets.subjectivity.opinions_poi_reply;
+            this.postFilterData_facts_poi_reply=tweets.subjectivity.facts_poi_reply;
+            this.postFilterData_opinions_vac=tweets.subjectivity.opinions_vac;
+            this.postFilterData_facts_vac=tweets.subjectivity.facts_vac;
+
+            setTimeout(this.donutForSentimentVaccines_mine(), 5000);  //postfilter
+            setTimeout(this.donutForSubjectivity_vacc_mine(), 5000);  //postfilter
+            setTimeout(this.donutForSubjectivity_poi_mine(), 5000);  //postfilter
+            setTimeout(this.donutForSubjectivity_poi_reply_mine(), 5000);  //postfilter
+          });
+    });
 
     if(this.searchText){
       this.obj.query= this.searchText;
-
   }
 
 }
@@ -147,12 +201,8 @@ export class ChartComponent implements OnInit {
 ngOnInit() {
 let a=[]
 let b=[]
-setTimeout(this.donutForHastags(), 5000);  //postfilter
-          setTimeout(this.lineChartSentimentalAnalysis_poitweets(),3000) //getpoiTweetsUrl
-          setTimeout(this.lineChartSentimentalAnalysis_poiReplies(),3000)  //getSentimentDetails
-          setTimeout(this.getTweetReplies(),3000)
-
-
+setTimeout(this.donutForHastags(), 5000);
+setTimeout(this.donutDonut(), 5000);
 }
 
 
@@ -161,10 +211,10 @@ pie_CountriesWiseSentiments(){
   let temp =JSON.stringify(this.data);
 
   this.pie_India =new Chart({title: {text: 'India'}});
-  this.pie_brazil =new Chart({title: {text: 'Brazil'}});
+  this.pie_mexico =new Chart({title: {text: 'Mexico'}});
   this.pie_usa =new Chart({title: {text: 'USA'}});
   this.pie_India_hashtags =new Chart({title: {text: 'India'}});
-  this.pie_brazil_hashtags =new Chart({title: {text: 'Brazil'}});
+  this.pie_mexico_hashtags =new Chart({title: {text: 'Mexico'}});
   this.pie_usa_hashtags =new Chart({title: {text: 'USA'}});
   this.topicWiseChart = new Chart({});
 
@@ -175,7 +225,7 @@ pie_CountriesWiseSentiments(){
     let data_pie=[];
     let india=[]
     let usa=[];
-    let brazil=[];
+    let mexico=[];
     let index_india=-1;
     data_pie= this.filterdata_country;
     let countries_array  = this.filterdata_country ?Object.keys(this.filterdata_country):[];
@@ -204,34 +254,34 @@ pie_CountriesWiseSentiments(){
 
         }
 
-        if(countries_array.indexOf("brazil") !== -1){
-          brazil.push({name:'POSITIVE',y:data_pie["brazil"][0].positive});
-          brazil.push({name:'NEGATIVE',y:data_pie["brazil"][0].negative});
-          brazil.push({name:'NEUTRAL',y:data_pie["brazil"][0].neutral});
+        if(countries_array.indexOf("mexico") !== -1){
+          mexico.push({name:'POSITIVE',y:data_pie["mexico"][0].positive});
+          mexico.push({name:'NEGATIVE',y:data_pie["mexico"][0].negative});
+          mexico.push({name:'NEUTRAL',y:data_pie["mexico"][0].neutral});
         }
         else{
-          brazil.push({name:'POSITIVE',y:0});
-          brazil.push({name:'NEGATIVE',y:0});
-          brazil.push({name:'NEUTRAL',y:0});
+          mexico.push({name:'POSITIVE',y:0});
+          mexico.push({name:'NEGATIVE',y:0});
+          mexico.push({name:'NEUTRAL',y:0});
 
         }
 
       let countryList = this.getSentimentDetails_countryhashtags?Object.values(this.getSentimentDetails_countryhashtags):[];
       let india_hashtag =[]
-      let brazil_hashtag=[];
+      let mexico_hashtag=[];
       let usa_hashtag =[];
       let all_hashtags =[];
       let indiaHashtaglist =this.getSentimentDetails_countryhashtags.india.length>0  && JSON.stringify(this.getSentimentDetails_countryhashtags.india[0]) !== '{}'? Object.keys(this.getSentimentDetails_countryhashtags.india[0]):[];
-      let brazilHashtaglist =this.getSentimentDetails_countryhashtags.brazil.length>0 && JSON.stringify(this.getSentimentDetails_countryhashtags.brazil[0]) !== '{}'? Object.keys(this.getSentimentDetails_countryhashtags.brazil[0]):[];
+      let mexicoHashtaglist =this.getSentimentDetails_countryhashtags.mexico.length>0 && JSON.stringify(this.getSentimentDetails_countryhashtags.mexico[0]) !== '{}'? Object.keys(this.getSentimentDetails_countryhashtags.mexico[0]):[];
       let usaHashtaglist =this.getSentimentDetails_countryhashtags.usa.length>0 && JSON.stringify(this.getSentimentDetails_countryhashtags.usa[0]) !== '{}'? Object.keys(this.getSentimentDetails_countryhashtags.usa[0]):[];
 
-      if(indiaHashtaglist.length ==0 && brazilHashtaglist.length==0 && usaHashtaglist.length==0){
+      if(indiaHashtaglist.length ==0 && mexicoHashtaglist.length==0 && usaHashtaglist.length==0){
 
       }
-        for(let i=0;i<brazilHashtaglist.length;i++){
-          if(Object.keys(this.getSentimentDetails_countryhashtags.brazil[0]).length> 0){
-          let values = Object.values(this.getSentimentDetails_countryhashtags.brazil[0])
-          brazil_hashtag.push({name:'#'+brazilHashtaglist[i],y:values[i],dataLabels: {  enabled: true  }});
+        for(let i=0;i<mexicoHashtaglist.length;i++){
+          if(Object.keys(this.getSentimentDetails_countryhashtags.mexico[0]).length> 0){
+          let values = Object.values(this.getSentimentDetails_countryhashtags.mexico[0])
+          mexico_hashtag.push({name:'#'+mexicoHashtaglist[i],y:values[i],dataLabels: {  enabled: true  }});
           }
         }
         for(let i=0;i<indiaHashtaglist.length;i++){
@@ -307,8 +357,8 @@ pie_CountriesWiseSentiments(){
         ]
       });}
 
-      if(countries_array.indexOf("brazil") !== -1){
-      this.pie_brazil = new Chart( {
+      if(countries_array.indexOf("mexico") !== -1){
+      this.pie_mexico = new Chart( {
         chart: {
           renderTo: "container",
           plotBackgroundColor: null,
@@ -316,7 +366,7 @@ pie_CountriesWiseSentiments(){
           plotShadow: false
         },
         credits: {  enabled: false  },
-        title: {    text: "Brazil" },
+        title: {    text: "Mexico" },
         subtitle: { text: "" },
         plotOptions: {
           pie: {
@@ -332,18 +382,14 @@ pie_CountriesWiseSentiments(){
         series: [
           {
             type: "pie", name: "",
-            data: brazil
+            data: mexico
           }
         ]
       });}
 
 
 //Country wise hashtags
-
-
-
-
-  if(this.getSentimentDetails_countryhashtags.usa && this.getSentimentDetails_countryhashtags.usa.length> 0 && JSON.stringify(this.getSentimentDetails_countryhashtags.usa[0]) !='{}'){
+if(this.getSentimentDetails_countryhashtags.usa && this.getSentimentDetails_countryhashtags.usa.length> 0 && JSON.stringify(this.getSentimentDetails_countryhashtags.usa[0]) !='{}'){
 
 this.pie_usa_hashtags = new Chart(
   {
@@ -367,11 +413,11 @@ this.pie_usa_hashtags = new Chart(
 
   }
 );}
-if(this.getSentimentDetails_countryhashtags.brazil && this.getSentimentDetails_countryhashtags.brazil.length> 0 && JSON.stringify(this.getSentimentDetails_countryhashtags.brazil[0]) !='{}'){
-this.pie_brazil_hashtags = new Chart(
+if(this.getSentimentDetails_countryhashtags.mexico && this.getSentimentDetails_countryhashtags.mexico.length> 0 && JSON.stringify(this.getSentimentDetails_countryhashtags.mexico[0]) !='{}'){
+this.pie_mexico_hashtags = new Chart(
   {
     chart: {type: 'pie'	},
-    title: {text: 'Brazil'},
+    title: {text: 'Mexico'},
     credits: {enabled:  false},
     plotOptions: {
           pie: {
@@ -385,7 +431,7 @@ this.pie_brazil_hashtags = new Chart(
         series: [{
           type: undefined,
           innerSize: '50%',
-          data:  brazil_hashtag
+          data:  mexico_hashtag
       }]
 
   }
@@ -415,222 +461,30 @@ this.pie_India_hashtags = new Chart(
 );
 }}
 
-columnChartForCountries(){
-  this.data = this.tweetService.getData();
-      let temp =JSON.stringify(this.data);
-       this.filterdata_country = this.postFilterData_country;
-        this.data =this.filterdata_country;
-        let data =[];
-        let res=[];
-        let  chartData=[];
-        let prop : Prop;
-        let result=[];
-        let data_country=[]
-        data_country=   this.filterdata_country;
-        if(data_country && data_country.length>0){
-            this.data.forEach(function(d) {
-              data.push(d);
-            });
-
-           for (let i = 0; i < this.data.length; i+=2) {
-            res.push({name:this.data[i],y:[this.data[i+1]]})
-          }
-        }
-
-          this.columnChartOptions = new Chart( {
-            chart: {
-              type: "column",
-              renderTo: "container"
-            },
-            credits: { enabled: false  },
-            title: {   text: " Column Title"    },
-            subtitle: {text: ""    },
-            xAxis: { categories: ["Distribution of Tweets"]    },
-            yAxis: { min: 0,  title: {        text: "Number of tweets"      }    },
-            legend: {
-              layout: "vertical",
-              backgroundColor: "#FFFFFF",
-              align: "left",
-              verticalAlign: "top",
-              x: 50,
-              y: 70,
-              floating: true,
-              shadow: true
-            },
-            tooltip: {    },
-            plotOptions: {
-              column: {
-                pointPadding: 0.2,  borderWidth: 0  }
-            },
-            series: res
-          });
-
-        }
-
-        lineChartSentimentalAnalysis_poitweets(){
+    donutDonut(){
           this.data = this.tweetService.getData();
-      let temp =JSON.stringify(this.data);
-      this.tweetService.getpoiTweetsUrl(temp).subscribe(tweets=>{
-        this.getpoiTweetsUrl_data = tweets.date;
-        this.sentimentData = tweets.data;
-         this.count = tweets&& tweets.data?Object.keys(tweets.data).length:0;
-        let res=[];
-        let data_neutral =[];
-        let data_negative =[];
-        let data_positive=[];
-        let months_str =[];
-        let month_array  = tweets&& tweets.data?Object.keys(tweets.data):[];
-        for(let i=0;i<this.months.length;i++){
-              if((month_array.indexOf(this.months[i]))!== -1){
-              let monthData = this.sentimentData[this.months[i]];
+          let temp =JSON.stringify(this.data);
 
-              data_neutral.push(monthData[0].neutral)
-              data_negative.push(monthData[0].negative)
-              data_positive.push(monthData[0].positive)
-              }
-              else{
-                  if(this.count >0){
-                  data_neutral.push(0)
-                  data_negative.push(0)
-                  data_positive.push(0)
-                  }
-                 }
-                 for(let i=0;i<this.months.length;i++){
-                  months_str.push(this.months[i]+'-2019')
-                }
-        }
-        res.push({name:'NEUTRAL',data:data_neutral,type:"line"})
-        res.push({name:'NEGATIVE',data:data_negative,type:"line"})
-        res.push({name:'POSITIVE',data:data_positive,type:"line"})
+          this.tweetService.postData(temp).subscribe(tweets=>{
 
-      this.sentimentsInfo = res;
+          this.postFilterData_vaccSentiment_neg=tweets.vaccines_sentiment.negative_sentiment_count;
+          this.postFilterData_vaccSentiment_pos=tweets.vaccines_sentiment.pos_sentiment_count;
 
-      this.chart_poiTweets = new Chart({
-        chart: { type: 'line' },
-        title: { text: 'TIME SERIES OF TWEETS' },
-        credits: { enabled: false  },
-        xAxis : {categories: months_str},
-        series: this.sentimentsInfo
-      });
+            this.postFilterData_opinions_poi=tweets.subjectivity.opinions_poi;
+            this.postFilterData_facts_poi=tweets.subjectivity.facts_poi;
+            this.postFilterData_opinions_poi_reply=tweets.subjectivity.opinions_poi_reply;
+            this.postFilterData_facts_poi_reply=tweets.subjectivity.facts_poi_reply;
+            this.postFilterData_opinions_vac=tweets.subjectivity.opinions_vac;
+            this.postFilterData_facts_vac=tweets.subjectivity.facts_vac;
 
-    });
-    setTimeout (() => {    }, 3000);
-        }
+          this.donutForSentimentVaccines_mine();
+            setTimeout(this.donutForSubjectivity_vacc_mine(), 5000);  //postfilter
+            setTimeout(this.donutForSubjectivity_poi_mine(), 5000);  //postfilter
+            setTimeout(this.donutForSubjectivity_poi_reply_mine(), 5000);  //postfilter
+        });
+        setTimeout (() => {    }, 3000);
 
-lineChartSentimentalAnalysis_poiReplies(){
-  this.data = this.tweetService.getData();
-      let temp =JSON.stringify(this.data);
-      this.tweetService.getSentimentDetails(temp).subscribe(tweets=>{
-
-      //this.tweetService.getpoiDetailsUrl(temp).subscribe(tweets=>{
-        this.getSentimentDetails_countrydata = tweets.countrydata;
-        this.getSentimentDetails_monthdata= tweets.monthdata;
-        this.getSentimentDetails_countryhashtags = tweets.countryhashtags;
-        this.getSentimentDetails_poidata = tweets.poidata;
-
-        this.sentimentData = this.getSentimentDetails_monthdata
-        this.count = tweets && tweets.monthdata?Object.keys(tweets.monthdata).length:0;
-        let res=[];
-        let data_neutral =[];
-        let data_negative =[];
-        let data_positive=[];
-        let months_str=[];
-        let month_array  = tweets && tweets.monthdata ?Object.keys(tweets.monthdata):[];
-        for(let i=0;i<this.months.length;i++){
-          if((month_array.indexOf(this.months[i]))!== -1){
-          let monthData = this.sentimentData[this.months[i]];
-
-          data_neutral.push(monthData[0].neutral)
-          data_negative.push(monthData[0].negative)
-          data_positive.push(monthData[0].positive)
-          }
-          else{
-            if(this.count >0){
-          data_neutral.push(0)
-          data_negative.push(0)
-          data_positive.push(0)
-            }
-          }
-          for(let i=0;i<this.months.length;i++){
-            months_str.push(this.months[i]+'-2019')
-          }
-        }
-        res.push({name:'NEUTRAL',data:data_neutral,type:"line"})
-        res.push({name:'NEGATIVE',data:data_negative,type:"line"})
-        res.push({name:'POSITIVE',data:data_positive,type:"line"})
-
-      this.sentimentsInfo = res;
-
-      // this.chart = new Chart({
-      //   chart: { type: 'line' },
-      //   title: { text: 'TIME SERIES OF REPLIES TO POI TWEETS' },
-      //   credits: { enabled: false  },
-      //   xAxis : {categories: months_str},
-      //   series: this.sentimentsInfo
-      // });
-//         this.pie_CountriesWiseSentiments();
-//         this.poiSentiments();
-//         this.generateWorlMap();
-//         this.topicWiseCharts();
-    });
-    setTimeout (() => {    }, 3000);
-}
-
-getTweetReplies(){
-  this.data = this.tweetService.getData();
-      let temp =JSON.stringify(this.data);
-
-
-      this.tweetService.getpoiDetailsUrl(temp).subscribe(tweets=>{
-
-        //this.getSentimentDetails_poidata = tweets.poidata;
-        this.getSentimentDetails_monthdata= tweets.poidata;
-
-        this.sentimentData = this.getSentimentDetails_monthdata
-        this.count = tweets && tweets.poidata?Object.keys(tweets.poidata).length:0;
-        let res=[];
-        let data_neutral =[];
-        let data_negative =[];
-        let data_positive=[];
-        let months_str=[];
-        let month_array  = tweets && tweets.poidata ?Object.keys(tweets.poidata):[];
-        for(let i=0;i<this.months.length;i++){
-          if((month_array.indexOf(this.months[i]))!== -1){
-          let monthData = this.sentimentData[this.months[i]];
-
-          data_neutral.push(monthData[0].neutral)
-          data_negative.push(monthData[0].negative)
-          data_positive.push(monthData[0].positive)
-          }
-          else{
-            if(this.count >0){
-          data_neutral.push(0)
-          data_negative.push(0)
-          data_positive.push(0)
-            }
-          }
-          for(let i=0;i<this.months.length;i++){
-            months_str.push(this.months[i]+'-2019')
-          }
-        }
-        res.push({name:'NEUTRAL',data:data_neutral,type:"line"})
-        res.push({name:'NEGATIVE',data:data_negative,type:"line"})
-        res.push({name:'POSITIVE',data:data_positive,type:"line"})
-
-      this.sentimentsInfo = res;
-
-      this.chart = new Chart({
-        chart: { type: 'line' },
-        title: { text: 'TIME SERIES OF REPLIES TO POI TWEETS' },
-        credits: { enabled: false  },
-        xAxis : {categories: months_str},
-        series: this.sentimentsInfo
-      });
-
-    });
-    setTimeout (() => {    }, 3000);
-}
-
+     }
 
     donutForHastags(){
       this.data = this.tweetService.getData();
@@ -654,6 +508,16 @@ getTweetReplies(){
         this.postFilterData_verified=tweets.verified;
         this.postFilterData_topic = tweets.topic_str;
 
+        this.postFilterData_poiSentiment_neg=tweets.metrics.poi_sentiment.negative_sentiment_count;
+        this.postFilterData_poiSentiment_neutral=tweets.metrics.poi_sentiment.neutral_sentiment_count;
+        this.postFilterData_poiSentiment_pos=tweets.metrics.poi_sentiment.pos_sentiment_count;
+
+        this.postFilterData_poiSentiment_neg_rep=tweets.metrics.poi_sentiment_replies.negative_sentiment_count;
+        this.postFilterData_poiSentiment_neutral_rep=tweets.metrics.poi_sentiment_replies.neutral_sentiment_count;
+        this.postFilterData_poiSentiment_pos_rep=tweets.metrics.poi_sentiment_replies.pos_sentiment_count;
+
+        this.country_metrics=tweets.country_metrics;
+        this.lang_metrics=tweets.lang_metrics;
 
         data_hastags =this.postFilterData_hashtags;
 
@@ -672,13 +536,13 @@ getTweetReplies(){
               chartData.push(this.prop)
              }
           }
-
           for(let i=0;i<chartData.length;i++){
               res.push({name:chartData[i].name,y:chartData[i].y,dataLabels: {  enabled: true  }})
            }
         }
 
       this.donutData = res;
+      console.log("THIS DONUT DATA: ",this.donutData)
       this.doughnut = new Chart(
         {
           chart: {type: 'pie'	},
@@ -703,14 +567,319 @@ getTweetReplies(){
       );
       this.donutForLanguage();
       this.donutForCountries();
-      this.columnChartForCountries();
-
+      this.donutForSentimentPoi_mine();
+      this.donutForSentimentPoi_replies_mine();
     });
     setTimeout (() => {    }, 3000);
 
     }
 
+//---------------------ATP
+
+  donutForSentimentPoi_mine(){
+      let  chartData=[];
+      let res=[];
+      let prop : Prop;
+
+      this.prop = new Prop();
+      this.prop.name= "Negative";
+      this.prop.y = this.postFilterData_poiSentiment_neg;
+      chartData.push(this.prop)
+
+      this.prop = new Prop();
+      this.prop.name= "Neutral";
+      this.prop.y = this.postFilterData_poiSentiment_neutral;
+      chartData.push(this.prop)
+
+      this.prop = new Prop();
+      this.prop.name= "Positive";
+      this.prop.y = this.postFilterData_poiSentiment_pos;
+      chartData.push(this.prop)
+
+      for(let i=0;i<chartData.length;i++){
+          res.push({name:chartData[i].name,y:chartData[i].y,dataLabels: {  enabled: true  }})
+       }
+
+      this.donutData = res;
+
+      this.doughnut_senti_poi = new Chart(
+        {
+          chart: {type: 'pie'	},
+          title: {text: ''},
+          credits: {enabled:  false},
+          plotOptions: {
+                pie: {
+                  allowPointSelect: true,
+                  dataLabels: {	enabled: false},
+                  size: 300,
+                  innerSize: '50%',
+                  center: ['50%', '40%']
+                }
+              },
+              series: [{
+                type: undefined,
+                innerSize: '50%',
+                data:  this.donutData
+            }]
+
+        }
+      );
+
+    }
+
+  donutForSentimentPoi_replies_mine(){
+      //CHECK1
+      let  chartData=[];
+      let res=[];
+      let prop : Prop;
+
+      this.prop = new Prop();
+      this.prop.name= "Negative";
+      this.prop.y = this.postFilterData_poiSentiment_neg_rep;
+      chartData.push(this.prop)
+
+      this.prop = new Prop();
+      this.prop.name= "Neutral";
+      this.prop.y = this.postFilterData_poiSentiment_neutral_rep;
+      chartData.push(this.prop)
+
+      this.prop = new Prop();
+      this.prop.name= "Positive";
+      this.prop.y = this.postFilterData_poiSentiment_pos_rep;
+      chartData.push(this.prop)
+
+      for(let i=0;i<chartData.length;i++){
+          res.push({name:chartData[i].name,y:chartData[i].y,dataLabels: {  enabled: true  }})
+       }
+
+      this.donutData = res;
+
+      this.doughnut_senti_poi_replies = new Chart(
+        {
+          chart: {type: 'pie'	},
+          title: {text: ''},
+          credits: {enabled:  false},
+          plotOptions: {
+                pie: {
+                  allowPointSelect: true,
+                  dataLabels: {	enabled: false},
+                  size: 300,
+                  innerSize: '50%',
+                  center: ['50%', '40%']
+                }
+              },
+              series: [{
+                type: undefined,
+                innerSize: '50%',
+                data:  this.donutData
+            }]
+
+        }
+      );
+
+    }
+
+  donutForSentimentVaccines_mine(){
+      //CHECK1
+      let  chartData=[];
+      let res=[];
+      let prop : Prop;
+
+      this.prop = new Prop();
+      this.prop.name= "Anti-Vaccine";
+      this.prop.y = this.postFilterData_vaccSentiment_neg;
+      chartData.push(this.prop)
+
+//       this.prop = new Prop();
+//       this.prop.name= "Neutral";
+//       this.prop.y = this.postFilterData_vaccSentiment_neutral;
+//       chartData.push(this.prop)
+
+      this.prop = new Prop();
+      this.prop.name= "Pro-Vaccine";
+      this.prop.y = this.postFilterData_vaccSentiment_pos;
+      chartData.push(this.prop)
+
+      for(let i=0;i<chartData.length;i++){
+          res.push({name:chartData[i].name,y:chartData[i].y,dataLabels: {  enabled: true  }})
+       }
+
+      this.donutData = res;
+
+      this.doughnut_senti_vaccines = new Chart(
+        {
+          chart: {type: 'pie'	},
+          title: {text: ''},
+          credits: {enabled:  false},
+          plotOptions: {
+                pie: {
+                  allowPointSelect: true,
+                  dataLabels: {	enabled: false},
+                  size: 300,
+                  innerSize: '50%',
+                  center: ['50%', '40%']
+                }
+              },
+              series: [{
+                type: undefined,
+                innerSize: '50%',
+                data:  this.donutData
+            }]
+
+        }
+      );
+
+    }
+
+
+    donutForSubjectivity_poi_mine(){
+          //CHECK1
+          let  chartData_poi=[];
+          let res_poi=[];
+          let prop : Prop;
+
+          this.prop = new Prop();
+          this.prop.name= "Facts";
+          this.prop.y = this.postFilterData_facts_poi;
+          chartData_poi.push(this.prop)
+
+          this.prop = new Prop();
+          this.prop.name= "Opinions";
+          this.prop.y = this.postFilterData_opinions_poi;
+          chartData_poi.push(this.prop)
+
+          for(let i=0;i<chartData_poi.length;i++){
+              res_poi.push({name:chartData_poi[i].name,y:chartData_poi[i].y,dataLabels: {  enabled: true  }})
+           }
+
+          this.donutData = res_poi;
+
+          this.pie_poi_subj = new Chart(
+            {
+              chart: {type: 'pie'	},
+              title: {text: ''},
+              credits: {enabled:  false},
+              plotOptions: {
+                    pie: {
+                      allowPointSelect: true,
+                      dataLabels: {	enabled: false},
+                      size: 300,
+                      innerSize: '50%',
+                      center: ['50%', '40%']
+                    }
+                  },
+                  series: [{
+                    type: undefined,
+                    innerSize: '50%',
+                    data:  this.donutData
+                }]
+
+            }
+          );
+
+        }
+
+donutForSubjectivity_poi_reply_mine(){
+          //CHECK1
+
+
+          let  chartData_poi_reply=[];
+          let res_poi_reply=[];
+          let prop : Prop;
+
+
+      this.prop = new Prop();
+      this.prop.name= "Facts";
+      this.prop.y = this.postFilterData_facts_poi_reply;
+      chartData_poi_reply.push(this.prop)
+
+      this.prop = new Prop();
+      this.prop.name= "Opinions";
+      this.prop.y = this.postFilterData_opinions_poi_reply;
+      chartData_poi_reply.push(this.prop)
+
+      for(let i=0;i<chartData_poi_reply.length;i++){
+          res_poi_reply.push({name:chartData_poi_reply[i].name,y:chartData_poi_reply[i].y,dataLabels: {  enabled: true  }})
+       }
+
+      this.donutData = res_poi_reply;
+
+      this.pie_poi_reply_subj = new Chart(
+        {
+          chart: {type: 'pie'	},
+          title: {text: ''},
+          credits: {enabled:  false},
+          plotOptions: {
+                pie: {
+                  allowPointSelect: true,
+                  dataLabels: {	enabled: false},
+                  size: 300,
+                  innerSize: '50%',
+                  center: ['50%', '40%']
+                }
+              },
+              series: [{
+                type: undefined,
+                innerSize: '50%',
+                data:  this.donutData
+            }]
+
+        }
+      );
+
+        }
+
+donutForSubjectivity_vacc_mine(){
+
+           let  chartData_vacc=[];
+           let res_vacc=[];
+           let prop : Prop;
+
+            this.prop = new Prop();
+            this.prop.name= "Facts";
+            this.prop.y = this.postFilterData_facts_poi_reply;
+            chartData_vacc.push(this.prop)
+
+            this.prop = new Prop();
+            this.prop.name= "Opinions";
+            this.prop.y = this.postFilterData_opinions_poi_reply;
+            chartData_vacc.push(this.prop)
+
+            for(let i=0;i<chartData_vacc.length;i++){
+                res_vacc.push({name:chartData_vacc[i].name,y:chartData_vacc[i].y,dataLabels: {  enabled: true  }})
+             }
+
+            this.donutData = res_vacc;
+
+            this.pie_vacc_subj = new Chart(
+              {
+                chart: {type: 'pie'	},
+                title: {text: ''},
+                credits: {enabled:  false},
+                plotOptions: {
+                      pie: {
+                        allowPointSelect: true,
+                        dataLabels: {	enabled: false},
+                        size: 300,
+                        innerSize: '50%',
+                        center: ['50%', '40%']
+                      }
+                    },
+                    series: [{
+                      type: undefined,
+                      innerSize: '50%',
+                      data:  this.donutData
+                  }]
+
+              }
+            );
+
+        }
+//--------------------//
+
+
     donutForLanguage(){
+      //CHECK1
       this.data = this.tweetService.getData();
       let temp =JSON.stringify(this.data);
        this.filterdata_lang = this.postFilterData_tweet_lang;
@@ -944,152 +1113,7 @@ doughnut_country = new Chart(
 
   }
 );
-// ------------------------------------------------------------------------------------------------------------
 
-// verified = 100
-// non_verified = 90
-
-// doughnut_for_verified = new Chart(
-//   {
-//     chart: {
-// 					renderTo: 'photoUploadChart',
-// 					type: 'pie'
-// 				},
-// 				title: {
-// 					text: 'Donut Chart'
-// 				},
-
-// 				credits: {                                 
-// 					enabled:  false                          
-// 				},
-// 				plotOptions: {
-// 					pie: {
-//             allowPointSelect: true,
-// 						dataLabels: {
-// 							enabled: false
-// 						},
-// 						size: 200,
-// 						innerSize: '50%',
-// 						center: ['50%', '40%']
-// 					}
-//         },
-//         series: [{
-//           type: 'pie',
-//           name: 'Browser share',
-//           innerSize: '50%',
-//           data: [
-//               ['VERIFIED', this.verified],
-//               ['NOT-VERIFIED', this.non_verified],
-
-//               {
-//                   name: 'Other',
-//                   y: 200-this.non_verified-this.verified,
-//                   dataLabels: {
-//                       enabled: false
-//                   }
-//               }
-//           ]
-//       }]
-
-//   }
-// );
-
-
-poiSentiments(){
-let poiList =this.getSentimentDetails_poidata?Object.keys(this.getSentimentDetails_poidata):[];
-let positive_data=[];
-let negative_data =[];
-let neutral_data =[];
-let series_data =[];
-
-let key=[];
-let val=[];
-let poiNamesList=[];
-for(let i=0;i <16;i++){ key.push(this.poiNames[i].key);val.push(this.poiNames[i].value.toLowerCase())}
-for(let i=0;i < poiList.length;i++){
-  let index =val.indexOf(poiList[i]);
-  poiNamesList.push(key[index]);
-}
-
-
-for(let i=0;i < poiList.length;i++){
-    positive_data.push(this.getSentimentDetails_poidata[poiList[i]][0].positive);
-    negative_data.push(this.getSentimentDetails_poidata[poiList[i]][0].negative);
-    neutral_data.push(this.getSentimentDetails_poidata[poiList[i]][0].neutral);
-}
-series_data.push({name:'NEUTRAL',data:neutral_data,type:undefined});
-series_data.push({name:'NEGATIVE',data:negative_data,type:undefined});
-series_data.push({name:'POSITIVE',data:positive_data,type:undefined});
-
-this.stackedBarChart =new Chart({
-chart: {    type: 'bar'},
-title: {    text: ''},
-xAxis: {    categories: poiNamesList},
-yAxis: {    min: 0,    title: {   text: 'Number of Tweets'    }},
-legend: {    reversed: true},
-plotOptions: {
-    series: {        stacking: 'normal'    }
-},
-series: series_data
- });
-}
-
-
-
-generateWorlMap(){
-let worldData = this.filterdata_country;
-let count_brazil =0;
-let count_usa =0;
-let count_india =0;
-let series_data =[];
-
-if(this.filterdata_country && Object.keys(this.filterdata_country).length >0){
-
-    if(this.filterdata_country && this.filterdata_country.brazil && this.filterdata_country.brazil[0]){
-    count_brazil =this.filterdata_country.brazil[0].positive +this.filterdata_country.brazil[0].negative + this.filterdata_country.brazil[0].neutral;
-    series_data.push(['br',count_brazil]);
-    }
-    if(this.filterdata_country && this.filterdata_country.usa && this.filterdata_country.usa[0]){
-      count_usa =this.filterdata_country.usa[0].positive +this.filterdata_country.usa[0].negative + this.filterdata_country.usa[0].neutral;
-      series_data.push(['us',count_usa]);
-      }
-    if(this.filterdata_country && this.filterdata_country.india && this.filterdata_country.india[0]){
-      count_india =this.filterdata_country.india[0].positive +this.filterdata_country.india[0].negative + this.filterdata_country.india[0].neutral;
-      series_data.push(['in',count_india]);
-      }
-
-    this.mapChart = new MapChart({
-      chart: {
-        map: mapdataJSon,
-        backgroundColor: '#B0D2F2',
-          borderWidth: 1  },
-      title: {    text: 'Distribution of Tweets'  },
-      subtitle: {
-        text: ''
-      },
-      legend: {    enabled: false  },
-
-      mapNavigation: {    enabled: true,    buttonOptions: {      verticalAlign: 'bottom'    }  },
-
-      series: [{
-        type: undefined,
-        name: 'Tweets',
-        color: '#5A8CE8',
-        enableMouseTracking: true,
-       // data:[['br', count_brazil],['us',count_usa],['in',count_india]],
-       data: series_data,
-      states: {
-        hover: {
-            color: '#BADA55'
-        }
-    },
-    dataLabels: {
-      enabled: true
-    }
-      }]
-    });
-    }
-}
 
 topicWiseCharts(){
   let data =[];
@@ -1138,8 +1162,7 @@ topicWiseCharts(){
       }
   ]
 
-
-     });
+ });
 
 }
 

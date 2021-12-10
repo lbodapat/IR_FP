@@ -37,23 +37,30 @@ export class HomeComponent implements OnInit {
 
       };
 
-
-      poiNames = [{key:'Barkha Dutt',value:'BDUTT'},
-                {key:'Rajdeep Sardesai',value:'sardesairajdeep'},
-                {key:'Sachin Pilot', value:'SachinPilot'},
-                {key:'Narendra Modi',value:'narendramodi'},
-                {key:'Piyush Goyal',value:'PiyushGoyal'},
-                {key:'Bernie Sanders',value:'BernieSanders'},
-                {key:'Cory Booker',value:'CoryBooker'},
-                {key:'Kamala Harris',value:'KamalaHarris'},
-                {key:'Ted Lieu',value:'tedlieu'},
-                {key:'Elizabeth Warren',value:'ewarren'},
-                {key:'Carlos Bolsonaro',value:'CarlosBolsonaro'},
-                {key:'Jair Bolsonaro',value:'jairbolsonaro'},
-                {key:'Lula',value:'LulaOficial'},
-                {key:'Dilma Rousseff',value:'dilmabr'},
-                {key:'Gleisi Hoffmann',value:'gleisi'}
-                ];
+       poiNames = [{key:'PMO India',value:'PMOIndia'},
+                        {key:'Narendra Modi',value:'narendramodi'},
+                        {key:'Shashi Tharoor', value:'ShashiTharoor'},
+                        {key:'Mansukh Mandviya',value:'mansukhmandviya'},
+                        {key:'Ayushman NHA',value:'AyushmanNHA'},
+                        {key:'Rahul Gandhi',value:'RahulGandhi'},
+                        {key:'Enrique Peña Nieto',value:'EPN'},
+                        {key:'Felipe Calderon',value:'FelipeCalderon'},
+                        {key:'Andrés Manuel López Obrador',value:'lopezobrador_'},
+                        {key:'Miguel Ángel Mancera',value:'ManceraMiguelMX'},
+                        {key:'Claudia Shein',value:'Claudiashein'},
+                        {key:'Joe Biden',value:'JoeBiden'},
+                        {key:'POTUS',value:'POTUS'},
+                        {key:'CDC gov',value:'CDCgov'},
+                        {key:'Barack Obama',value:'BarackObama'},
+                        {key:'Marcelo Ebrard',value:'m_ebrard'},
+                        {key:'Ministry of Health India',value:'MoHFW_INDIA'},
+                        {key:'U.S. Department of Health & Human Services',value:'HHSGov'},
+                        {key:'Ted Cruz',value:'tedcruz'},
+                        {key:'Marco Rubio',value:'marcorubio'},
+                        {key:'Amit Shah',value:'AmitShah'},
+                        {key:'World Health Organization',value:'WHO'},
+                        {key:'CDC Global',value:'CDCGlobal'},
+                        {key:'White House USA',value:'WhiteHouse'}];
 
     constructor(private tweetService: TweetService,private modalService: NgbModal) {
         this.tweetService.value$.subscribe(obj=>
@@ -70,7 +77,7 @@ export class HomeComponent implements OnInit {
                     this.displayedResults = 1000;
                 }
                 this.docs = tweets.docs;
-                console.log(this.docs);
+                console.log("SSSSS:::",this.docs);
                 setTimeout(this.loadData(this.docs) , 100);
                 this.showSpinner = false;
             });
@@ -102,13 +109,58 @@ export class HomeComponent implements OnInit {
                 tweet.country = docs[i].country;
                 tweet.poi_id  =  docs[i].poi_id;
                 tweet.verified=docs[i].verified
+                if(docs[i].retweet_count==null){
+                  tweet.retweet_count=0
+                } else{
+                  tweet.retweet_count=docs[i].retweet_count;
+                }
+
+                if(docs[i].poi_name==null){
+                  tweet.username='Twitter User';
+                } else{
+                  tweet.username=docs[i].poi_name;
+                }
+
+              tweet.translatedText=docs[i].translated_text;
+              if(docs[i].profile_image_url_https!=null){
+                 tweet.profileimage=docs[i].profile_image_url_https;
+              }else{
+                tweet.profileimage="assets/images/Twitter.png";
+              }
+              if(docs[i].favorite_count==null){
+                    tweet.favorite_count=0;
+               } else{
+                   tweet.favorite_count=docs[i].favorite_count;
+               }
+
+              if(docs[i].tweet_lang!='en'){
+                tweet.showTranslation=true;
+                tweet.translationExists=true;
+              }else{
+                 tweet.showTranslation=false;
+                 tweet.translationExists=false;
+              }
                 tweet.tweet_lang  =  docs[i].tweet_lang;
                 tweet.tweet_text  =  docs[i].tweet_text;
                 tweet.tweet_date = docs[i].tweet_date;
                 tweet.tweet_urls = docs[i].tweet_urls;
+                if(docs[i].polarity>=-1 && docs[i].polarity<-0.2){
+                  tweet.sentiment="Negative";
+                }else if(docs[i].polarity>=-0.2 && docs[i].polarity<0.2){
+                  tweet.sentiment="Neutral";
+                }else if(docs[i].polarity>0.2 && docs[i].polarity<=1){
+                    tweet.sentiment="Positive";
+                }
+
+                if(docs[i].subjectivity>0.5 ){
+                     tweet.subjectivity="Opinion";
+                }else if(docs[i].subjectivity<=0.5 ) {
+                      tweet.subjectivity="Fact";
+                }
+
                 tweet.id = docs[i].id;
                 this.tweets.push(tweet)
-                            }
+             }
         this.tweetService.setHomeReturnData([this.tweets,this.displayedResults,this.docsRetrieved]);
         //console.log(this.tweets);
     }
@@ -127,6 +179,15 @@ export class HomeComponent implements OnInit {
         }
         else if (sentiment == 'Negative'){
             return {"color":"red"};
+        }
+      }
+
+    opinionStyle(subjectivity): object {
+        if (subjectivity == 'Opinion'){
+        return {"color":"red"};
+        }
+        else if(subjectivity == 'Fact'){
+            return {"color":"green"};
         }
       }
 
@@ -155,3 +216,12 @@ export class HomeComponent implements OnInit {
         //this.showTranslation = !this.showTranslation;
     }
 }
+
+
+//
+// http://18.217.102.217:8983/solr/IRF21P4_f2/select?indent=on&q.op=OR&q=*:*&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity
+//
+// http://18.217.102.217:8983/solr/IRF21P4_f2/select?indent=on&q.op=OR&q=*:*&facet=true&f.polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=polarity
+//
+// http://18.217.102.217:8983/solr/IRF21P4_f2/select?indent=on&q.op=OR&q=*:*&facet=true&f.polarity.facet.range.start=0.3&facet.range.end=1&facet.range.gap=1&facet.range=polarity
+//

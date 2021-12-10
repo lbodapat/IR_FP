@@ -5,9 +5,9 @@ import requests
 # https://tecadmin.net/install-apache-solr-on-ubuntu/
 
 
-CORE_NAME = "IRF21P4"
-AWS_IP = "3.14.126.14"
-
+CORE_NAME = "IRF21P4_f2"
+# AWS_IP = "3.14.126.14"
+AWS_IP = "localhost"
 
 # [CAUTION] :: Run this script once, i.e. during core creation
 
@@ -51,6 +51,10 @@ class Indexer:
                     "name": "verified",
                     "type": "boolean",
                     "multiValued": False
+                }, {
+                    "name": "isKeyWord",
+                    "type": "boolean",
+                    "multiValued": False
                 },
                 {
                     "name": "country",
@@ -88,19 +92,19 @@ class Indexer:
                     "name": "text_en",
                     "type": "text_en",
                     "multiValued": False,
-		    "indexed": True
+                    "indexed": True
                 },
                 {
                     "name": "text_hi",
                     "type": "text_hi",
                     "multiValued": False,
-		    "indexed": True
+                    "indexed": True
                 },
                 {
                     "name": "text_es",
                     "type": "text_es",
                     "multiValued": False,
-		    "indexed": True
+                    "indexed": True
                 },
                 {
                     "name": "hashtags",
@@ -133,6 +137,11 @@ class Indexer:
                     "multiValued": True
                 },
                 {
+                    "name": "favourite_count",
+                    "type": "plong",
+                    "multiValued": False
+                },
+                {
                     "name": "followers_count",
                     "type": "plong",
                     "multiValued": False
@@ -148,11 +157,6 @@ class Indexer:
                     "multiValued": False
                 },
                 {
-                    "name": "favorite_count",
-                    "type": "plong",
-                    "multiValued": False
-                },
-                {
                     "name": "media_url",
                     "type": "string",
                     "multiValued": False
@@ -161,14 +165,46 @@ class Indexer:
                     "name": "screen_name",
                     "type": "string",
                     "multiValued": False
+                },
+                {
+                    "name": "translated_text",
+                    "type": "string",
+                    "multiValued": False
+                },
+                {
+                    "name": "reply_translated",
+                    "type": "string",
+                    "multiValued": False
+                },
+                {
+                    "name": "polarity",
+                    "type": "pdouble",
+                    "multiValued": False
+                },
+                {
+                    "name": "subjectivity",
+                    "type": "pdouble",
+                    "multiValued": False
+                },{
+                    "name": "reply_polarity",
+                    "type": "pdouble",
+                    "multiValued": False
+                },
+                {
+                    "name": "reply_subjectivity",
+                    "type": "pdouble",
+                    "multiValued": False
                 }
             ]
         }
-        
         print(requests.post(self.solr_url + CORE_NAME + "/schema", json=data).json())
 
 
 if __name__ == "__main__":
-    i = Indexer()
-    i.do_initial_setup()
-    i.add_fields()
+    print("Indexer")
+   # i = Indexer()
+   # i.do_initial_setup()
+   # i.add_fields()
+    # i = Indexer()
+    # i.do_initial_setup()
+    # i.add_fields()

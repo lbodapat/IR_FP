@@ -32,11 +32,11 @@ export class TweetService {
     searchurl='http://localhost:9999/getDetails/'
     filterurl ='http://localhost:9999/getFilterDetails/'
     news_url:string = "http://localhost:9999/getNewsArticles/";
-    SentimentDetailsurl ='http://localhost:9999/getSentimentDetails/'
+    SentimentDetailsurl ='http://localhost:9999/getSentimentDetails1/'
     poiRepliesUrl='http://localhost:9999/getSentimentDetails/'
-    poiTweetsUrl= 'http://localhost:9999/getverifiedSentimentDetails/'
+    poiTweetsUrl= 'http://localhost:9999/getverifiedSentimentDetails1/'
     getPOIDetails = 'http://localhost:9999/getPOIDetails/'
-
+    sentiPoiUrl='http://localhost:9999/getSentimentDetails'
 
     private val:any = undefined;
     private value = new Subject<any>();
@@ -61,8 +61,13 @@ export class TweetService {
       }
 
    postFilterData(data:any):Observable<any>{
-    return this.http.post(this.filterurl, data, httpOptions)
-}
+        return this.http.post(this.filterurl, data, httpOptions)
+    }
+
+    postSentimentPoiData(data:any):Observable<any>{
+    console.log("ostSentimentPoiData")
+        return this.http.post(this.sentiPoiUrl, data, httpOptions)
+     }
 
 getNewsData(poiname,mindate):Observable<any>{
     let obj =  {'q':poiname,'mindate': mindate};
@@ -101,22 +106,9 @@ setHomeData(val:any){
     this.value.next(val);
 }
 
-getSentimentDetails(data:any):Observable<any>{
-    return this.http.post(this.SentimentDetailsurl, data, httpOptions)
-}
-
-getpoiRepliesUrl(data:any):Observable<any>{
-    return this.http.post(this.poiRepliesUrl, data, httpOptions)
-}
-getpoiTweetsUrl(data:any):Observable<any>{
-    return this.http.post(this.poiTweetsUrl, data, httpOptions)
-}
 
 setHomeReturnData(val:any){
     this.homeReturnval.next(val);
 }
 
-getpoiDetailsUrl(data:any):Observable<any>{
-    return this.http.post(this.getPOIDetails, data, httpOptions)
-}
 }

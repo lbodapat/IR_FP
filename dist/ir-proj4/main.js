@@ -1903,7 +1903,7 @@ var NavbarComponent = /** @class */ (function () {
         this.selectedLang = false;
         this.showPois = false;
         this.languages = [{ key: 'English', value: 'en' },
-            { key: 'Hindi', value: 'hi' }, { key: 'Portuguese', value: 'pt' }];
+            { key: 'Hindi', value: 'hi' }, { key: 'Spanish', value: 'es' }];
         this.topics = {
             India: ['Happy Birthday Modi', 'BJP', 'Congress', 'Railway', 'Kashmir'],
             US: ['Health care', 'Gun control', 'Climate change', 'Election campaign', 'Black Justice'],
