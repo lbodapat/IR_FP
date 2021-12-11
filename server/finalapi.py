@@ -105,7 +105,7 @@ def getFilterDetails():
         filterquery=getFilters(data,"poi_name")
         print("------_>>>>>> ",filterquery)
         modelquery = urllib.parse.quote(data["query"])
-        inurl = 'http://3.145.179.211:8983/solr/IRF21P4_f2/select?defType=edismax&stopwords=true&qf=tweet_text%20&q='+ modelquery +'&+wt=json&facet.field=tweet_lang&facet.field=country&facet.field=hashtags&f.hashtags.facet.limit=10&facet.field=verified&f.tweet_lang.facet.limit=3&facet.field=topic_str&facet=on&rows=0' +filterquery
+        inurl = 'http://18.219.230.238:8983/solr/IRF21P4_f2/select?defType=edismax&stopwords=true&qf=tweet_text%20&q='+ modelquery +'&+wt=json&facet.field=tweet_lang&facet.field=country&facet.field=hashtags&f.hashtags.facet.limit=10&facet.field=verified&f.tweet_lang.facet.limit=3&facet.field=topic_str&facet=on&rows=0' +filterquery
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
         docs = JSON.loads(data.decode('utf-8'))['facet_counts']['facet_fields']
@@ -132,7 +132,7 @@ def getDetails():
            modelquery=data["query"].strip()[0]
 
         modelquery = urllib.parse.quote(data["query"])
-        inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000'+filterquery
+        inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000'+filterquery
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
         res = JSON.loads(data.decode('utf-8'))
@@ -158,7 +158,7 @@ def sentimentMethodPoi(request):
         modelquery=data["query"].strip()[0]
     modelquery = urllib.parse.quote(data["query"])
 
-    neg_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity&f.reply_polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=reply_polarity&facet.field=country&facet.field=tweet_lang'+filterquery
+    neg_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity&f.reply_polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=reply_polarity&facet.field=country&facet.field=tweet_lang'+filterquery
     print("NEG URL",neg_inurl)
     neg_data = urllib.request.urlopen(neg_inurl).read()
     neg_res = JSON.loads(neg_data.decode('utf-8'))
@@ -187,14 +187,14 @@ def sentimentMethodPoi(request):
         #     break
     lang_metrics = dict(zip(keys2, values2))
 
-    neut_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=polarity&f.reply_polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+    neut_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=polarity&f.reply_polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
     print("Neut URL",neut_inurl)
     neut_data = urllib.request.urlopen(neut_inurl).read()
     neut_res = JSON.loads(neut_data.decode('utf-8'))
     neut_senti_count=neut_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
     neut_senti_count_rep=neut_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
 
-    pos_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=polarity&f.reply_polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+    pos_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=polarity&f.reply_polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=reply_polarity'+filterquery
     print("Pos URL",pos_inurl)
     pos_data = urllib.request.urlopen(pos_inurl).read()
     pos_res = JSON.loads(pos_data.decode('utf-8'))
@@ -230,19 +230,19 @@ def sentimentMethodVaccines(request):
         modelquery=data["query"].strip()[0]
     modelquery = urllib.parse.quote(data["query"])
 
-    neg_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=0.01&facet.range.gap=1&facet.range=polarity'+filterquery
+    neg_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=0.01&facet.range.gap=1&facet.range=polarity'+filterquery
     print("NEG URL",neg_inurl)
     neg_data = urllib.request.urlopen(neg_inurl).read()
     neg_res = JSON.loads(neg_data.decode('utf-8'))
     neg_senti_count=neg_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
 
-    neut_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.01&facet.range.end=0.02&facet.range.gap=1&facet.range=polarity'+filterquery
+    neut_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.01&facet.range.end=0.02&facet.range.gap=1&facet.range=polarity'+filterquery
     print("Neut URL",neut_inurl)
     neut_data = urllib.request.urlopen(neut_inurl).read()
     neut_res = JSON.loads(neut_data.decode('utf-8'))
     neut_senti_count=neut_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
 
-    pos_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.&op=ORq=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.02&facet.range.end=1&facet.range.gap=1&facet.range=polarity'+filterquery
+    pos_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.&op=ORq=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.02&facet.range.end=1&facet.range.gap=1&facet.range=polarity'+filterquery
     print("Pos URL",pos_inurl)
     pos_data = urllib.request.urlopen(pos_inurl).read()
     pos_res = JSON.loads(pos_data.decode('utf-8'))
@@ -265,13 +265,13 @@ def getSubjectivity(request):
         modelquery=data["query"].strip()[0]
     modelquery = urllib.parse.quote(data["query"])
 
-    op_inurl_poi='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0.496&facet.range.end=1&facet.range.gap=0.6&facet.range=subjectivity&f.reply_subjectivity.facet.range.start=0.496&facet.range.end=1&facet.range.gap=0.6&facet.range=reply_subjectivity'+filterquery
+    op_inurl_poi='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0.496&facet.range.end=1&facet.range.gap=0.6&facet.range=subjectivity&f.reply_subjectivity.facet.range.start=0.496&facet.range.end=1&facet.range.gap=0.6&facet.range=reply_subjectivity'+filterquery
     op_data = urllib.request.urlopen(op_inurl_poi).read()
     op_res = JSON.loads(op_data.decode('utf-8'))
     op_count=op_res['facet_counts']['facet_ranges']['subjectivity']['counts'][1]
     op_count_reply=op_res['facet_counts']['facet_ranges']['reply_subjectivity']['counts'][1]
 
-    fact_inurl_poi='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0&facet.range.end=0.495&facet.range.gap=0.5&facet.range=subjectivity&f.reply_subjectivity.facet.range.start=0&facet.range.end=0.495&facet.range.gap=0.6&facet.range=reply_subjectivity'+filterquery
+    fact_inurl_poi='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0&facet.range.end=0.495&facet.range.gap=0.5&facet.range=subjectivity&f.reply_subjectivity.facet.range.start=0&facet.range.end=0.495&facet.range.gap=0.6&facet.range=reply_subjectivity'+filterquery
     print("JSJJ ",fact_inurl_poi)
     fact_data = urllib.request.urlopen(fact_inurl_poi).read()
     fact_res = JSON.loads(fact_data.decode('utf-8'))
@@ -281,12 +281,12 @@ def getSubjectivity(request):
     print(fact_count_reply)
 
 
-    op_inurl_vac='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0.496&facet.range.end=1&facet.range.gap=0.6&facet.range=subjectivity'+filterquery
+    op_inurl_vac='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0.496&facet.range.end=1&facet.range.gap=0.6&facet.range=subjectivity'+filterquery
     op_data_vac = urllib.request.urlopen(op_inurl_vac).read()
     op_res_vac = JSON.loads(op_data_vac.decode('utf-8'))
     op_count_vac=op_res_vac['facet_counts']['facet_ranges']['subjectivity']['counts'][1]
 
-    fact_inurl_vac='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0&facet.range.end=0.495&facet.range.gap=0.5&facet.range=subjectivity'+filterquery
+    fact_inurl_vac='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.subjectivity.facet.range.start=0&facet.range.end=0.495&facet.range.gap=0.5&facet.range=subjectivity'+filterquery
     print("JSJJ ",fact_inurl_vac)
     fact_data_vac = urllib.request.urlopen(fact_inurl_vac).read()
     fact_res_vac = JSON.loads(fact_data_vac.decode('utf-8'))
@@ -313,19 +313,19 @@ def sentimentMethodPoiReplies(request):
         modelquery=data["query"].strip()[0]
     modelquery = urllib.parse.quote(data["query"])
 
-    neg_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+    neg_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
     print("NEG URL",neg_inurl)
     neg_data = urllib.request.urlopen(neg_inurl).read()
     neg_res = JSON.loads(neg_data.decode('utf-8'))
     neg_senti_count=neg_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
     print(neg_senti_count)
-    neut_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+    neut_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
     print("Neut URL",neut_inurl)
     neut_data = urllib.request.urlopen(neut_inurl).read()
     neut_res = JSON.loads(neut_data.decode('utf-8'))
     neut_senti_count=neut_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
     print(neut_senti_count)
-    pos_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+    pos_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=reply_polarity'+filterquery
     print("Pos URL",pos_inurl)
     pos_data = urllib.request.urlopen(pos_inurl).read()
     pos_res = JSON.loads(pos_data.decode('utf-8'))
@@ -352,19 +352,19 @@ def sentimentPoi():
             modelquery=data["query"].strip()[0]
         modelquery = urllib.parse.quote(data["query"])
 
-        neg_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity'+filterquery
+        neg_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity'+filterquery
         print("NEG URL",neg_inurl)
         neg_data = urllib.request.urlopen(neg_inurl).read()
         neg_res = JSON.loads(neg_data.decode('utf-8'))
         neg_senti_count=neg_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
 
-        neut_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=polarity'+filterquery
+        neut_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=polarity'+filterquery
         print("Neut URL",neut_inurl)
         neut_data = urllib.request.urlopen(neut_inurl).read()
         neut_res = JSON.loads(neut_data.decode('utf-8'))
         neut_senti_count=neut_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
 
-        pos_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=polarity'+filterquery
+        pos_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:false&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=polarity'+filterquery
         print("Pos URL",pos_inurl)
         pos_data = urllib.request.urlopen(pos_inurl).read()
         pos_res = JSON.loads(pos_data.decode('utf-8'))
@@ -395,19 +395,19 @@ def sentimentVaccine():
             modelquery=data["query"].strip()[0]
         modelquery = urllib.parse.quote(data["query"])
 
-        neg_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity'+filterquery
+        neg_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=polarity'+filterquery
         print("NEG URL",neg_inurl)
         neg_data = urllib.request.urlopen(neg_inurl).read()
         neg_res = JSON.loads(neg_data.decode('utf-8'))
         neg_senti_count=neg_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
 
-        neut_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=polarity'+filterquery
+        neut_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=polarity'+filterquery
         print("Neut URL",neut_inurl)
         neut_data = urllib.request.urlopen(neut_inurl).read()
         neut_res = JSON.loads(neut_data.decode('utf-8'))
         neut_senti_count=neut_res['facet_counts']['facet_ranges']['polarity']['counts'][1]
 
-        pos_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.&op=ORq=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=polarity'+filterquery
+        pos_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?fq=isKeyWord:true&q.&op=ORq=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=polarity'+filterquery
         print("Pos URL",pos_inurl)
         pos_data = urllib.request.urlopen(pos_inurl).read()
         pos_res = JSON.loads(pos_data.decode('utf-8'))
@@ -438,19 +438,19 @@ def sentimentReplies():
             modelquery=data["query"].strip()[0]
         modelquery = urllib.parse.quote(data["query"])
 
-        neg_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+        neg_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=-1&facet.range.end=-0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
         print("NEG URL",neg_inurl)
         neg_data = urllib.request.urlopen(neg_inurl).read()
         neg_res = JSON.loads(neg_data.decode('utf-8'))
         neg_senti_count=neg_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
         print(neg_senti_count)
-        neut_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+        neut_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=-0.2&facet.range.end=0.2&facet.range.gap=1&facet.range=reply_polarity'+filterquery
         print("Neut URL",neut_inurl)
         neut_data = urllib.request.urlopen(neut_inurl).read()
         neut_res = JSON.loads(neut_data.decode('utf-8'))
         neut_senti_count=neut_res['facet_counts']['facet_ranges']['reply_polarity']['counts'][1]
         print(neut_senti_count)
-        pos_inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=reply_polarity'+filterquery
+        pos_inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?q.op=OR&q=reply_text%3A(' + modelquery + ')&+wt=json&rows=1000&facet=true&f.reply_polarity.facet.range.start=0.2&facet.range.end=1&facet.range.gap=1&facet.range=reply_polarity'+filterquery
         print("Pos URL",pos_inurl)
         pos_data = urllib.request.urlopen(pos_inurl).read()
         pos_res = JSON.loads(pos_data.decode('utf-8'))
@@ -481,7 +481,7 @@ def getSentimentDetails_new():
             print("Enter")
             modelquery=data["query"].strip()[0]
         modelquery = urllib.parse.quote(data["query"])
-        inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000'
+        inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?q.op=OR&q=tweet_text%3A(' + modelquery + ')&+wt=json&rows=1000'
         print(inurl)
         data = urllib.request.urlopen(inurl).read()
         res = JSON.loads(data.decode('utf-8'))
@@ -692,8 +692,8 @@ def translate_replies(tweet):
 # @app.route("/allDocs/",methods=['POST'])
 def getAllDocs(indexer):
     # try:
-    # inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?q.op=OR&q=*%3A*&rows=69455'
-    inurl='http://3.145.179.211:8983/solr/IRF21P4_f2/select?q.op=OR&q=*%3A*&rows=15000'
+    # inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?q.op=OR&q=*%3A*&rows=69455'
+    inurl='http://18.219.230.238:8983/solr/IRF21P4_f2/select?q.op=OR&q=*%3A*&rows=15000'
     print(inurl)
     data = urllib.request.urlopen(inurl).read()
     res = JSON.loads(data.decode('utf-8'))

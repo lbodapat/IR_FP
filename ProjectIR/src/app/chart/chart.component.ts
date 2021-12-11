@@ -77,10 +77,9 @@ export class ChartComponent implements OnInit {
   filterdata_country :any=[];
   filterdata_hashtags:any=[];
   donutData:any = [];
-  doughnut_senti_poi.any = [];
-  doughnut_senti_poi_replies.any = [];
-  doughnut_senti_vaccines.any = [];
-  donutData.any = []
+  doughnut_senti_poi:any = [];
+  doughnut_senti_poi_replies:any = [];
+  doughnut_senti_vaccines:any = [];
   homeObj:any;
   docs:any = [];
   sentimentData:any=[];
@@ -95,12 +94,14 @@ export class ChartComponent implements OnInit {
   pie_India= new Chart({});
   pie_usa= new Chart({});
   pie_mexico= new Chart({});
-  pie_poi_reply_subj= new Chart({});
-  pie_poi_subj= new Chart({});
-  
+
   pie_India_hashtags= new Chart({});
   pie_usa_hashtags= new Chart({});
   pie_mexico_hashtags= new Chart({});
+  
+  pie_poi_reply_subj= new Chart({});
+  pie_poi_subj= new Chart({});
+  pie_vacc_subj = new Chart({});
 
   loading_complete=true;
 
@@ -111,6 +112,7 @@ export class ChartComponent implements OnInit {
   postFilterData_hashtags=[];
   postFilterData_tweet_lang=[];
   postFilterData_verified=[];
+  postFilterData_topic = [];
   wordData=new Array<AgWordCloudData>();
 
   postFilterData_poiSentiment_neg;

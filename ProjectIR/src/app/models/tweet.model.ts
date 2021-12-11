@@ -15,6 +15,6 @@ export class Tweet {
     translationExists:boolean;
 	retweet_count:number;
 	translatedText:string;
-	sentiment:number;
-	subjectivity:number;
+	sentiment:string;
+	subjectivity:string;
     }
